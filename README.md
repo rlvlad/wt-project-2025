@@ -20,13 +20,16 @@ Start MariaDB:
 sudo systemctl start mariadb
 ```
 
-Then create the database:
+Then access MariaDB console:
 
 ```shell
 sudo mariadb
+```
+and create the database:
+```mariadb
 CREATE DATABASE tiw;
 # add privilegies
-GRANT ALL PRIVILEGIES ON *.* TO `user`@'hostname';
+GRANT ALL PRIVILEGES ON tiw.* TO `user`@'hostname';
 exit;
 ```
 
