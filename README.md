@@ -11,3 +11,30 @@ Vittorio Robecchi
 </p>
 
 ---
+
+## MariaDB configuration
+
+Start MariaDB:
+
+```shell
+sudo systemctl start mariadb
+```
+
+Then create the database:
+
+```shell
+sudo mariadb
+CREATE DATABASE tiw;
+# add privilegies
+GRANT ALL PRIVILEGIES ON *.* TO `user`@'hostname';
+exit;
+```
+
+And finally load execute the SQL file.
+
+```shell
+cd src/main/resources
+mariadb --user NAME --password < tables.sql
+```
+
+where `NAME` = user from the step before.
