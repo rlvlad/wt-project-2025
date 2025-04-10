@@ -1,3 +1,5 @@
+USE tiw;
+
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS user CASCADE;
@@ -7,6 +9,8 @@ DROP TABLE IF EXISTS playlist CASCADE;
 DROP TABLE IF EXISTS playlist_tracks CASCADE;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+# TABLE CREATION
 
 CREATE TABLE user
 (
@@ -30,6 +34,8 @@ CREATE TABLE track
     path        varchar(16),
 
     primary key (track_id),
+    # unique set of tags per track
+    unique (title, image_path, album_title, artist, year, genre, path),
     check (genre in ('classical', 'rock', 'edm'))
 );
 
@@ -64,3 +70,30 @@ CREATE TABLE playlist_tracks
     foreign key (playlist_id) references playlist (playlist_id),
     foreign key (track_id) references track (track_id)
 );
+
+# TRIGGERS
+
+DROP TRIGGER IF EXISTS no_duplicate_tracks;
+
+# checks if there is already a track with the same tags
+# CREATE TRIGGER IF NOT EXISTS no_duplicate_tracks
+#     BEFORE INSERT
+#     ON track
+#     FOR EACH ROW
+# BEGIN
+#     DECLARE new_track_id integer;
+#     IF
+#         NOT EXISTS (SELECT *
+#                     FROM track
+#                     WHERE NEW.title = title
+#                        OR artist = NEW.artist)
+#     THEN
+#         SELECT max(track_id) FROM track INTO new_track_id;
+#         INSERT INTO track (track_id, title, image_path, album_title, artist, year, genre, path)
+#         VALUES (new_track_id, new.title, new.image_path, new.album_title, new.artist, new.year, new.genre,
+#                 new.path);
+#     END IF;
+# END;
+# ;
+
+# MOCK DATA
