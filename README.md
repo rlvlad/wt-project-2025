@@ -28,7 +28,7 @@ sudo mariadb
 and create the database:
 ```mariadb
 CREATE DATABASE tiw;
-# add privilegies
+# add privileges
 GRANT ALL PRIVILEGES ON tiw.* TO `user`@'hostname';
 exit;
 ```
