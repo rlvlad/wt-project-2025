@@ -11,10 +11,10 @@ body {
 }
 
 .songs {
-    width: 100%;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
+    width: calc(100% - 4rem);
+    margin: 0 2rem 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     align-content: baseline;
     justify-content: center;
     gap: 1rem;
@@ -22,7 +22,6 @@ body {
 }
 
 .song {
-    flex: 0 0 calc(16% - 1em); /* max 5 songs per row */
     height: 150px;
     background-color: rgba(152, 183, 255, 0.38);
     font-weight: 700;
