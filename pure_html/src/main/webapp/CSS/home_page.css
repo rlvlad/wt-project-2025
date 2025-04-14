@@ -63,9 +63,17 @@ body {
 
 .button {
     background-color: aquamarine;
-    padding: 1rem;
-    align-content: center;
-    height: 2rem;
+    height: 3rem;
+    border-radius: 6px;
+    font-weight: bold;
+    vertical-align: middle;;
+    margin: 0.5rem 0 0.5rem 0;
+    padding: 1em;
+}
+
+.button:hover {
+    background-color: aqua;
+    cursor: pointer;
 }
 
 .logout {
