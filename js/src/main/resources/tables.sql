@@ -45,8 +45,10 @@ CREATE TABLE user_tracks
     track_id integer     not null,
 
     primary key (nickname, track_id),
-    foreign key (nickname) references user (nickname),
+    foreign key (nickname) references user (nickname)
+        ON DELETE CASCADE ON UPDATE CASCADE,
     foreign key (track_id) references track (track_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE playlist
@@ -57,7 +59,9 @@ CREATE TABLE playlist
     nickname       varchar(32) not null,
 
     primary key (playlist_id),
+    unique (playlist_title, nickname),
     foreign key (nickname) references user (nickname)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE playlist_tracks
@@ -67,8 +71,10 @@ CREATE TABLE playlist_tracks
     custom_order integer,
 
     primary key (playlist_id, track_id),
-    foreign key (playlist_id) references playlist (playlist_id),
+    foreign key (playlist_id) references playlist (playlist_id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
     foreign key (track_id) references track (track_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 # TRIGGERS
