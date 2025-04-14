@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Login page</title>
@@ -7,14 +7,16 @@
 </head>
 <body>
 <div class="login-panels">
-    <div class="welcome">Welcome to the Playlist Manager!</div>
+    <div class="welcome" th:utext="#{index.welcome}">Welcome to the Playlist Manager!</div>
     <hr>
     <button class="button">Register</button>
     <hr>
     <div class="credentials">
-        <form>
-            <label for="nickname"></label><input class="text-field" type="text" id="nickname" name="nickname" placeholder="Nickname"><br>
-            <label for="password"></label><input class="text-field" type="text" id="password" name="password" placeholder="Password">
+        <form method="POST">
+            <label for="nickname"></label><input class="text-field" type="text" id="nickname" name="nickname"
+                                                 placeholder="Nickname"><br>
+            <label for="password"></label><input class="text-field" type="text" id="password" name="password"
+                                                 placeholder="Password">
         </form>
     </div>
     <div class="nav-bar">
