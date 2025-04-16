@@ -9,19 +9,21 @@
 <div class="login-panels">
     <div class="welcome" th:utext="#{index.welcome}">Welcome to the Playlist Manager!</div>
     <hr>
-    <button class="button" th:utente="#{index.register}">Register</button>
+    <a href="register.html">
+        <button type="submit" class="button" th:utext="#{index.register}"> Register </button>
+    </a>
+    <form action="Login" method="POST">
     <hr>
     <div class="credentials">
-        <form method="POST">
-            <label for="nickname"></label><input class="text-field" type="text" id="nickname" name="nickname"
-                                                 placeholder="Nickname"><br>
-            <label for="password"></label><input class="text-field" type="text" id="password" name="password"
-                                                 placeholder="Password">
-        </form>
+        <input class="text-field" type="text" id="nickname" name="nickname"
+               placeholder="Nickname"><br>
+        <input class="text-field" type="password" id="password" name="password"
+               placeholder="Password">
     </div>
-    <div class="nav-bar">
-        <button class="button">Login</button>
-    </div>
+        <div class="nav-bar">
+            <input type="submit" class="button" value="Login">
+        </div>
+    </form>
 </div>
 </body>
 </html>
