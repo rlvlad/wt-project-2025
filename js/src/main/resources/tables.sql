@@ -24,18 +24,20 @@ CREATE TABLE user
 
 CREATE TABLE track
 (
-    track_id    integer      not null,
-    title       varchar(16)  not null,
-    image_path  varchar(128) not null,
-    album_title varchar(16)  not null,
-    artist      varchar(16)  not null,
-    year        year         not null,
-    genre       varchar(16),
-    path        varchar(16),
+    track_id       integer      not null,
+    title          varchar(16)  not null,
+    image_path     varchar(128) not null,
+    album_title    varchar(16)  not null,
+    artist         varchar(16)  not null,
+    year           year         not null,
+    genre          varchar(16),
+    path           varchar(16),
+    image_checksum char(64)     not null comment "SHA256 checksum",
+    path_checksum  char(64)     not null comment "SHA256 checksum",
 
     primary key (track_id),
-    # unique set of tags per track
-    unique (title, image_path, album_title, artist, year, genre, path),
+    unique (image_checksum),
+    unique (path_checksum),
     check (genre in ('classical', 'rock', 'edm'))
 );
 
