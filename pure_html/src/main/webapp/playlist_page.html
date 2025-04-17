@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Playlist $name</title>
+    <link rel="stylesheet" href="CSS/playlist_page.css">
 </head>
 <body>
-
+<div class="nav-bar">
+    <div class="label-title">$name_of_playlist</div>
+    <div class="spacer"></div>
+    <button class="button" th:utext="#{playlist_page.addTrack}">Add Track</button>
+    <button class="button" th:utext="#{playlist_page.removeTrack}">Remove Track</button>
+    <button class="button logout" th:utext="#{playlist_page.logout}">Logout</button>
+</div>
+<div class="songs">
+    <!-- L'utente qua vede TUTTI i suoi brani -->
+    <div class="song">
+        <span class="track-title">TitleTrack</span> <br>
+        <span class="album-title">AlbumTitle</span>
+    </div>
+    <div class="song"></div>
+    <div class="song"></div>
+    <div class="song"></div>
+    <div class="song"></div>
+    <div class="song"></div>
+    <div class="song"></div>
+    <div class="song"></div>
+    <div class="song"></div>
+</div>
+<div class="nav-bar">
+    <button class="button" th:utext="#{playlist_page.previousTracks}">Previous Tracks</button>
+    <div class="spacer"></div>
+    <button class="button">Home</button>
+    <div class="spacer"></div>
+    <button class="button" th:utext="#{playlist_page.nextTracks}">Next Tracks</button>
+</div>
 </body>
 </html>

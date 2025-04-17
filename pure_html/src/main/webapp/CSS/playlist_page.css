@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    word-spacing: 1px;
+    font-family: "Roboto", sans-serif;
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.songs {
+    width: calc(100% - 4rem);
+    margin: 0 2rem 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-content: baseline;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0 1rem 0;
+}
+
+.song {
+    height: 150px;
+    background-color: rgba(152, 183, 255, 0.38);
+    font-weight: 700;
+    padding: 1rem;
+    text-align: left;
+    align-content: end;
+}
+
+.track-title {
+    color: #001a9f;
+}
+
+.album-title {
+    color: #050937;
+}
+
+.nav-bar {
+    width: calc(100% - 4rem);
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 2rem 0 2rem;
+}
+
+.label-title {
+    /*padding: 2rem 3em 2rem 3rem;*/
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.button {
+    background-color: aquamarine;
+    height: 3rem;
+    border-radius: 6px;
+    font-weight: bold;
+    vertical-align: middle;;
+    margin: 0.5rem 0 0.5rem 0;
+    padding: 1em;
+}
+
+.button:hover {
+    background-color: aqua;
+    cursor: pointer;
+}
+
+.logout {
+    background-color: rgba(255, 0, 0, 0.18);
+}
