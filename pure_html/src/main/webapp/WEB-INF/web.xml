@@ -6,7 +6,7 @@
     <display-name>TIW-project</display-name>
     <context-param>
         <param-name>dbUrl</param-name>
-        <param-value>jdbc:mariadb://localhost:3306/bom?serverTimezone=UTC</param-value>
+        <param-value>jdbc:mariadb://localhost:3306/tiw?serverTimezone=UTC</param-value>
     </context-param>
     <context-param>
         <param-name>dbUser</param-name>
