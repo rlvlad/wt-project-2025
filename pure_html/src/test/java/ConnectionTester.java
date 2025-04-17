@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class ConnectionTester extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -44,7 +46,7 @@ public class ConnectionTester extends HttpServlet {
             Class.forName("org.mariadb.jdbc.Driver");
             System.out.println("Driver loaded");
         } catch (ClassNotFoundException e) {
-            System.err.println("Driver not found");
+            fail("Driver not found");
             e.printStackTrace();
         }
 
@@ -54,7 +56,7 @@ public class ConnectionTester extends HttpServlet {
             System.out.println("Database connection successful");
             connection.close();
         } catch (Exception e) {
-            System.err.println("Connection failed");
+            fail("Connection failed");
             e.printStackTrace();
         }
     }
