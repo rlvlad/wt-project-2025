@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale}">
 <head>
     <meta charset="UTF-8">
     <title>Home page</title>
@@ -7,18 +7,17 @@
 </head>
 <body>
 <div class="nav-bar">
-    <div class="label-title">All Songs</div>
+    <div class="label-title" th:utext="#{home_page.allPlaylists}">All Playlists</div>
     <div class="spacer"></div>
-    <button class="button">Add Track</button>
-    <button class="button">Remove Track</button>
-    <button class="button">Add Playlist</button>
-    <button class="button logout">Logout</button>
+    <button class="button" th:utext="#{home_page.addPlaylist}">Add Playlist</button>
+    <button class="button" th:utext="#{home_page.removePlaylist}">Remove Playlist</button>
+    <button class="button" th:utext="#{home_page.allSongs}">View All Songs</button>
+    <button class="button logout" th:utext="#{home_page.logout}">Logout</button>
 </div>
 <!-- L'utente qua vede TUTTE le sue playlist + tutti i suoi brani -->
 <div class="songs">
     <div class="song">
-        <span class="track-title">TitleTrack</span> <br>
-        <span class="album-title">AlbumTitle</span>
+        <span class="playlist-title">PlaylistTitle</span><br>
     </div>
     <div class="song"></div>
     <div class="song"></div>
@@ -30,11 +29,11 @@
     <div class="song"></div>
 </div>
 <div class="nav-bar">
-    <button class="button">Add Track</button>
+    <button class="button" th:utext="#{home_page.previousPlaylists}">Previous Playlists</button>
     <div class="spacer"></div>
-    <button class="button">Remove Track</button>
+    <button class="button">Home</button>
     <div class="spacer"></div>
-    <button class="button">Add Playlist</button>
+    <button class="button" th:utext="#{home_page.nextPlaylists}">Next Playlists</button>
 </div>
 </body>
 </html>
