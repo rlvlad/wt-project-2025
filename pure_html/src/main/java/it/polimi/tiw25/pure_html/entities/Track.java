@@ -4,6 +4,7 @@ package it.polimi.tiw25.pure_html.entities;
  * Class that represents a single track.
  */
 public record Track(
+        int id,
         String title,
         String artist,
         java.sql.Date albumReleaseDate,

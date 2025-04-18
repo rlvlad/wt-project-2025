@@ -1,0 +1,60 @@
+body {
+    margin: 0;
+    padding: 0 0 0 2rem;
+    line-height: 1.6;
+    word-spacing: 1px;
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.track-title {
+    width: 100%;
+    color: #001a9f;
+}
+
+.album-title {
+    width: 100%;
+    color: #050937;
+}
+
+.music-player {
+    width: 250px;
+    background-color: aliceblue;
+    padding: 3rem;
+    border: 1px solid cadetblue;
+    text-align: center;
+}
+
+.nav-bar {
+    width: calc(100% - 4rem);
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 2rem 0 2rem;
+}
+
+.button {
+    background-color: aquamarine;
+    height: 3rem;
+    border-radius: 6px;
+    font-weight: bold;
+    vertical-align: middle;;
+    margin: 0.5rem 0 0.5rem 0;
+    padding: 1em;
+}
+
+.button:hover {
+    background-color: aqua;
+    cursor: pointer;
+}
+
+.logout {
+    background-color: rgba(255, 0, 0, 0.18);
+}

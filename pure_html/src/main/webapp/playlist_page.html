@@ -17,31 +17,31 @@
 </div>
 <div class="songs" th:remove="all-but-first" th:each="track : ${playlistTracks}">
     <!-- Five tracks per row of the corresponding playlist -->
-    <form action="Tracks" method="GET">
-        <button class="song-button" name="track_id" th:value="${track.path}">
+    <form action="Track" method="GET">
+        <button class="song-button" name="track_id" th:value="${track.id}">
             <span class="track-title" th:text="${track.title}">TitleTrack</span><br/>
             <span class="album-title" th:text="${track.album_title}">AlbumTitle</span>
         </button>
     </form>
-    <form action="Tracks" method="GET">
+    <form action="Track" method="GET">
         <button class="song-button" name="track_id" value="1">
             <span class="track-title">TitleTrack</span><br/>
             <span class="album-title">AlbumTitle</span>
         </button>
     </form>
-    <form action="Tracks" method="GET">
+    <form action="Track" method="GET">
         <button class="song-button" name="track_id" value="1">
             <span class="track-title">TitleTrack</span><br/>
             <span class="album-title">AlbumTitle</span>
         </button>
     </form>
-    <form action="Tracks" method="GET">
+    <form action="Track" method="GET">
         <button class="song-button" name="track_id" value="1">
             <span class="track-title">TitleTrack</span><br/>
             <span class="album-title">AlbumTitle</span>
         </button>
     </form>
-    <form action="Tracks" method="GET">
+    <form action="Track" method="GET">
         <button class="song-button" name="track_id" value="1">
             <span class="track-title">TitleTrack</span><br/>
             <span class="album-title">AlbumTitle</span>
@@ -51,7 +51,9 @@
 <div class="nav-bar">
     <button class="button" th:text="#{playlist_page.previousTracks}">Previous Tracks</button>
     <div class="spacer"></div>
-    <button class="button">Home</button>
+    <a href="home_page.html" th:href="@{/HomePage}">
+        <button class="button">Home</button>
+    </a>
     <div class="spacer"></div>
     <button class="button" th:text="#{playlist_page.nextTracks}">Next Tracks</button>
 </div>

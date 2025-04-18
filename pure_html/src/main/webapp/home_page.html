@@ -46,7 +46,9 @@
 <div class="nav-bar">
     <button class="button" th:text="#{home_page.previousPlaylists}">Previous Playlists</button>
     <div class="spacer"></div>
-    <button class="button">Home</button>
+    <a href="home_page.html" th:href="@{/HomePage}">
+        <button class="button">Home</button>
+    </a>
     <div class="spacer"></div>
     <button class="button" th:text="#{home_page.nextPlaylists}">Next Playlists</button>
 </div>

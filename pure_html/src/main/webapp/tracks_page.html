@@ -31,7 +31,9 @@
 <div class="nav-bar">
     <button class="button" th:text="#{tracks_page.previousTracks}">Previous Tracks</button>
     <div class="spacer"></div>
-    <button class="button">Home</button>
+    <a href="home_page.html" th:href="@{/HomePage}">
+        <button class="button">Home</button>
+    </a>
     <div class="spacer"></div>
     <button class="button" th:text="#{tracks_page.nextTracks}">Next Tracks</button>
 </div>

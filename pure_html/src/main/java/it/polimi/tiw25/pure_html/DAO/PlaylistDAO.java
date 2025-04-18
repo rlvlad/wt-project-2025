@@ -53,7 +53,7 @@ public class PlaylistDAO {
         List<Track> tracks = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                 SELECT title, image_path, album_title, artist, year, genre, path
+                 SELECT track_id, title, image_path, album_title, artist, year, genre, path
                  FROM user a
                      NATURAL JOIN playlist b
                      NATURAL JOIN playlist_tracks c
@@ -67,6 +67,7 @@ public class PlaylistDAO {
 
         while (resultSet.next()) {
             Track track = new Track(
+                    resultSet.getInt("track_id"),
                     resultSet.getString("title"),
                     resultSet.getString("artist"),
                     resultSet.getDate("year"),
