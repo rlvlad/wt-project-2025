@@ -82,7 +82,7 @@ public class RegisterController extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        res.sendRedirect(getServletContext().getContextPath() + "/index.html");
+        res.sendRedirect(getServletContext().getContextPath() + "/Login");
     }
 
     /**

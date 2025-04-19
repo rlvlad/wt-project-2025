@@ -82,7 +82,7 @@ public class LoginController extends HttpServlet {
         if (schrondingerUser != null) {
             res.sendRedirect(getServletContext().getContextPath() + "/HomePage");
         } else {
-            res.sendRedirect(getServletContext().getContextPath() + "/index.html");
+            res.sendRedirect(getServletContext().getContextPath() + "/Login");
         }
     }
 }
