@@ -12,16 +12,20 @@
 <div class="center-panel">
     <div class="welcome" th:text="#{register.welcome}">Register</div>
     <hr>
+    <div th:if="${isUserAdded == false}" class="sql-error">
+        Username already taken; choose another one
+        <hr>
+    </div>
     <form action="Register" method="POST">
         <div class="credentials">
             <input class="text-field" type="text" id="nickname" name="nickname"
-                   placeholder="Nickname"><br>
+                   placeholder="Nickname" required><br>
             <input class="text-field" type="password" id="password" name="password"
-                   placeholder="Password">
+                   placeholder="Password" required>
             <input class="text-field" type="text" id="name" name="name"
-                   placeholder="Name">
+                   placeholder="Name" required>
             <input class="text-field" type="text" id="surname" name="surname"
-                   placeholder="Surname">
+                   placeholder="Surname" required>
         </div>
         <div class="nav-bar">
             <input type="submit" class="button" value="Create Account" th:value="#{register.createAccount}">

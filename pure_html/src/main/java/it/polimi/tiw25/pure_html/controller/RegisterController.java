@@ -1,6 +1,7 @@
 package it.polimi.tiw25.pure_html.controller;
 
-import it.polimi.tiw25.pure_html.DAO.Queries;
+import it.polimi.tiw25.pure_html.DAO.UserDAO;
+import it.polimi.tiw25.pure_html.entities.User;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @WebServlet("/Register")
@@ -61,6 +61,9 @@ public class RegisterController extends HttpServlet {
         JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
         WebContext ctx = new WebContext(webApplication.buildExchange(req, res), req.getLocale());
 
+        boolean isUserAdded = req.getParameter("isUserAdded") == null || !req.getParameter("isUserAdded").equals("false");
+
+        ctx.setVariable("isUserAdded", isUserAdded);
         templateEngine.process("register.html", ctx, res.getWriter());
     }
 
@@ -71,35 +74,23 @@ public class RegisterController extends HttpServlet {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
 
-        assert nickname != null;
-        assert password != null;
-        assert name != null;
-        assert surname != null;
+        UserDAO userDAO = new UserDAO(connection);
+        User user = new User(
+                nickname,
+                password,
+                name,
+                surname
+        );
 
-        try {
-            addUser(nickname, password, name, surname);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        boolean isUserAdded = userDAO.addUser(user);
+
+        if (isUserAdded) {
+            res.sendRedirect(getServletContext().getContextPath() + "/Login");
+        } else {
+            res.sendRedirect(
+                    getServletContext().getContextPath() + "/Register?isUserAdded=" + false
+            );
         }
 
-        res.sendRedirect(getServletContext().getContextPath() + "/Login");
-    }
-
-    /**
-     * Checks if user is in the database.
-     *
-     * @param nickname
-     * @param password
-     * @throws SQLException
-     */
-    public void addUser(String nickname, String password, String name, String surname) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(Queries.ADD_USER);
-
-        statement.setString(1, nickname);
-        statement.setString(2, password);
-        statement.setString(3, name);
-        statement.setString(4, surname);
-
-        statement.executeUpdate();
     }
 }
