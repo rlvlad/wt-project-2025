@@ -16,13 +16,14 @@ body {
 .text-field {
     width: 100%;
     font-family: "JetBrains Mono", monospace;
-    background-color: var(--light-background);
+    background-color: var(--selection-background);
+    border: 2px solid var(--dark-foreground);
 }
 
 .button {
     color: var(--selection-background);
-    /*background-color: var(--default-foreground);*/
-    border: 2px solid var(--data-types);
+    background-color: var(--default-foreground);
+    border: 2px solid var(--dark-foreground);
     height: 3rem;
     border-radius: 6px;
     font-weight: bold;
@@ -40,6 +41,7 @@ body {
 .logout {
     background-color: var(--variables);
     font-weight: bolder;
+    color: var(--lighter-background);
 }
 
 .logout:hover {
@@ -89,7 +91,7 @@ body {
     padding: 1rem;
     text-align: left;
     border: 2px solid var(--data-types);
-    color:  var(--lighter-background);
+    color: var(--lighter-background);
     border-radius: 5px;
     font-family: "JetBrains Mono", monospace;
     align-content: end;
@@ -100,14 +102,14 @@ body {
     cursor: pointer;
 }
 
-.first-line{
-    width: 100%;
-    color: var(--comments);
-}
-
-.second-line{
+.first-line {
     width: 100%;
     color: var(--lighter-background);
+}
+
+.second-line {
+    width: 100%;
+    color: var(--comments);
 }
 
 /* LINE AND SPACERS */
