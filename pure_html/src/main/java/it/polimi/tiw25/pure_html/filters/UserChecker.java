@@ -24,6 +24,8 @@ public class UserChecker implements Filter {
         if (s.getAttribute("user") == null) {
             res.sendRedirect(login);
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
