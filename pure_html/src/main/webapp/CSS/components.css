@@ -1,0 +1,135 @@
+body {
+    background-color: var(--default-background);
+    /*margin: 1rem;*/
+    padding: 1rem 2rem 2rem 2rem;
+    line-height: 1.6;
+    word-spacing: 1px;
+    font-family: "JetBrains Mono", monospace;
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* ELEMENTS */
+
+.text-field {
+    width: 100%;
+    font-family: "JetBrains Mono", monospace;
+    background-color: var(--light-background);
+}
+
+.button {
+    color: var(--selection-background);
+    /*background-color: var(--default-foreground);*/
+    border: 2px solid var(--data-types);
+    height: 3rem;
+    border-radius: 6px;
+    font-weight: bold;
+    vertical-align: middle;
+    margin: 0.5rem 0 0.5rem 0;
+    padding: 1em;
+    font-family: "JetBrains Mono", monospace;
+}
+
+.button:hover {
+    background-color: var(--dark-foreground);
+    cursor: pointer;
+}
+
+.logout {
+    background-color: var(--variables);
+    font-weight: bolder;
+}
+
+.logout:hover {
+    background-color: var(--data-types);
+}
+
+.center-panel {
+    width: 300px;
+    background-color: var(--lighter-background);
+    padding: 3rem;
+    border: 1px solid var(--dark-foreground);
+    text-align: center;
+}
+
+/* ITEM CONTAINER AND ITEMS */
+
+.nav-bar {
+    width: calc(100%);
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    /*padding: 0 2rem 0 2rem;*/
+}
+
+.items-container {
+    width: calc(100%);
+    /*margin: 0 2rem 0 2rem;*/
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-content: baseline;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0 1rem 0;
+}
+
+.single-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    height: 150px;
+    background-color: var(--light-background);
+    font-weight: 700;
+    padding: 1rem;
+    text-align: left;
+    border: 2px solid var(--data-types);
+    color:  var(--lighter-background);
+    border-radius: 5px;
+    font-family: "JetBrains Mono", monospace;
+    align-content: end;
+}
+
+.single-item:hover {
+    background-color: var(--variables);
+    cursor: pointer;
+}
+
+.first-line{
+    width: 100%;
+    color: var(--comments);
+}
+
+.second-line{
+    width: 100%;
+    color: var(--lighter-background);
+}
+
+/* LINE AND SPACERS */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid var(--light-background);
+    margin: 1em 0;
+    padding: 0;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+/* LABELS */
+
+.main-label {
+    /*padding: 2rem 3em 2rem 3rem;*/
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--light-background)
+}

@@ -1,0 +1,18 @@
+:root {
+    --default-background: #202020;
+    --lighter-background: #2a2827;
+    --selection-background: #504945;
+    --comments: #5a524c;
+    --dark-foreground: #bdae93;
+    --default-foreground: #ddc7a1;
+    --light-foreground: #ebdbb2;
+    --light-background: #fbf1c7;
+    --variables: #ea6962;
+    --data-types: #e78a4e;
+    --support-types: #d8a657;
+    --string: #a9b665;
+    --support: #89b482;
+    --functions: #7daea3;
+    --keywords: #d3869b;
+    --deprecated: #bd6f3e;
+}

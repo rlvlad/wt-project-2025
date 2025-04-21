@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${playlistTitle}">Playlist Title</title>
-    <link rel="stylesheet" href="CSS/playlist_page.css" th:href="@{/CSS/playlist_page.css}">
+    <link rel="stylesheet" href="CSS/colors.css" th:href="@{/CSS/colors.css}">
+    <link rel="stylesheet" href="CSS/components.css" th:href="@{/CSS/components.css}">
     <link rel="icon" type="image/x-icon" href="img/icon.ico" th:href="@{/img/icon.ico}">
 </head>
 <body>
 <div class="nav-bar">
-    <div class="label-title" th:text="${playlistTitle}">Playlist Title</div>
+    <div class="main-label" th:text="${playlistTitle}">Playlist Title</div>
     <div class="spacer"></div>
     <button class="button" th:text="#{playlist_page.addTrack}">Add Track</button>
     <button class="button" th:text="#{playlist_page.removeTrack}">Remove Track</button>
@@ -16,36 +17,36 @@
         <button type="submit" class="button logout" th:text="#{playlist_page.logout}">Logout</button>
     </a>
 </div>
-<div class="songs" th:remove="all-but-first" th:each="track : ${playlistTracks}">
+<div class="items-container" th:remove="all-but-first" th:each="track : ${playlistTracks}">
     <!-- Five tracks per row of the corresponding playlist -->
     <form action="Track" method="GET">
-        <button class="song-button" name="track_id" th:value="${track.id}">
-            <span class="track-title" th:text="${track.title}">TitleTrack</span><br/>
-            <span class="album-title" th:text="${track.album_title}">AlbumTitle</span>
+        <button class="single-item song-button" name="track_id" th:value="${track.id}">
+            <span class="first-line" th:text="${track.title}">TitleTrack</span><br/>
+            <span class="second-line" th:text="${track.album_title}">AlbumTitle</span>
         </button>
     </form>
     <form action="Track" method="GET">
-        <button class="song-button" name="track_id" value="1">
-            <span class="track-title">TitleTrack</span><br/>
-            <span class="album-title">AlbumTitle</span>
+        <button class="single-item song-button" name="track_id" value="1">
+            <span class="first-line">TitleTrack</span><br/>
+            <span class="second-line">AlbumTitle</span>
         </button>
     </form>
     <form action="Track" method="GET">
-        <button class="song-button" name="track_id" value="1">
-            <span class="track-title">TitleTrack</span><br/>
-            <span class="album-title">AlbumTitle</span>
+        <button class="single-item song-button" name="track_id" value="1">
+            <span class="first-line">TitleTrack</span><br/>
+            <span class="second-line">AlbumTitle</span>
         </button>
     </form>
     <form action="Track" method="GET">
-        <button class="song-button" name="track_id" value="1">
-            <span class="track-title">TitleTrack</span><br/>
-            <span class="album-title">AlbumTitle</span>
+        <button class="single-item song-button" name="track_id" value="1">
+            <span class="first-line">TitleTrack</span><br/>
+            <span class="second-line">AlbumTitle</span>
         </button>
     </form>
     <form action="Track" method="GET">
-        <button class="song-button" name="track_id" value="1">
-            <span class="track-title">TitleTrack</span><br/>
-            <span class="album-title">AlbumTitle</span>
+        <button class="single-item song-button" name="track_id" value="1">
+            <span class="first-line">TitleTrack</span><br/>
+            <span class="second-line">AlbumTitle</span>
         </button>
     </form>
 </div>
