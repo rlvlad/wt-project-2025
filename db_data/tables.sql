@@ -14,7 +14,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE user
 (
     user_id  integer     not null auto_increment,
-    nickname varchar(32) not null,
+    nickname varchar(32) not null unique,
     password varchar(64) not null,
     name     varchar(32) not null,
     surname  varchar(32) not null,
