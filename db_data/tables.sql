@@ -72,14 +72,14 @@ CREATE TABLE playlist_tracks
 
 # DATA LOADING FROM CSVs
 # user -> track -> user_tracks -> playlist  -> playlist_tracks
-
+#
 LOAD DATA LOCAL INFILE 'db_data/user.csv'
     INTO TABLE user
     FIELDS TERMINATED BY ','
     ENCLOSED BY ","
     LINES TERMINATED BY '\n'
     IGNORE 1 LINES
-    (@ignore, nickname, password, name, surname)
+    (user_id, nickname, password, name, surname)
 ;
 
 LOAD DATA LOCAL INFILE 'db_data/track.csv'
@@ -88,16 +88,7 @@ LOAD DATA LOCAL INFILE 'db_data/track.csv'
     ENCLOSED BY ","
     LINES TERMINATED BY '\n'
     IGNORE 1 LINES
-    (track_id, title, image_path, album_title, artist, year, genre, song_path, image_checksum, song_checksum)
-;
-
-LOAD DATA LOCAL INFILE 'db_data/user_tracks.csv'
-    INTO TABLE user_tracks
-    FIELDS TERMINATED BY ','
-    ENCLOSED BY ","
-    LINES TERMINATED BY '\n'
-    IGNORE 1 LINES
-    (nickname, track_id)
+    (track_id, user_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path)
 ;
 
 LOAD DATA LOCAL INFILE 'db_data/playlist.csv'
@@ -106,7 +97,8 @@ LOAD DATA LOCAL INFILE 'db_data/playlist.csv'
     ENCLOSED BY ","
     LINES TERMINATED BY '\n'
     IGNORE 1 LINES
-    (playlist_id, playlist_title, creation_date, user_id)
+    (playlist_id, playlist_title, @creation_date, user_id)
+    SET creation_date = STR_TO_DATE(@creation_date, '%Y-%m-%d')
 ;
 
 LOAD DATA LOCAL INFILE 'db_data/playlist_tracks.csv'
