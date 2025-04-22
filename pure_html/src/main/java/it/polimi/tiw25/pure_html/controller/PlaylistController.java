@@ -69,13 +69,16 @@ public class PlaylistController extends HttpServlet {
 
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
+//        int playlistID = Integer.parseInt(req.getParameter("playlist_id"));
         String playlistTitle = req.getParameter("playlist_title");
 
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 
+//        String playlistTitle = null;
         List<Track> playlistTracks = null;
         try {
-            playlistTracks = playlistDAO.getPlaylistTracks(playlistTitle, user);
+//            playlistTitle = playlistDAO.getPlaylistTitle(playlistID);
+            playlistTracks = playlistDAO.getPlaylistTracksByTitle(playlistTitle, user);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
