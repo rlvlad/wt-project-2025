@@ -21,7 +21,16 @@ public class TrackDAO {
      */
     public Track getTrackById(int trackId) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                 SELECT track_id, title, image_path, album_title, artist, year, genre, path
+                 SELECT track_id,
+                        title,
+                        artist,
+                        year,
+                        album_title,
+                        genre,
+                        image_path,
+                        song_path,
+                        song_checksum,
+                        image_checksum
                  FROM track
                  WHERE track_id = ?
                 """);
@@ -50,13 +59,14 @@ public class TrackDAO {
                 INSERT INTO track (user_id, title, artist, year, album_title, genre, image_path, song_path, song_checksum, image_checksum)
                 VALUES (?,?,?,?,?,?,?,?,?,?)
                 """, Statement.RETURN_GENERATED_KEYS);
+
         preparedStatement.setInt(1, user.id());
         preparedStatement.setString(2, track.title());
         preparedStatement.setString(3, track.artist());
         preparedStatement.setInt(4, track.year());
         preparedStatement.setString(5, track.album_title());
         preparedStatement.setString(6, track.genre());
-        preparedStatement.setString(7, track.album_image_path());
+        preparedStatement.setString(7, track.image_path());
         preparedStatement.setString(8, track.song_path());
         preparedStatement.setString(9, track.song_checksum());
         preparedStatement.setString(10, track.image_checksum());

@@ -29,7 +29,7 @@ public class PlaylistDAO {
         List<Playlist> playlists = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                SELECT b.playlist_id, b.playlist_title,b.creation_date
+                SELECT b.playlist_id, b.playlist_title, b.creation_date
                 FROM user a NATURAL JOIN playlist b
                 WHERE a.nickname = ?
                 """);
@@ -39,6 +39,7 @@ public class PlaylistDAO {
 
         while (resultSet.next()) {
             Playlist playlist = new Playlist(
+                    resultSet.getInt("playlist_id"),
                     resultSet.getString("playlist_title"),
                     resultSet.getDate("creation_date"),
                     user
@@ -49,20 +50,63 @@ public class PlaylistDAO {
         return playlists;
     }
 
-    public List<Track> getPlaylistTracks(String playlistTitle, User user) throws SQLException {
+    public List<Track> getPlaylistTracksByTitle(String playlistTitle, User user) throws SQLException {
         List<Track> tracks = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                 SELECT track_id, title, image_path, album_title, artist, year, genre, path
-                 FROM user a
-                     NATURAL JOIN playlist b
-                     NATURAL JOIN playlist_tracks c
-                     NATURAL JOIN track d
-                 WHERE a.nickname = ? AND b.playlist_title = ?
+                 SELECT t.track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path
+                 FROM  playlist a
+                     JOIN playlist_tracks b ON a.playlist_id = b.playlist_id
+                     JOIN track t on b.track_id = t.track_id
+                     JOIN user u on a.user_id = u.user_id
+                 WHERE u.nickname = ? AND a.playlist_title = ?
                 """);
 
         preparedStatement.setString(1, user.nickname());
         preparedStatement.setString(2, playlistTitle);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+//        track_id
+//        user_id
+//        title
+//        album_title
+//        artist
+//        year
+//        genre
+//        song_checksum
+//        image_checksum
+//        song_path
+//        image_path
+
+        while (resultSet.next()) {
+            Track track = new Track(
+                    resultSet.getInt("track_id"),
+                    resultSet.getString("title"),
+                    resultSet.getString("artist"),
+                    resultSet.getInt("year"),
+                    resultSet.getString("album_title"),
+                    resultSet.getString("genre"),
+                    resultSet.getString("image_path"),
+                    resultSet.getString("song_path"),
+                    resultSet.getString("song_checksum"),
+                    resultSet.getString("image_checksum")
+            );
+            tracks.add(track);
+        }
+
+        return tracks;
+    }
+
+    public List<Track> getPlaylistTracksById(int playlistID) throws SQLException {
+        List<Track> tracks = new ArrayList<>();
+
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                 SELECT track_id, title, image_path, album_title, artist, year, genre, song_path
+                 FROM track a NATURAL JOIN playlist_tracks b
+                 WHERE b.playlist_id = ?
+                """);
+
+        preparedStatement.setInt(1, playlistID);
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
@@ -82,6 +126,23 @@ public class PlaylistDAO {
         }
 
         return tracks;
+    }
+
+    public String getPlaylistTitle(int playlistID) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                        SELECT playlist_title
+                        FROM playlist
+                        WHERE playlist_id = ?
+                """);
+
+        preparedStatement.setInt(1, playlistID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            return resultSet.getString("title");
+        } else {
+            return null;
+        }
     }
 
     /**
