@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:value="${track.title}">Track Title</title>
+    <title th:text="${track.title}">Track Title</title>
     <link rel="stylesheet" href="CSS/colors.css" th:href="@{/CSS/colors.css}">
     <link rel="stylesheet" href="CSS/components.css" th:href="@{/CSS/components.css}">
     <link rel="stylesheet" href="CSS/player_page.css" th:href="@{/CSS/player_page.css}">
@@ -25,7 +25,7 @@
     <div class="track-metadata" th:text="${track.album_title}">Album title</div>
     <hr>
     <audio controls>
-        <source th:src="${track.song_path}">
+        <source th:src="${track.song_path}" type="audio/mpeg">
     </audio>
 </div>
 <!--<div class="nav-bar">-->
