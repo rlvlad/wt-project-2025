@@ -73,7 +73,6 @@ public class UploadTrack extends HttpServlet {
         String album = req.getParameter("album");
         int year = Integer.parseInt(req.getParameter("year"));
         String genre = req.getParameter("genre");
-        System.out.println(year);
         track = new Track(0, title, artist, year, album, genre, imagePath, songPath, songHash, imageHash);
 
         // Try to add track
