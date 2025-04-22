@@ -23,4 +23,9 @@
     <welcome-file-list>
         <welcome-file>Login</welcome-file>
     </welcome-file-list>
+    <context-param>
+        <param-name>outputPath</param-name>
+        <param-value>.cache/playlist-manager/</param-value>
+    </context-param>
+
 </web-app>

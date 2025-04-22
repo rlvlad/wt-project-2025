@@ -4,7 +4,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS user CASCADE;
 DROP TABLE IF EXISTS track CASCADE;
-DROP TABLE IF EXISTS user_tracks CASCADE;
 DROP TABLE IF EXISTS playlist CASCADE;
 DROP TABLE IF EXISTS playlist_tracks CASCADE;
 
@@ -14,55 +13,47 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE user
 (
-    nickname varchar(32) unique not null,
-    password varchar(64)        not null,
-    name     varchar(32)        not null,
-    surname  varchar(32)        not null,
+    user_id  integer     not null auto_increment,
+    nickname varchar(32) not null,
+    password varchar(64) not null,
+    name     varchar(32) not null,
+    surname  varchar(32) not null,
 
-    primary key (nickname)
+    primary key (user_id)
 );
 
 CREATE TABLE track
 (
-    track_id       integer      not null,
-    title          varchar(16)  not null,
-    image_path     varchar(128) not null,
-    album_title    varchar(16)  not null,
-    artist         varchar(16)  not null,
-    year           year         not null,
-    genre          varchar(16),
-    path           varchar(16),
-    image_checksum char(64)     not null default '0000000000000000000000000000000000000000000000000000000000000000' comment "SHA256 checksum",
-    path_checksum  char(64)     not null default '0000000000000000000000000000000000000000000000000000000000000000' comment "SHA256 checksum",
+    track_id       integer       not null auto_increment,
+    user_id        integer       not null,
+    title          varchar(128)  not null,
+    album_title    varchar(128)  not null,
+    artist         varchar(64)   not null,
+    year           year          not null,
+    genre          varchar(64),
+    song_checksum  char(64)      not null default '0000000000000000000000000000000000000000000000000000000000000000' comment "SHA256 checksum",
+    image_checksum char(64)      not null default '0000000000000000000000000000000000000000000000000000000000000000' comment "SHA256 checksum",
+    song_path      varchar(1024) not null,
+    image_path     varchar(1024) not null,
 
     primary key (track_id),
-    unique (image_checksum),
-    unique (path_checksum)
-#     check (genre in ('classical', 'rock', 'edm'))
-);
-
-CREATE TABLE user_tracks
-(
-    nickname varchar(32) not null,
-    track_id integer     not null,
-
-    primary key (nickname, track_id),
-    foreign key (nickname) references user (nickname)
+    foreign key (user_id) references user (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    foreign key (track_id) references track (track_id)
-        ON DELETE CASCADE ON UPDATE CASCADE
+    unique (user_id, song_checksum),
+    unique (user_id, title, artist)
+    #check (genre in ('Classical', 'Rock', 'Edm', 'Pop', 'Hip-hop', 'R&B', 'Country', 'Jazz', 'Blues', 'Metal', 'Folk', 'Soul', 'Funk', 'Electronic', 'Indie', 'Reggae', 'Disco'))
 );
 
 CREATE TABLE playlist
 (
     playlist_id    integer     not null,
-    playlist_title varchar(16) not null,
+    playlist_title varchar(32) not null,
     creation_date  date        not null,
-    nickname       varchar(32) not null,
+    user_id        integer     not null,
 
     primary key (playlist_id),
-    unique (playlist_title, nickname),
-    foreign key (nickname) references user (nickname)
+    unique (playlist_title, user_id),
+    foreign key (user_id) references user (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -97,7 +88,7 @@ LOAD DATA LOCAL INFILE 'db_data/track.csv'
     ENCLOSED BY ","
     LINES TERMINATED BY '\n'
     IGNORE 1 LINES
-    (track_id, title, image_path, album_title, artist, year, genre, path, image_checksum, path_checksum)
+    (track_id, title, image_path, album_title, artist, year, genre, song_path, image_checksum, song_checksum)
 ;
 
 LOAD DATA LOCAL INFILE 'db_data/user_tracks.csv'
@@ -115,7 +106,7 @@ LOAD DATA LOCAL INFILE 'db_data/playlist.csv'
     ENCLOSED BY ","
     LINES TERMINATED BY '\n'
     IGNORE 1 LINES
-    (playlist_id, playlist_title, creation_date, nickname)
+    (playlist_id, playlist_title, creation_date, user_id)
 ;
 
 LOAD DATA LOCAL INFILE 'db_data/playlist_tracks.csv'

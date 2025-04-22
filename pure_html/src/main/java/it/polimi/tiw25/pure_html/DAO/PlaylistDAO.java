@@ -70,11 +70,13 @@ public class PlaylistDAO {
                     resultSet.getInt("track_id"),
                     resultSet.getString("title"),
                     resultSet.getString("artist"),
-                    resultSet.getDate("year"),
+                    resultSet.getInt("year"),
                     resultSet.getString("album_title"),
                     resultSet.getString("genre"),
                     resultSet.getString("image_path"),
-                    resultSet.getString("path")
+                    resultSet.getString("song_path"),
+                    resultSet.getString("path_hash"),
+                    resultSet.getString("image_hash")
             );
             tracks.add(track);
         }

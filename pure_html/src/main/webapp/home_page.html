@@ -53,5 +53,23 @@
     <div class="spacer"></div>
     <button class="button" th:text="#{home_page.nextPlaylists}">Next Playlists</button>
 </div>
+<form action="UploadTrack" method="post" enctype="multipart/form-data">
+    <input type="text" name="title" placeholder="Title">
+    <br>
+    <input type="text" name="artist" placeholder="Artist">
+    <br>
+    <input type="text" name="album" placeholder="Album title">
+    <br>
+    <input type="number" min="1901" th:max="${#dates.year(#dates.createNow())}" name="year" placeholder="Year">
+    <br>
+    <input type="text" name="genre" placeholder="Genre">
+    <br>
+    <label for="musicTrack">Track:</label>
+    <input type="file" name="musicTrack" id="musicTrack" placeholder="Track">
+    <br>
+    <label for="image">Album image:</label>
+    <input type="file" name="image" id="image" placeholder="Image">
+    <input type="submit"/>
+</form>
 </body>
 </html>

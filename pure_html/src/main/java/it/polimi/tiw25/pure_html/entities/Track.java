@@ -7,10 +7,12 @@ public record Track(
         int id,
         String title,
         String artist,
-        java.sql.Date albumReleaseDate,
+        int year,
         String album_title,
         String genre,
         String album_image_path,
-        String path
+        String song_path,
+        String song_checksum,
+        String image_checksum
 ) {
 }

@@ -20,8 +20,8 @@ public class UserDAO {
      * @param nickname nickname to check
      * @param password password to check
      * @return If the user exists, a User; else null
-     * @see User
      * @throws SQLException
+     * @see User
      */
     public User checkUser(String nickname, String password) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(Queries.CHECK_USER);
@@ -35,6 +35,7 @@ public class UserDAO {
             // the user exists
             result.next();
             return new User(
+                    result.getInt("user_id"),
                     result.getString("nickname"),
                     result.getString("password"),
                     result.getString("name"),

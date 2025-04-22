@@ -82,7 +82,7 @@ public class PlaylistController extends HttpServlet {
 
         ctx.setVariable("playlistTitle", playlistTitle);
         ctx.setVariable("playlistTracks", playlistTracks);
-//        String path = getServletContext().getContextPath() + "/playlist_page";
+//        String song_path = getServletContext().getContextPath() + "/playlist_page";
         String path = "playlist_page";
         templateEngine.process(path, ctx, resp.getWriter());
     }
