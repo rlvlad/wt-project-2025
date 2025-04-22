@@ -10,7 +10,7 @@ public record Track(
         int year,
         String album_title,
         String genre,
-        String album_image_path,
+        String image_path,
         String song_path,
         String song_checksum,
         String image_checksum
