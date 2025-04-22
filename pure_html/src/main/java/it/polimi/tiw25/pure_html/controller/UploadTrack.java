@@ -79,6 +79,7 @@ public class UploadTrack extends HttpServlet {
         TrackDAO trackDAO = new TrackDAO(connection);
         try {
             trackDAO.addTrack(track, user);
+            resp.sendRedirect(getServletContext().getContextPath() + "/HomePage");
         } catch (SQLIntegrityConstraintViolationException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Duplicate track");
             // Delete newly created files if addTrack fails
