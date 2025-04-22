@@ -76,9 +76,9 @@ public class UploadTrack extends HttpServlet {
         track = new Track(0, title, artist, year, album, genre, imagePath, songPath, songHash, imageHash);
 
         // Try to add track
-        TrackDAO trackDAO = new TrackDAO(connection, user);
+        TrackDAO trackDAO = new TrackDAO(connection);
         try {
-            trackDAO.addTrack(track);
+            trackDAO.addTrack(track, user);
         } catch (SQLIntegrityConstraintViolationException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Duplicate track");
             // Delete newly created files if addTrack fails
@@ -111,7 +111,7 @@ public class UploadTrack extends HttpServlet {
             return null;
         }
 
-        TrackDAO trackDAO = new TrackDAO(connection, user);
+        TrackDAO trackDAO = new TrackDAO(connection);
         String alreadyPresentPath = null;
 
         // Save item hash and try to find existing DB entries with the same hash; if present, their file path is returned

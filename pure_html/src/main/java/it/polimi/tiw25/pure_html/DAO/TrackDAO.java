@@ -7,10 +7,8 @@ import java.sql.*;
 
 public class TrackDAO {
     private Connection connection;
-    private User user;
 
-    public TrackDAO(Connection connection, User user) {
-        this.user = user;
+    public TrackDAO(Connection connection) {
         this.connection = connection;
     }
 
@@ -47,7 +45,7 @@ public class TrackDAO {
         );
     }
 
-    public Integer addTrack(Track track) throws SQLException {
+    public Integer addTrack(Track track, User user) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("""
                 INSERT INTO track (user_id, title, artist, year, album_title, genre, image_path, song_path, song_checksum, image_checksum)
                 VALUES (?,?,?,?,?,?,?,?,?,?)

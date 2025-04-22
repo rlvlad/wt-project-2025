@@ -69,7 +69,7 @@ public class TrackController extends HttpServlet {
 //        User user = (User) s.getAttribute("user");
         String trackId = req.getParameter("track_id");
 
-        TrackDAO trackDAO = new TrackDAO(connection, user);
+        TrackDAO trackDAO = new TrackDAO(connection);
 
         Track track = null;
         try {

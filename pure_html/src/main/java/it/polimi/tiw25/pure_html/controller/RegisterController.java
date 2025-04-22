@@ -76,6 +76,7 @@ public class RegisterController extends HttpServlet {
 
         UserDAO userDAO = new UserDAO(connection);
         User user = new User(
+                0,
                 nickname,
                 password,
                 name,
