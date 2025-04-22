@@ -65,8 +65,8 @@ public class TrackController extends HttpServlet {
         JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
         WebContext ctx = new WebContext(webApplication.buildExchange(req, resp), req.getLocale());
 
-        HttpSession s = req.getSession();
-        User user = (User) s.getAttribute("user");
+//        HttpSession s = req.getSession();
+//        User user = (User) s.getAttribute("user");
         String trackId = req.getParameter("track_id");
 
         TrackDAO trackDAO = new TrackDAO(connection, user);

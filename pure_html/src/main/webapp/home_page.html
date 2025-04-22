@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Home page</title>
+    <link rel="stylesheet" href="CSS/colors.css" th:href="@{/CSS/colors.css}">
+    <link rel="stylesheet" href="CSS/components.css" th:href="@{/CSS/components.css}">
     <link rel="stylesheet" href="CSS/home_page.css" th:href="@{/CSS/home_page.css}">
     <link rel="icon" type="image/x-icon" href="img/icon.ico" th:href="@{/img/icon.ico}">
 </head>
 <body>
 <div class="nav-bar">
-    <div class="label-title" th:text="#{home_page.allPlaylists}">All Playlists</div>
+    <div class="main-label" th:text="#{home_page.allPlaylists}">All Playlists</div>
     <div class="spacer"></div>
     <button class="button" th:text="#{home_page.addPlaylist}">Add Playlist</button>
     <button class="button" th:text="#{home_page.removePlaylist}">Remove Playlist</button>
@@ -18,29 +20,29 @@
         <button type="submit" class="button logout" th:text="#{home_page.logout}">Logout</button>
     </a>
 </div>
-<div class="playlists" th:remove="all-but-first" th:each="playlist : ${playlists}">
+<div class="items-container" th:remove="all-but-first" th:each="playlist : ${playlists}">
     <!-- Redirects to corresponding playlist page name -->
     <!-- No more than 5 per row -->
     <form action="Playlist" method="GET">
-        <input class="playlist playlist-title" type="submit" value="PlaylistTitle" th:value="${playlist.title}"
+        <input class="single-item first-line playlist-title" type="submit" value="PlaylistTitle" th:value="${playlist.title}"
                name="playlist_title">
     </form>
-    <button class="playlist playlist-title" type="submit">
+    <button class="single-item first-line playlist-title" type="submit">
         PlaylistTitle
     </button>
-    <button class="playlist playlist-title" type="submit">
+    <button class="single-item first-line playlist-title" type="submit">
         PlaylistTitle
     </button>
-    <button class="playlist playlist-title" type="submit">
+    <button class="single-item first-line playlist-title" type="submit">
         PlaylistTitle
     </button>
-    <button class="playlist playlist-title" type="submit">
+    <button class="single-item first-line playlist-title" type="submit">
         PlaylistTitle
     </button>
-    <button class="playlist playlist-title" type="submit">
+    <button class="single-item first-line playlist-title" type="submit">
         PlaylistTitle
     </button>
-    <button class="playlist playlist-title" type="submit">
+    <button class="single-item first-line playlist-title" type="submit">
         PlaylistTitle
     </button>
 </div>

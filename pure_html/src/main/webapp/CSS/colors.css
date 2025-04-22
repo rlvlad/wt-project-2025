@@ -1,0 +1,159 @@
+/* SOLARIZED LIGHT */
+/*:root {*/
+/*    --default-background: #fdf6e3;*/
+/*    --lighter-background: #eee8d5;*/
+/*    --selection-background: #93a1a1;*/
+/*    --comments: #839496;*/
+/*    --dark-foreground: #657b83;*/
+/*    --default-foreground: #586e75;*/
+/*    --light-foreground: #073642;*/
+/*    --light-background: #002b36;*/
+/*    --variables: #dc322f;*/
+/*    --data-types: #cb4b16;*/
+/*    --support-types: #b58900;*/
+/*    --string: #859900;*/
+/*    --support: #2aa198;*/
+/*    --functions: #268bd2;*/
+/*    --keywords: #6c71c4;*/
+/*    --deprecated: #d33682;*/
+/*}*/
+
+/* ROSE PINE DAWN */
+/*:root {*/
+/*    --default-background: #faf4ed;*/
+/*    --lighter-background: #fffaf3;*/
+/*    --selection-background: #f2e9de;*/
+/*    --comments: #9893a5;*/
+/*    --dark-foreground: #797593;*/
+/*    --default-foreground: #575279;*/
+/*    --light-foreground: #575279;*/
+/*    --light-background: #cecacd;*/
+/*    --variables: #b4637a;*/
+/*    --data-types: #ea9d34;*/
+/*    --support-types: #d7827e;*/
+/*    --string: #286983;*/
+/*    --support: #56949f;*/
+/*    --functions: #907aa9;*/
+/*    --keywords: #ea9d34;*/
+/*    --deprecated: #cecacd;*/
+/*}*/
+
+/* GRUVBOX DARK HARD */
+:root {
+    --default-background: #202020;
+    --lighter-background: #2a2827;
+    --selection-background: #504945;
+    --comments: #5a524c;
+    --dark-foreground: #bdae93;
+    --default-foreground: #ddc7a1;
+    --light-foreground: #ebdbb2;
+    --light-background: #fbf1c7;
+    --variables: #ea6962;
+    --data-types: #e78a4e;
+    --support-types: #d8a657;
+    --string: #a9b665;
+    --support: #89b482;
+    --functions: #7daea3;
+    --keywords: #d3869b;
+    --deprecated: #bd6f3e;
+}
+
+/* CAROLINE */
+/*:root {*/
+/*    --default-background: #1c1213;*/
+/*    --lighter-background: #3a2425;*/
+/*    --selection-background: #563837;*/
+/*    --comments: #6d4745;*/
+/*    --dark-foreground: #8b5d57;*/
+/*    --default-foreground: #a87569;*/
+/*    --light-foreground: #c58d7b;*/
+/*    --light-background: #e3a68c;*/
+/*    --variables: #c24f57;*/
+/*    --data-types: #a63650;*/
+/*    --support-types: #f28171;*/
+/*    --string: #806c61;*/
+/*    --support: #6b6566;*/
+/*    --functions: #684c59;*/
+/*    --keywords: #a63650;*/
+/*    --deprecated: #893f45;*/
+/*}*/
+
+/* TOKYO NIGHT */
+/*:root {*/
+/*    --default-background: #1A1B26;*/
+/*    --lighter-background: #16161E;*/
+/*    --selection-background: #2F3549;*/
+/*    --comments: #444B6A;*/
+/*    --dark-foreground: #787C99;*/
+/*    --default-foreground: #A9B1D6;*/
+/*    --light-foreground: #CBCCD1;*/
+/*    --light-background: #D5D6DB;*/
+/*    --variables: #C0CAF5;*/
+/*    --data-types: #A9B1D6;*/
+/*    --support-types: #0DB9D7;*/
+/*    --string: #9ECE6A;*/
+/*    --support: #B4F9F8;*/
+/*    --functions: #2AC3DE;*/
+/*    --keywords: #BB9AF7;*/
+/*    --deprecated: #F7768E;*/
+/*}*/
+
+/* ERIS */
+/*:root {*/
+/*    --default-background: #0a0920;*/
+/*    --lighter-background: #13133a;*/
+/*    --selection-background: #23255a;*/
+/*    --comments: #333773;*/
+/*    --dark-foreground: #4a5293;*/
+/*    --default-foreground: #606bac;*/
+/*    --light-foreground: #7986c5;*/
+/*    --light-background: #9aaae5;*/
+/*    --variables: #f768a3;*/
+/*    --data-types: #f768a3;*/
+/*    --support-types: #faaea2;*/
+/*    --string: #faaea2;*/
+/*    --support: #258fc4;*/
+/*    --functions: #258fc4;*/
+/*    --keywords: #f768a3;*/
+/*    --deprecated: #f768a3;*/
+/*}*/
+
+/* CLASSIC LIGHT */
+/*:root {*/
+/*    --default-background: #F5F5F5;*/
+/*    --lighter-background: #E0E0E0;*/
+/*    --selection-background: #D0D0D0;*/
+/*    --comments: #B0B0B0;*/
+/*    --dark-foreground: #505050;*/
+/*    --default-foreground: #303030;*/
+/*    --light-foreground: #202020;*/
+/*    --light-background: #151515;*/
+/*    --variables: #AC4142;*/
+/*    --data-types: #D28445;*/
+/*    --support-types: #F4BF75;*/
+/*    --string: #90A959;*/
+/*    --support: #75B5AA;*/
+/*    --functions: #6A9FB5;*/
+/*    --keywords: #AA759F;*/
+/*    --deprecated: #8F5536;*/
+/*}*/
+
+/* SAKURA */
+/*:root {*/
+/*    --default-background: #feedf3;*/
+/*    --lighter-background: #f8e2e7;*/
+/*    --selection-background: #e0ccd1;*/
+/*    --comments: #755f64;*/
+/*    --dark-foreground: #665055;*/
+/*    --default-foreground: #564448;*/
+/*    --light-foreground: #42383a;*/
+/*    --light-background: #33292b;*/
+/*    --variables: #df2d52;*/
+/*    --data-types: #f6661e;*/
+/*    --support-types: #c29461;*/
+/*    --string: #2e916d;*/
+/*    --support: #1d8991;*/
+/*    --functions: #006e93;*/
+/*    --keywords: #5e2180;*/
+/*    --deprecated: #ba0d35;*/
+/*}*/
