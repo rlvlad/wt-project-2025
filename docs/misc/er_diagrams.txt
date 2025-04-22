@@ -1,0 +1,72 @@
+MERMAID
+
+=======
+
+erDiagram
+    User {
+        int user_id
+        string nickname
+        string password
+        string name
+        string surname
+    }
+
+    Track {
+        int track_id
+        string title
+        string artist
+        string album
+        int year
+    }
+
+    Playlist {
+        int playlist_id
+        string playlist_title
+    }
+
+    User o{--|| Track : uploads
+    User o{--|| Playlist : creates
+    Playlist |{--o{ Track : contained
+
+=====
+    
+PLANTUML
+
+//www.plantuml.com/plantuml/dpng/VP7FRi8m38VlUGgBoqvv1nvXX-qycSQZ5laJsUvG1Rpx8AEHLX2zrFxYvFT5sQgXs9IYUuEH0u6D15gBBVt0CaHornP_2WUeKdQHaiAHRGJC-qW11Yb7XMyYSthWN54mGUHCDbU28ZOMvoWRsmoRJoNP02hS2ZWvk7-S3QOh-kBGcVUzL1FEUyWy738cMlEAgiSYOSsVpUea7LzS-oro7uB3eTcrQgLdD_RQpzZYGo2AiTe3ZRif_Jj_9fHdLkyHvyXgJMnfLcxrZb_hzQd5isUrrxWKxy_dlxklQGzk2ztYSlQ-dEvRjfJ3bE8l
+======
+
+@startuml
+' hide the spot
+' hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "User" as User {
+        int user_id
+        --
+        string nickname
+        string password
+        string name
+        string surname
+    }
+
+    entity "Track" as Track {
+        int track_id
+        --
+        string title
+        string artist
+        string album
+        int year
+    }
+
+    entity "Playlist" as Playlist {
+        int playlist_id
+        --
+        string playlist_title
+    }
+
+    User }o--|| Track
+    User }o--|| Playlist
+    Playlist }|--o{ Track
+@enduml
