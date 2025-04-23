@@ -15,7 +15,9 @@
     <button class="button" th:text="#{home_page.addPlaylist}">Add Playlist</button>
     <button class="button" th:text="#{home_page.removePlaylist}">Remove Playlist</button>
     <button class="button" th:text="#{home_page.allSongs}">View All Songs</button>
-    <button class="button" th:text="#{home_page.addTrack}">Add Track</button>
+    <a href="#open-modal">
+        <button class="button" th:text="#{home_page.addTrack}">Add Track</button>
+    </a>
     <a th:href="@{/Logout}">
         <button type="submit" class="button logout" th:text="#{home_page.logout}">Logout</button>
     </a>
@@ -24,7 +26,8 @@
     <!-- Redirects to corresponding playlist page name -->
     <!-- No more than 5 per row -->
     <form action="Playlist" method="GET">
-        <input class="single-item first-line playlist-title" type="submit" value="PlaylistTitle" th:value="${playlist.title}"
+        <input class="single-item first-line playlist-title" type="submit" value="PlaylistTitle"
+               th:value="${playlist.title}"
                name="playlist_title">
     </form>
     <button class="single-item first-line playlist-title" type="submit">
@@ -55,23 +58,34 @@
     <div class="spacer"></div>
     <button class="button" th:text="#{home_page.nextPlaylists}">Next Playlists</button>
 </div>
-<form action="UploadTrack" method="post" enctype="multipart/form-data">
-    <input type="text" name="title" placeholder="Title">
-    <br>
-    <input type="text" name="artist" placeholder="Artist">
-    <br>
-    <input type="text" name="album" placeholder="Album title">
-    <br>
-    <input type="number" min="1901" th:max="${#dates.year(#dates.createNow())}" name="year" placeholder="Year">
-    <br>
-    <input type="text" name="genre" placeholder="Genre">
-    <br>
-    <label for="musicTrack">Track:</label>
-    <input type="file" name="musicTrack" id="musicTrack" placeholder="Track">
-    <br>
-    <label for="image">Album image:</label>
-    <input type="file" name="image" id="image" placeholder="Image">
-    <input type="submit"/>
-</form>
+<div id="open-modal" class="modal-window">
+    <div>
+        <div class="nav-bar">
+            <div class="modal-title" th:text="#{home_page.addNewTrack}">Add Track</div>
+            <div class="spacer"></div>
+            <a href="#" title="Close" class="modal-close" th:text="#{home_page.close}">Close</a>
+        </div>
+        <form action="UploadTrack" method="post" enctype="multipart/form-data">
+            <input type="text" class="text-field" name="title" placeholder="Title" th:placeholder="#{home_page.title}">
+            <br>
+            <input type="text" class="text-field" name="artist" placeholder="Artist" th:placeholder="#{home_page.artist}">
+            <br>
+            <input type="text" class="text-field" name="album" placeholder="Album title" th:placeholder="#{home_page.albumTitle}">
+            <br>
+            <input type="number" class="text-field" min="1901" th:max="${#dates.year(#dates.createNow())}" name="year" placeholder="Year" th:placeholder="#{home_page.year}">
+            <br>
+            <input type="text" class="text-field" name="genre" placeholder="Genre" th:placeholder="#{home_page.genre}">
+            <br>
+            <label for="musicTrack" th:text="#{home_page.track} + ':'" >Track:</label>
+            <input type="file"  name="musicTrack" id="musicTrack" placeholder="Track" th:placeholder="#{home_page.track}">
+            <br>
+            <label for="image" th:text="#{home_page.albumImage} + ':'">Album image:</label>
+            <input type="file" name="image" id="image" placeholder="Image" th:placeholder="#{home_page.albumImage}">
+            <div class="nav-bar">
+                <input type="submit" class="button" value="Add Track" th:value="#{home_page.addNewTrack}"/>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

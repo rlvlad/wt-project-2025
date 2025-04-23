@@ -135,3 +135,52 @@ hr {
     font-weight: bold;
     color: var(--light-background)
 }
+
+/* MODALS */
+
+.modal-window {
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.25);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 999; /* on top of everything */
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.5s;
+}
+
+.modal-window:target {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-window > div {
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1em;
+    background: var(--light-background);
+    border: 2px solid var(--light-foreground);
+}
+
+.modal-close {
+    color: var(--default-background);
+    line-height: 50px;
+    font-size: 80%;
+    font-weight: bold;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    width: 70px;
+    text-decoration: none;
+}
+
+.modal-close:hover {
+    color: black;
+}
