@@ -59,7 +59,7 @@ body {
 /* ITEM CONTAINER AND ITEMS */
 
 .nav-bar {
-    width: calc(100%);
+    width: 100%;
     margin: 0;
     display: flex;
     flex-wrap: wrap;
@@ -71,7 +71,7 @@ body {
 }
 
 .items-container {
-    width: calc(100%);
+    width: 100%;
     /*margin: 0 2rem 0 2rem;*/
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -134,4 +134,55 @@ hr {
     font-size: 3rem;
     font-weight: bold;
     color: var(--light-background)
+}
+
+/* MODALS */
+
+.modal-window {
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.25);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 999; /* on top of everything */
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.5s;
+}
+
+.modal-window:target {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-window > div {
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1em;
+    background: var(--lighter-background);
+    border: 2px solid var(--variables);
+}
+
+.modal-close {
+    color: var(--lighter-background);
+    background-color: var(--variables);
+    border-radius: 5px;
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    cursor: pointer;
+    padding: 0.2rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+.modal-close:hover {
+    color: black;
 }
