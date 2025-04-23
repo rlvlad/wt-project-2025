@@ -7,6 +7,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+/**
+ * If there is no User logged, then redirect to the Login page.
+ */
 public class InvalidUserChecker implements Filter {
 
     @Override
