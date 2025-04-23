@@ -28,6 +28,18 @@
         <param-value>.cache/playlist-manager/</param-value>
     </context-param>
     <filter>
+        <filter-name>InvalidUserChecker</filter-name>
+        <filter-class>it.polimi.tiw25.pure_html.filters.InvalidUserChecker</filter-class>
+    </filter>
+    <filter-mapping>
+        <!-- Class to invoke -->
+        <filter-name>InvalidUserChecker</filter-name>
+        <!-- Servlets on which to invoke the check -->
+        <url-pattern>/HomePage</url-pattern>
+        <url-pattern>/Playlist</url-pattern>
+        <url-pattern>/Track</url-pattern>
+    </filter-mapping>
+    <filter>
         <filter-name>UserChecker</filter-name>
         <filter-class>it.polimi.tiw25.pure_html.filters.UserChecker</filter-class>
     </filter>
@@ -35,8 +47,7 @@
         <!-- Class to invoke -->
         <filter-name>UserChecker</filter-name>
         <!-- Servlets on which to invoke the check -->
-        <url-pattern>/HomePage</url-pattern>
-        <url-pattern>/Playlist</url-pattern>
-        <url-pattern>/Track</url-pattern>
+        <url-pattern>/Login</url-pattern>
+        <url-pattern>/Register</url-pattern>
     </filter-mapping>
 </web-app>
