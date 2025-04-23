@@ -8,9 +8,10 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * If the user is logged, then redirect to the HomePage.
+ * If there is no User logged, then redirect to the Login page.
  */
-public class UserChecker implements Filter {
+public class InvalidUserChecker implements Filter {
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
@@ -20,11 +21,11 @@ public class UserChecker implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
-        String homepage = req.getServletContext().getContextPath() + "/HomePage";
+        String login = req.getServletContext().getContextPath() + "/Login";
 
         HttpSession s = req.getSession();
-        if (s.getAttribute("user") != null) {
-            res.sendRedirect(homepage);
+        if (s.isNew() || s.getAttribute("user") == null) {
+            res.sendRedirect(login);
             return;
         }
 
