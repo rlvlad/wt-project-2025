@@ -18,11 +18,11 @@ public class UserChecker implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
-        String login = req.getServletContext().getContextPath() + "/Login";
+        String homepage = req.getServletContext().getContextPath() + "/HomePage";
 
         HttpSession s = req.getSession();
-        if (s.isNew() || s.getAttribute("user") == null) {
-            res.sendRedirect(login);
+        if (s.getAttribute("user") != null) {
+            res.sendRedirect(homepage);
             return;
         }
 
