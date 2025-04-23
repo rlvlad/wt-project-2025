@@ -39,24 +39,24 @@
 /*}*/
 
 /* GRUVBOX DARK HARD */
-:root {
-    --default-background: #202020;
-    --lighter-background: #2a2827;
-    --selection-background: #504945;
-    --comments: #5a524c;
-    --dark-foreground: #bdae93;
-    --default-foreground: #ddc7a1;
-    --light-foreground: #ebdbb2;
-    --light-background: #fbf1c7;
-    --variables: #ea6962;
-    --data-types: #e78a4e;
-    --support-types: #d8a657;
-    --string: #a9b665;
-    --support: #89b482;
-    --functions: #7daea3;
-    --keywords: #d3869b;
-    --deprecated: #bd6f3e;
-}
+/*:root {*/
+/*    --default-background: #202020;*/
+/*    --lighter-background: #2a2827;*/
+/*    --selection-background: #504945;*/
+/*    --comments: #5a524c;*/
+/*    --dark-foreground: #bdae93;*/
+/*    --default-foreground: #ddc7a1;*/
+/*    --light-foreground: #ebdbb2;*/
+/*    --light-background: #fbf1c7;*/
+/*    --variables: #ea6962;*/
+/*    --data-types: #e78a4e;*/
+/*    --support-types: #d8a657;*/
+/*    --string: #a9b665;*/
+/*    --support: #89b482;*/
+/*    --functions: #7daea3;*/
+/*    --keywords: #d3869b;*/
+/*    --deprecated: #bd6f3e;*/
+/*}*/
 
 /* CAROLINE */
 /*:root {*/
@@ -119,24 +119,24 @@
 /*}*/
 
 /* CLASSIC LIGHT */
-/*:root {*/
-/*    --default-background: #F5F5F5;*/
-/*    --lighter-background: #E0E0E0;*/
-/*    --selection-background: #D0D0D0;*/
-/*    --comments: #B0B0B0;*/
-/*    --dark-foreground: #505050;*/
-/*    --default-foreground: #303030;*/
-/*    --light-foreground: #202020;*/
-/*    --light-background: #151515;*/
-/*    --variables: #AC4142;*/
-/*    --data-types: #D28445;*/
-/*    --support-types: #F4BF75;*/
-/*    --string: #90A959;*/
-/*    --support: #75B5AA;*/
-/*    --functions: #6A9FB5;*/
-/*    --keywords: #AA759F;*/
-/*    --deprecated: #8F5536;*/
-/*}*/
+:root {
+    --default-background: #F5F5F5;
+    --lighter-background: #E0E0E0;
+    --selection-background: #D0D0D0;
+    --comments: #B0B0B0;
+    --dark-foreground: #505050;
+    --default-foreground: #303030;
+    --light-foreground: #202020;
+    --light-background: #151515;
+    --variables: #AC4142;
+    --data-types: #D28445;
+    --support-types: #F4BF75;
+    --string: #90A959;
+    --support: #75B5AA;
+    --functions: #6A9FB5;
+    --keywords: #AA759F;
+    --deprecated: #8F5536;
+}
 
 /* SAKURA */
 /*:root {*/
