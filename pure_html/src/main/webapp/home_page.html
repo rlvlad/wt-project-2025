@@ -63,7 +63,7 @@
         <div class="nav-bar">
             <div class="modal-title" th:text="#{home_page.addNewTrack}">Add Track</div>
             <div class="spacer"></div>
-            <a href="#" title="Close" class="modal-close" th:text="#{home_page.close}">Close</a>
+            <a href="#" title="Close" th:title="#{home_page.close}" class="modal-close" th:text="#{home_page.close}">Close</a>
         </div>
         <form action="UploadTrack" method="post" enctype="multipart/form-data">
             <input type="text" class="text-field" name="title" placeholder="Title" th:placeholder="#{home_page.title}">
