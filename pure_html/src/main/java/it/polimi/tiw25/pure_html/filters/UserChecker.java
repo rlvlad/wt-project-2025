@@ -21,8 +21,9 @@ public class UserChecker implements Filter {
         String login = req.getServletContext().getContextPath() + "/Login";
 
         HttpSession s = req.getSession();
-        if (s.getAttribute("user") == null) {
+        if (s.isNew() || s.getAttribute("user") == null) {
             res.sendRedirect(login);
+            return;
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
