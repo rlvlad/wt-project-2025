@@ -4,10 +4,7 @@ import it.polimi.tiw25.pure_html.entities.Playlist;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,11 +146,21 @@ public class PlaylistDAO {
      * Create a new Playlist for a given User.
      *
      * @param playlist Playlist to create
-     * @param user User to add the Playlist
      * @throws SQLException
      */
-    public void createPlaylist(Playlist playlist, User user) throws SQLException {
+    public Integer createPlaylist(Playlist playlist) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                INSERT INTO playlist (playlist_title, user_id) VALUES (?,?)
+                """, Statement.RETURN_GENERATED_KEYS);
+        preparedStatement.setString(1, playlist.title());
+        preparedStatement.setInt(2, playlist.user().id());
+        preparedStatement.executeQuery();
+        ResultSet rs = preparedStatement.getGeneratedKeys();
+        if (rs.next())
+            return rs.getInt(1);
+        return null;
     }
+
 
     /**
      * Delete a Playlist. Note this will also delete all associated tracks with that playlist.
@@ -167,13 +174,32 @@ public class PlaylistDAO {
     /**
      * Adds a new Track to the given Playlist.
      *
-     * @param track
-     * @param playlist
+     * @param trackIds
+     * @param playlistId
      * @throws SQLException
      */
-    public void addTrackToPlaylist(Track track, Playlist playlist) throws SQLException {
-
+    public void addTracksToPlaylist(List<Integer> trackIds, Integer playlistId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                INSERT INTO playlist_tracks (playlist_id, track_id) VALUES (?,?)
+                """);
+        preparedStatement.setInt(1, playlistId);
+        connection.setAutoCommit(false);
+        try {
+            for (Integer i : trackIds) {
+                preparedStatement.setInt(2, i);
+                preparedStatement.executeQuery();
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            connection.rollback();
+            throw new SQLIntegrityConstraintViolationException();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw new SQLException();
+        } finally {
+            connection.setAutoCommit(true);
+        }
     }
+
 
     /**
      * Remove a Track from the given Playlist.

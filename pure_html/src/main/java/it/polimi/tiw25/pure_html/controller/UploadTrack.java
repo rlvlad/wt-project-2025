@@ -3,6 +3,7 @@ package it.polimi.tiw25.pure_html.controller;
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
+import jakarta.activation.MimeTypeParseException;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
@@ -12,12 +13,17 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.ServerErrorException;
+import jakarta.ws.rs.core.Response;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.rmi.ServerError;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
@@ -64,8 +70,19 @@ public class UploadTrack extends HttpServlet {
         user = (User) req.getSession().getAttribute("user");
 
         // Initialize track
-        String songPath = processPart(req.getPart("musicTrack"), "audio", resp);
-        String imagePath = processPart(req.getPart("image"), "image", resp);
+        String songPath = null;
+        String imagePath = null;
+        try {
+            songPath = processPart(req.getPart("musicTrack"), "audio");
+            imagePath = processPart(req.getPart("image"), "image");
+        } catch (ClientErrorException e) {
+            resp.sendError(e.getResponse().getStatus(), e.getMessage());
+        } catch (InternalServerErrorException e) {
+            resp.sendError(e.getResponse().getStatus(), e.getMessage());
+        } catch (SQLException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
         if (songPath == null || imagePath == null)
             return;
         String title = req.getParameter("title");
@@ -95,44 +112,35 @@ public class UploadTrack extends HttpServlet {
     /**
      * @param part     item received with the form
      * @param mimeType expected MIME type
-     * @param resp     HTTP response, used for error handling
      * @return String containing the file path of the received item; in case of errors, null is returned
      * @throws IOException
      */
-    private String processPart(Part part, String mimeType, HttpServletResponse resp) throws IOException {
+    private String processPart(Part part, String mimeType) throws IOException, SQLException {
         // Check item size
         if (part == null || part.getSize() <= 0) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing " + mimeType);
-            return null;
+            throw new ClientErrorException("Missing " + mimeType, Response.Status.BAD_REQUEST);
         }
 
         // Check MIME type
         if (!part.getContentType().startsWith(mimeType)) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "File format not permitted for " + mimeType + " type");
-            return null;
+            throw new ClientErrorException("File format not permitted for " + mimeType + " type", HttpServletResponse.SC_BAD_REQUEST);
         }
 
         TrackDAO trackDAO = new TrackDAO(connection);
         String alreadyPresentPath = null;
 
         // Save item hash and try to find existing DB entries with the same hash; if present, their file path is returned
-        try {
-            switch (mimeType) {
-                case "audio":
-                    songHash = getSHA256Hash(part.getInputStream().readAllBytes());
-                    if (songHash != null)
-                        alreadyPresentPath = trackDAO.isTrackFileAlreadyPresent(songHash);
-                    break;
-                case "image":
-                    imageHash = getSHA256Hash(part.getInputStream().readAllBytes());
-                    if (imageHash != null)
-                        alreadyPresentPath = trackDAO.isImageFileAlreadyPresent(imageHash);
-                    break;
-            }
-        } catch (SQLException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            e.printStackTrace();
-            return null;
+        switch (mimeType) {
+            case "audio":
+                songHash = getSHA256Hash(part.getInputStream().readAllBytes());
+                if (songHash != null)
+                    alreadyPresentPath = trackDAO.isTrackFileAlreadyPresent(songHash);
+                break;
+            case "image":
+                imageHash = getSHA256Hash(part.getInputStream().readAllBytes());
+                if (imageHash != null)
+                    alreadyPresentPath = trackDAO.isImageFileAlreadyPresent(imageHash);
+                break;
         }
 
         if (alreadyPresentPath != null)
@@ -146,8 +154,7 @@ public class UploadTrack extends HttpServlet {
         // Try to create the output folder if it doesn't already exist
         if (!folder.exists())
             if (!folder.mkdirs()) {
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while saving file");
-                return null;
+                throw new ServerErrorException("Error while saving file", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
 
         File file = new File(outputPath);
@@ -158,10 +165,7 @@ public class UploadTrack extends HttpServlet {
             Files.copy(part.getInputStream(), file.toPath());
             return outputPath;
         } catch (Exception e) {
-            e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while saving file");
-            e.printStackTrace();
-            return null;
+            throw new ServerErrorException("Error while saving file", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
     }

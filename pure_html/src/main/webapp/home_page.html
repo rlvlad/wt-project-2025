@@ -24,7 +24,8 @@
     <!-- Redirects to corresponding playlist page name -->
     <!-- No more than 5 per row -->
     <form action="Playlist" method="GET">
-        <input class="single-item first-line playlist-title" type="submit" value="PlaylistTitle" th:value="${playlist.title}"
+        <input class="single-item first-line playlist-title" type="submit" value="PlaylistTitle"
+               th:value="${playlist.title}"
                name="playlist_title">
     </form>
     <button class="single-item first-line playlist-title" type="submit">
@@ -71,6 +72,23 @@
     <br>
     <label for="image">Album image:</label>
     <input type="file" name="image" id="image" placeholder="Image">
+    <input type="submit"/>
+</form>
+<br>
+<form action="/CreatePlaylist" th:action="@{/CreatePlaylist}" method="post">
+    <input type="text" name="playlistTitle" placeholder="Title">
+    <br>
+    <label for="trackSelector">Select songs to add:</label>
+    <br>
+    <select id="trackSelector" name="selectedTracks" multiple size="4"
+            th:size="${userTracks.size()>10} ? 10 : ${userTracks.size()}" th:remove="all-but-first">
+        <option value="Track" th:value="${track.id}"
+                th:text="${track.artist + ' - ' + track.title + ' (' + track.year + ')'}"
+                th:each="track: ${userTracks}"> Artist - Title (Year)</option>
+        <option value="Track1">Artist 1 - Title 1 (2001)</option>
+        <option value="Track2">Artist 2 - Title 2 (2002)</option>
+        <option value="Track3">Artist 3 - Title 3 (2003)</option>
+    </select>
     <input type="submit"/>
 </form>
 </body>

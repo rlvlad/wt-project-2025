@@ -4,6 +4,8 @@ import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrackDAO {
     private Connection connection;
@@ -52,6 +54,42 @@ public class TrackDAO {
                 resultSet.getString("song_checksum"),
                 resultSet.getString("image_checksum")
         );
+    }
+
+    public List<Track> getUserTracks(User user) throws SQLException {
+        List<Track> userTracks = new ArrayList<>();
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                 SELECT track_id,
+                        title,
+                        artist,
+                        year,
+                        album_title,
+                        genre,
+                        image_path,
+                        song_path,
+                        song_checksum,
+                        image_checksum
+                 FROM track
+                 WHERE user_id = ?
+                """);
+        preparedStatement.setInt(1, user.id());
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Track track = new Track(
+                    resultSet.getInt("track_id"),
+                    resultSet.getString("title"),
+                    resultSet.getString("artist"),
+                    resultSet.getInt("year"),
+                    resultSet.getString("album_title"),
+                    resultSet.getString("genre"),
+                    resultSet.getString("image_path"),
+                    resultSet.getString("song_path"),
+                    resultSet.getString("song_checksum"),
+                    resultSet.getString("image_checksum")
+            );
+            userTracks.add(track);
+        }
+        return userTracks;
     }
 
     public Integer addTrack(Track track, User user) throws SQLException {

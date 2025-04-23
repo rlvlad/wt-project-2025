@@ -46,9 +46,9 @@ CREATE TABLE track
 
 CREATE TABLE playlist
 (
-    playlist_id    integer     not null,
+    playlist_id    integer     not null auto_increment,
     playlist_title varchar(32) not null,
-    creation_date  date        not null,
+    creation_date  date        not null default CURRENT_DATE,
     user_id        integer     not null,
 
     primary key (playlist_id),

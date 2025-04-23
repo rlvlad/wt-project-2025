@@ -1,7 +1,9 @@
 package it.polimi.tiw25.pure_html.controller;
 
 import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
+import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Playlist;
+import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -76,6 +78,16 @@ public class HomepageController extends HttpServlet {
             throw new RuntimeException(e);
         }
 
+        TrackDAO trackDAO = new TrackDAO(connection);
+        List<Track> userTracks = null;
+        try {
+            userTracks = trackDAO.getUserTracks(user);
+            userTracks.sort(Track::compareTo);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        ctx.setVariable("userTracks", userTracks);
         ctx.setVariable("playlists", playlists);
         templateEngine.process("home_page.html", ctx, res.getWriter());
     }
