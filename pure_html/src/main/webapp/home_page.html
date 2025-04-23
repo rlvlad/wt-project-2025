@@ -102,11 +102,15 @@
         </div>
         </form>
         <form action="/CreatePlaylist" th:action="@{/CreatePlaylist}" method="post">
-            <input type="text" name="playlistTitle" placeholder="Title" th:placeholder="#{home_page.title}">
+            <input type="text" class="text-field" name="playlistTitle" placeholder="Title"
+                   th:placeholder="#{home_page.title}">
+            <br> <br>
+            <label class="label" for="trackSelector"
+                   th:text="${userTracks.size()==0}? #{home_page.noTracksAvailable} : #{home_page.selectTracks}">Select
+                songs to add:</label>
             <br>
-            <label class="label" for="trackSelector" th:text="#{home_page.selectTracks}">Select songs to add:</label>
-            <br>
-            <select id="trackSelector" name="selectedTracks" multiple size="4"
+            <select th:classappend="${userTracks.size()==0}? invisible" id="trackSelector"
+                    name="selectedTracks" multiple size="4"
                     th:size="${userTracks.size()>10} ? 10 : ${userTracks.size()}" th:remove="all-but-first">
                 <option value="Track" th:value="${track.id}"
                         th:text="${track.artist + ' - ' + track.title + ' (' + track.year + ')'}"
@@ -117,7 +121,8 @@
                 <option value="Track3">Artist 3 - Title 3 (2003)</option>
             </select>
             <div class="nav-bar">
-                <input class="button" type="submit" value="Create playlist" th:value="#{home_page.createPlaylistButton}"/>
+                <input class="button" type="submit" value="Create playlist"
+                       th:value="#{home_page.createPlaylistButton}"/>
             </div>
         </form>
     </div>

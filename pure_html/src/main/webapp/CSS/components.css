@@ -189,8 +189,13 @@ hr {
 
 .modal-title {
     font-size: 1.3rem;
+    padding-bottom: 1em;
 }
 
 .label {
     font-size: 0.9rem;
+}
+
+.invisible {
+    visibility: hidden;
 }
