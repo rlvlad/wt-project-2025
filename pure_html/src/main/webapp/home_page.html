@@ -12,7 +12,9 @@
 <div class="nav-bar">
     <div class="main-label" th:text="#{home_page.allPlaylists}">All Playlists</div>
     <div class="spacer"></div>
-    <button class="button" th:text="#{home_page.addPlaylist}">Add Playlist</button>
+    <a href="#create-playlist">
+        <button class="button" th:text="#{home_page.addPlaylist}">Add Playlist</button>
+    </a>
     <button class="button" th:text="#{home_page.removePlaylist}">Remove Playlist</button>
     <button class="button" th:text="#{home_page.allSongs}">View All Songs</button>
     <a href="#open-modal">
@@ -22,10 +24,10 @@
         <button type="submit" class="button logout" th:text="#{home_page.logout}">Logout</button>
     </a>
 </div>
-<div class="items-container" th:remove="all-but-first" th:each="playlist : ${playlists}">
+<div class="items-container" th:remove="all-but-first">
     <!-- Redirects to corresponding playlist page name -->
     <!-- No more than 5 per row -->
-    <form action="Playlist" method="GET">
+    <form action="Playlist" method="GET" th:each="playlist : ${playlists}">
         <input class="single-item first-line playlist-title" type="submit" value="PlaylistTitle"
                th:value="${playlist.title}"
                name="playlist_title">
@@ -68,18 +70,22 @@
         <form action="UploadTrack" method="post" enctype="multipart/form-data">
             <input type="text" class="text-field" name="title" placeholder="Title" th:placeholder="#{home_page.title}">
             <br>
-            <input type="text" class="text-field" name="artist" placeholder="Artist" th:placeholder="#{home_page.artist}">
+            <input type="text" class="text-field" name="artist" placeholder="Artist"
+                   th:placeholder="#{home_page.artist}">
             <br>
-            <input type="text" class="text-field" name="album" placeholder="Album title" th:placeholder="#{home_page.albumTitle}">
+            <input type="text" class="text-field" name="album" placeholder="Album title"
+                   th:placeholder="#{home_page.albumTitle}">
             <br>
-            <input type="number" class="text-field" min="1901" th:max="${#dates.year(#dates.createNow())}" name="year" placeholder="Year" th:placeholder="#{home_page.year}">
+            <input type="number" class="text-field" min="1901" th:max="${#dates.year(#dates.createNow())}" name="year"
+                   placeholder="Year" th:placeholder="#{home_page.year}">
             <br>
             <input type="text" class="text-field" name="genre" placeholder="Genre" th:placeholder="#{home_page.genre}">
             <br>
-            <label for="musicTrack" th:text="#{home_page.track} + ':'" >Track:</label>
-            <input type="file"  name="musicTrack" id="musicTrack" placeholder="Track" th:placeholder="#{home_page.track}">
+            <label class="label" for="musicTrack" th:text="#{home_page.track} + ':'">Track:</label>
+            <input type="file" name="musicTrack" id="musicTrack" placeholder="Track"
+                   th:placeholder="#{home_page.track}">
             <br>
-            <label for="image" th:text="#{home_page.albumImage} + ':'">Album image:</label>
+            <label class="label" for="image" th:text="#{home_page.albumImage} + ':'">Album image:</label>
             <input type="file" name="image" id="image" placeholder="Image" th:placeholder="#{home_page.albumImage}">
             <div class="nav-bar">
                 <input type="submit" class="button" value="Add Track" th:value="#{home_page.addNewTrack}"/>
@@ -87,23 +93,34 @@
         </form>
     </div>
 </div>
-</form>
-<br>
-<form action="/CreatePlaylist" th:action="@{/CreatePlaylist}" method="post">
-    <input type="text" name="playlistTitle" placeholder="Title">
-    <br>
-    <label for="trackSelector">Select songs to add:</label>
-    <br>
-    <select id="trackSelector" name="selectedTracks" multiple size="4"
-            th:size="${userTracks.size()>10} ? 10 : ${userTracks.size()}" th:remove="all-but-first">
-        <option value="Track" th:value="${track.id}"
-                th:text="${track.artist + ' - ' + track.title + ' (' + track.year + ')'}"
-                th:each="track: ${userTracks}"> Artist - Title (Year)</option>
-        <option value="Track1">Artist 1 - Title 1 (2001)</option>
-        <option value="Track2">Artist 2 - Title 2 (2002)</option>
-        <option value="Track3">Artist 3 - Title 3 (2003)</option>
-    </select>
-    <input type="submit"/>
-</form>
+<div id="create-playlist" class="modal-window">
+    <div>
+        <div class="nav-bar">
+            <div class="modal-title" th:text="#{home_page.createPlaylist}">Create new playlist</div>
+            <div class="spacer"></div>
+            <a href="#" title="Close" th:title="#{home_page.close}" class="modal-close" th:text="#{home_page.close}">Close</a>
+        </div>
+        </form>
+        <form action="/CreatePlaylist" th:action="@{/CreatePlaylist}" method="post">
+            <input type="text" name="playlistTitle" placeholder="Title" th:placeholder="#{home_page.title}">
+            <br>
+            <label class="label" for="trackSelector" th:text="#{home_page.selectTracks}">Select songs to add:</label>
+            <br>
+            <select id="trackSelector" name="selectedTracks" multiple size="4"
+                    th:size="${userTracks.size()>10} ? 10 : ${userTracks.size()}" th:remove="all-but-first">
+                <option value="Track" th:value="${track.id}"
+                        th:text="${track.artist + ' - ' + track.title + ' (' + track.year + ')'}"
+                        th:each="track: ${userTracks}"> Artist - Title (Year)
+                </option>
+                <option value="Track1">Artist 1 - Title 1 (2001)</option>
+                <option value="Track2">Artist 2 - Title 2 (2002)</option>
+                <option value="Track3">Artist 3 - Title 3 (2003)</option>
+            </select>
+            <div class="nav-bar">
+                <input class="button" type="submit" value="Create playlist" th:value="#{home_page.createPlaylistButton}"/>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

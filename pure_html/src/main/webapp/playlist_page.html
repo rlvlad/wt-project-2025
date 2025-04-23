@@ -17,9 +17,9 @@
         <button type="submit" class="button logout" th:text="#{playlist_page.logout}">Logout</button>
     </a>
 </div>
-<div class="items-container" th:remove="all-but-first" th:each="track : ${playlistTracks}">
+<div class="items-container" th:remove="all-but-first">
     <!-- Five tracks per row of the corresponding playlist -->
-    <form action="Track" method="GET">
+    <form action="Track" method="GET" th:each="track : ${playlistTracks}">
         <button class="single-item song-button" name="track_id" th:value="${track.id}">
             <span class="first-line" th:text="${track.title}">TitleTrack</span><br/>
             <span class="second-line" th:text="${track.album_title}">AlbumTitle</span>

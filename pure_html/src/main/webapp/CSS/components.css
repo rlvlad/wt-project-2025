@@ -186,3 +186,11 @@ hr {
 .modal-close:hover {
     color: black;
 }
+
+.modal-title {
+    font-size: 1.3rem;
+}
+
+.label {
+    font-size: 0.9rem;
+}
