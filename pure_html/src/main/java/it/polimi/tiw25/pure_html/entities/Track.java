@@ -17,10 +17,14 @@ public record Track(
 ) implements Comparable<Track> {
     @Override
     public int compareTo(Track track) {
-        int artistComparison = this.artist().compareTo(track.artist());
-        if (artistComparison == 0)
-            return this.year.compareTo(track.year);
-        else
-            return artistComparison;
+        int artistComparison;
+        int yearComparison;
+        if ((artistComparison = this.artist().compareTo(track.artist())) == 0)
+            if ((yearComparison = this.year.compareTo(track.year)) == 0)
+                return this.title.compareTo(track.title);
+            else
+                return yearComparison;
+        else return artistComparison;
     }
 }
+

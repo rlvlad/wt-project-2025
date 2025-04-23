@@ -1,9 +1,7 @@
 package it.polimi.tiw25.pure_html.controller;
 
-import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Track;
-import it.polimi.tiw25.pure_html.entities.User;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
@@ -11,7 +9,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -23,7 +20,6 @@ import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet("/Track")
 public class TrackController extends HttpServlet {
@@ -65,8 +61,6 @@ public class TrackController extends HttpServlet {
         JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
         WebContext ctx = new WebContext(webApplication.buildExchange(req, resp), req.getLocale());
 
-//        HttpSession s = req.getSession();
-//        User user = (User) s.getAttribute("user");
         String trackId = req.getParameter("track_id");
 
         TrackDAO trackDAO = new TrackDAO(connection);

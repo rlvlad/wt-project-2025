@@ -38,23 +38,24 @@ public class UploadTrack extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    String projectPath;
+    String relativeOutputPath;
     String imageHash;
     String songHash;
     User user;
     Track track;
     List<File> newFiles;
+    ServletContext context;
 
     public void init() throws ServletException {
         try {
-            ServletContext context = getServletContext();
+            context = getServletContext();
             String driver = context.getInitParameter("dbDriver");
             String url = context.getInitParameter("dbUrl");
             String user = context.getInitParameter("dbUser");
             String password = context.getInitParameter("dbPassword");
             Class.forName(driver);
             connection = DriverManager.getConnection(url, user, password);
-            projectPath = getServletContext().getInitParameter("outputPath");
+            relativeOutputPath = getServletContext().getInitParameter("outputPath");
             newFiles = new ArrayList<>();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -146,7 +147,7 @@ public class UploadTrack extends HttpServlet {
         if (alreadyPresentPath != null)
             return alreadyPresentPath;
 
-        String outputFolder = System.getProperty("user.home") + "/" + projectPath + mimeType + "/";
+        String outputFolder = context.getRealPath(relativeOutputPath) + "/" + mimeType + "/";
         String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
         String outputPath = outputFolder + UUID.randomUUID() + "-" + filename;
         File folder = new File(outputFolder);
@@ -163,7 +164,7 @@ public class UploadTrack extends HttpServlet {
         // Write the received item on disk
         try {
             Files.copy(part.getInputStream(), file.toPath());
-            return outputPath;
+            return relativeOutputPath + "/" + mimeType + "/" + file.getName();
         } catch (Exception e) {
             throw new ServerErrorException("Error while saving file", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }

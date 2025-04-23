@@ -25,7 +25,7 @@
     </welcome-file-list>
     <context-param>
         <param-name>outputPath</param-name>
-        <param-value>.cache/playlist-manager/</param-value>
+        <param-value>uploads</param-value>
     </context-param>
     <filter>
         <filter-name>UserChecker</filter-name>
