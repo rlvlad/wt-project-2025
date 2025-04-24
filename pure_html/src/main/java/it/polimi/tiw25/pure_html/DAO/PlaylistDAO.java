@@ -98,7 +98,7 @@ public class PlaylistDAO {
         List<Track> tracks = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                 SELECT track_id, title, image_path, album_title, artist, year, genre, song_path
+                 SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path
                  FROM track a NATURAL JOIN playlist_tracks b
                  WHERE b.playlist_id = ?
                 """);
@@ -116,8 +116,8 @@ public class PlaylistDAO {
                     resultSet.getString("genre"),
                     resultSet.getString("image_path"),
                     resultSet.getString("song_path"),
-                    resultSet.getString("path_hash"),
-                    resultSet.getString("image_hash")
+                    resultSet.getString("song_checksum"),
+                    resultSet.getString("image_checksum")
             );
             tracks.add(track);
         }
@@ -136,7 +136,7 @@ public class PlaylistDAO {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         if (resultSet.next()) {
-            return resultSet.getString("title");
+            return resultSet.getString("playlist_title");
         } else {
             return null;
         }
