@@ -32,9 +32,9 @@
       ),
       // width: 1em,
       // height: 1em,
-      baseline: 0.1cm
+      baseline: 0.1cm,
     )
-    // + h(0.05cm)
+  // + h(0.05cm)
 )
 
 #seq_diagram(
@@ -94,10 +94,10 @@
     If the User is not yet registered, they might want to create an account. If that's the case, as per the Login sequence diagram, initially thymeleaf processes the correct context, then the User inserts the credentials.
 
     Depending on the nickname inserted, the operation might fail: there can't be two Users with the same nickname. If that does not happen, then `isUserAdded` is `true`, then there will be the redirection to the Login page.
-    
+
     Else the program appends `isUserAdded` with `false` value and redirects to the Registration servlet: thymeleaf checks for that context variable and if it evaluates to false, it prints an error.
 
-  ]
+  ],
 )
 
 #seq_diagram(
@@ -122,7 +122,7 @@
   }),
   comment: [
     Once the Login is complete, the User is redirected to their HomePage, which hosts all their Playlists. In order to do so, the program needs to User attribute -- which is retrieved via the session; then, it is passed to the `getUserPlaylists` function and finally thymeleaf displays all values.
-  ]
+  ],
 )
 
 #seq_diagram(
@@ -155,7 +155,7 @@
     In order to do so, the program needs the User attribute -- which is retrieved via the session -- and the title of the playlists, which is given as a parameter by pressing the corresponding button in HomePage.
 
     Then those value are passed to `getPlaylistTracks()`, that returns all the tracks. Finally, thymeleaf processes the context and display all the tracks.
-  ]
+  ],
 )
 
 #seq_diagram(
@@ -182,7 +182,7 @@
     Once the User has displayed all the tracks from a playlist, the program allows to play them, individually. Similarly to the `getPlaylistTracks()`, to retrieve all the informations about a single track the program is given the `track_id` parameter by pressing the corresponding button.
 
     Finally, `getTrackById()` returns the track metadata, thymeleaf processes the context and display all the informations.
-  ]
+  ],
 )
 
 #seq_diagram(
@@ -195,10 +195,10 @@
 
     _seq("A", "B", enable-dst: true, comment: "doGet()")
     _seq("B", "C", enable-dst: true, comment: [getSession(false)])
-    _seq("C", "B", disable-src: true, comment: [return session $=>$ session != null ? session.invalidate()])
+    _seq("C", "B", disable-src: true, comment: [return session $=>$ [session != null] ? session.invalidate()])
     _seq("B", "D", disable-src: true, comment: "Redirect")
   }),
   comment: [
     From nearly every page, the User is able to logout, at any moment. It's a GET request to the Logout servlet: it invalidates the session and redirects the User to the Login page.
-  ]
+  ],
 )

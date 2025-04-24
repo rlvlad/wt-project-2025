@@ -2,6 +2,7 @@
 
 #let project(
   title: "",
+  subtitle: "",
   authors: (),
   columns: 1,
   literal-numbering: false,
@@ -22,12 +23,82 @@
     //   top: 2.5cm,
     //   rest: 2cm,
     // ),
-    margin: (
-      top: 2cm,
-      rest: 1.5cm,
-    ),
+    // margin: (
+    //   top: 2cm,
+    //   rest: 1.5cm,
+    // ),
     columns: columns,
     numbering: "1",
+    header: { },
+    footer: { },
+  )
+
+  set text(
+    // font: "Libre Caslon Text",
+    // font: "New Computer Modern",
+    font: "EB Garamond",
+    size: 12pt,
+    lang: "en",
+  )
+
+  set par(justify: true, linebreaks: "optimized")
+  set list(indent: 1.2em, tight: false)
+  set enum(indent: 1.2em, tight: false)
+  set heading(numbering: "1.1.")
+  // show math.equation: set text(font: "Fira Math")
+
+  // title page
+
+  align(
+    left + horizon,
+    {
+      v(3cm)
+
+      text(
+        size: 3em,
+        weight: "bold",
+        title,
+      )
+
+      parbreak()
+
+      text(
+        size: 1.6em,
+        subtitle,
+      )
+
+      v(1cm)
+
+      let author_display(fullname, mail, github) = align(
+        center,
+        {
+          set text(size: 1.1em)
+          smallcaps(fullname) + linebreak()
+          link("mailto:" + mail, raw(mail)) + linebreak()
+          text(fill: blue, link(github, github))
+        },
+      )
+
+      // authors
+      grid(
+        columns: (1fr,) * authors.len(),
+        align: center,
+        ..authors.map(author => (
+          author_display(
+            author.fullname,
+            author.mail,
+            author.github,
+          )
+        ))
+      )
+
+      v(3em)
+    },
+  )
+
+  pagebreak()
+
+  set page(
     header: context {
       let output
       if (literal-numbering) {
@@ -43,61 +114,13 @@
         h(1fr)
       }
     },
-    footer: { },
   )
-
-  set text(
-    // font: "Libre Caslon Text",
-    // font: "New Computer Modern",
-    font: "EB Garamond",
-    // size: 10pt,
-    lang: "en",
-  )
-  set par(justify: true, linebreaks: "optimized")
-  set list(indent: 1.2em, tight: false)
-  set enum(indent: 1.2em, tight: false)
-  set heading(numbering: "1.1.")
-  // show math.equation: set text(font: "Fira Math")
-
-  // title page
-  v(3cm)
-  
-  align(
-    center,
-    text(
-      size: 22pt,
-      weight: "bold",
-      title,
-    ),
-  )
-
-  let author_display(fullname, mail, github) = align(
-    center,
-    {
-      smallcaps(fullname) + linebreak()
-      link("mailto:" + mail, raw(mail)) + linebreak()
-      text(fill: blue, link(github, github))
-    },
-  )
-
-  // authors
-  grid(
-    columns: (1fr,) * authors.len(),
-    ..authors.map(author => (
-      author_display(
-        author.fullname,
-        author.mail,
-        author.github,
-      )
-    ))
-  )
-
-  v(3em)
 
   // mainmatter
   outline()
 
   show heading.where(level: 1): it => pagebreak() + it
+  show heading: it => it + v(6pt)
 
   body
 }

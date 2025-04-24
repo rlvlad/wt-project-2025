@@ -1,0 +1,12 @@
+subpar:
+  type: web
+  title: subpar package
+  url: https://typst.app/universe/package/subpar
+chronos:
+  type: web
+  title: chronos package
+  url: https://typst.app/universe/package/chronos
+drawio:
+  type: web
+  title: Draw.io
+  url: https://app.diagrams.net
