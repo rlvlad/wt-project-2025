@@ -22,7 +22,7 @@
 <div class="items-container" th:remove="all-but-first">
     <!-- Five tracks per row of the corresponding playlist -->
     <form action="Track" method="GET" th:each="track : ${playlistTracks}">
-        <button class="single-item song-button first-line" name="track_id" th:value="${track.id}">
+        <button class="single-item song-button" name="track_id" th:value="${track.id}">
             <span class="first-line" th:text="${track.title}">TitleTrack</span><br/>
             <span class="second-line" th:text="${track.album_title}">AlbumTitle</span>
         </button>

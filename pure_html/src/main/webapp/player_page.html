@@ -21,8 +21,9 @@
 </div>
 <div class="center-panel">
     <div class="track-metadata" th:text="${track.artist}">Track artist</div>
-    <div class="track-metadata" th:text="${track.genre}">Track genre</div>
     <div class="track-metadata" th:text="${track.album_title}">Album title</div>
+    <div class="track-metadata" th:text="${track.year}">Year</div>
+    <div class="track-metadata" th:text="${track.genre}">Track genre</div>
     <hr>
     <audio controls>
         <source th:src="${track.song_path}" type="audio/mpeg">

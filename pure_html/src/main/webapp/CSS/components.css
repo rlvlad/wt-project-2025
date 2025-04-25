@@ -199,3 +199,11 @@ hr {
 .invisible {
     visibility: hidden;
 }
+
+.song-button{
+    width: 100%;
+}
+
+.playlist-title{
+    width: 100%;
+}
