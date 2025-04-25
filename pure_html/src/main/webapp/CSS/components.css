@@ -9,6 +9,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    text-overflow: ellipsis;
 }
 
 /* ELEMENTS */
@@ -83,7 +84,7 @@ body {
 
 .single-item {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: end;
     height: 150px;
     background-color: var(--light-background);
@@ -95,6 +96,7 @@ body {
     border-radius: 5px;
     font-family: "JetBrains Mono", monospace;
     align-content: end;
+    justify-content: space-between;
 }
 
 .single-item:hover {
@@ -196,14 +198,14 @@ hr {
     font-size: 0.9rem;
 }
 
-.invisible {
-    visibility: hidden;
-}
-
-.song-button{
+.song-button {
     width: 100%;
 }
 
-.playlist-title{
+.playlist-title {
     width: 100%;
+}
+
+.text-container {
+    flex-wrap: wrap;
 }

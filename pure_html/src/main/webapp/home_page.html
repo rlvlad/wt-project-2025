@@ -121,7 +121,7 @@
                    th:text="${userTracks.size()==0}? #{home_page.noTracksAvailable} : #{home_page.selectTracks}">Select
                 songs to add:</label>
             <br>
-            <select th:classappend="${userTracks.size()==0}? invisible" id="trackSelector"
+            <select th:if="${userTracks.size()} != 0" id="trackSelector"
                     name="selectedTracks" multiple size="4"
                     th:size="${userTracks.size()>10} ? 10 : ${userTracks.size()}" th:remove="all-but-first">
                 <option value="Track" th:value="${track.id}"
