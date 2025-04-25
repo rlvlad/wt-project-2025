@@ -29,6 +29,7 @@ public class PlaylistDAO {
                 SELECT b.playlist_id, b.playlist_title, b.creation_date
                 FROM user a NATURAL JOIN playlist b
                 WHERE a.nickname = ?
+                ORDER BY creation_date DESC
                 """);
 
         preparedStatement.setString(1, user.nickname());
@@ -153,6 +154,41 @@ public class PlaylistDAO {
             userTracks.add(track);
         }
         return userTracks;
+    }
+
+    public List<Track> getTrackGroup(int playlistId, int groupId) throws SQLException {
+        List<Track> tracks = new ArrayList<>();
+
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                 SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path
+                 FROM track a NATURAL JOIN playlist_tracks b
+                 WHERE b.playlist_id = ?
+                 ORDER BY artist ASC, YEAR ASC, title ASC
+                 OFFSET ? ROWS
+                 FETCH NEXT 6 ROWS ONLY
+                """);
+
+        preparedStatement.setInt(1, playlistId);
+        preparedStatement.setInt(2, groupId * 5);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            Track track = new Track(
+                    resultSet.getInt("track_id"),
+                    resultSet.getString("title"),
+                    resultSet.getString("artist"),
+                    resultSet.getInt("year"),
+                    resultSet.getString("album_title"),
+                    resultSet.getString("genre"),
+                    resultSet.getString("image_path"),
+                    resultSet.getString("song_path"),
+                    resultSet.getString("song_checksum"),
+                    resultSet.getString("image_checksum")
+            );
+            tracks.add(track);
+        }
+
+        return tracks;
     }
 
     public String getPlaylistTitle(int playlistID) throws SQLException {

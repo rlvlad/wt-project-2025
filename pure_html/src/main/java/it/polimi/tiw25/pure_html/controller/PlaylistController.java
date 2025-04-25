@@ -78,20 +78,31 @@ public class PlaylistController extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlistId");
             return;
         }
+        String trackGroupString = req.getParameter("gr");
+        Integer trackGroup = 0;
+        if (trackGroupString != null) {
+            Integer tmp = Integer.parseInt(trackGroupString);
+            if (tmp > 0) {
+                trackGroup = tmp;
+            }
+        }
+
         String playlistTitle = null;
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 
         try {
             playlistTitle = playlistDAO.getPlaylistTitle(playlistId);
         } catch (SQLException e) {
+            e.printStackTrace();
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
 
         List<Track> playlistTracks = null;
         try {
-            playlistTracks = playlistDAO.getPlaylistTracksByTitle(playlistTitle, user);
+            playlistTracks = playlistDAO.getTrackGroup(playlistId, trackGroup);
         } catch (SQLException e) {
+            e.printStackTrace();
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
@@ -100,10 +111,12 @@ public class PlaylistController extends HttpServlet {
         try {
             addableTracks = playlistDAO.getTracksNotInPlaylist(playlistTitle, user.id());
         } catch (SQLException e) {
+            e.printStackTrace();
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
 
+        ctx.setVariable("trackGroup", trackGroup);
         ctx.setVariable("playlistId", playlistId);
         ctx.setVariable("playlistTitle", playlistTitle);
         ctx.setVariable("addableTracks", addableTracks);

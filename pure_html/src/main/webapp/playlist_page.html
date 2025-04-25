@@ -21,7 +21,7 @@
 </div>
 <div class="items-container" th:remove="all-but-first">
     <!-- Five tracks per row of the corresponding playlist -->
-    <form action="Track" method="GET" th:each="track : ${playlistTracks}">
+    <form action="Track" method="GET" th:each="track : ${playlistTracks}" th:unless="${trackStat.index > 4}">
         <button class="single-item song-button" name="track_id" th:value="${track.id}">
             <span class="first-line" th:text="${track.title}">TitleTrack</span><br/>
             <span class="second-line" th:text="${track.album_title}">AlbumTitle</span>
@@ -53,20 +53,29 @@
     </form>
 </div>
 <div class="nav-bar">
-    <button class="button" th:text="#{playlist_page.previousTracks}">Previous Tracks</button>
+    <a href="playlist_page.html" th:href="@{Playlist(playlistId=${playlistId}, gr=${trackGroup - 1})}">
+        <button class="button" th:classappend="${trackGroup==0}? invisible" th:text="#{playlist_page.previousTracks}">
+            Previous Tracks
+        </button>
+    </a>
     <div class="spacer"></div>
     <a href="home_page.html" th:href="@{/HomePage}">
         <button class="button">Home</button>
     </a>
     <div class="spacer"></div>
-    <button class="button" th:text="#{playlist_page.nextTracks}">Next Tracks</button>
+    <a href="playlist_page.html" th:href="@{Playlist(playlistId=${playlistId}, gr=${trackGroup + 1})}">
+        <button class="button" th:classappend="${playlistTracks.size()<6} ? invisible"
+                th:text="#{playlist_page.nextTracks}">Next Tracks
+        </button>
+    </a>
 </div>
 <div id="add-tracks" class="modal-window">
     <div>
         <div class="nav-bar">
             <div class="modal-title" th:text="#{playlist_page.addTracksToPlaylist}">Create new playlist</div>
             <div class="spacer"></div>
-            <a href="#" title="Close" th:title="#{playlist_page.close}" class="modal-close" th:text="#{playlist_page.close}">Close</a>
+            <a href="#" title="Close" th:title="#{playlist_page.close}" class="modal-close"
+               th:text="#{playlist_page.close}">Close</a>
         </div>
         </form>
         <form action="/AddTracks" th:action="@{/AddTracks(playlistId=${playlistId})}" method="post">
