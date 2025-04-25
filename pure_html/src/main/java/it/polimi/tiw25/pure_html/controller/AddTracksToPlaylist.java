@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@WebServlet("/CreatePlaylist")
-public class CreatePlaylist extends HttpServlet {
+@WebServlet("/AddTracks")
+public class AddTracksToPlaylist extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
@@ -50,31 +50,27 @@ public class CreatePlaylist extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
         user = (User) req.getSession().getAttribute("user");
-
-        String playlistTitle = req.getParameter("playlistTitle");
-        Playlist playlist = new Playlist(0, playlistTitle, null, user);
-
+        String playlistId = req.getParameter("playlistId");
         String[] selectedTracksStringIds = req.getParameterValues("selectedTracks");
         List<Integer> selectedTracksIds = new ArrayList<>();
         if (selectedTracksStringIds != null)
             Arrays.asList(selectedTracksStringIds).forEach(id -> selectedTracksIds.add(Integer.parseInt(id)));
-
-        if (playlistTitle == null || playlistTitle.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Playlist title not valid");
+        if (playlistId == null || playlistId.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlist");
             return;
         }
+
         try {
-            Integer playlistId = null;
-            playlistId = playlistDAO.createPlaylist(playlist);
-            playlistDAO.addTracksToPlaylist(selectedTracksIds, playlistId);
+            playlistDAO.addTracksToPlaylist(selectedTracksIds, Integer.parseInt(playlistId));
         } catch (SQLIntegrityConstraintViolationException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "A playlist with that title already exists");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "One or more tracks were already added: operation aborted");
             return;
         } catch (SQLException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating playlist");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while adding tracks");
             e.printStackTrace();
             return;
         }
-        resp.sendRedirect(getServletContext().getContextPath() + "/HomePage");
+
+        resp.sendRedirect(getServletContext().getContextPath() + "/Playlist?playlistId=" + playlistId);
     }
 }

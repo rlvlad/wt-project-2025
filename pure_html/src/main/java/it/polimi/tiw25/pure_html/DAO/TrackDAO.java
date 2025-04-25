@@ -1,5 +1,6 @@
 package it.polimi.tiw25.pure_html.DAO;
 
+import it.polimi.tiw25.pure_html.entities.Playlist;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
 
@@ -91,6 +92,8 @@ public class TrackDAO {
         }
         return userTracks;
     }
+
+
 
     public Integer addTrack(Track track, User user) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("""

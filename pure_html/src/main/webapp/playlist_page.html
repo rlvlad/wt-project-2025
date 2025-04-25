@@ -11,8 +11,10 @@
 <div class="nav-bar">
     <div class="main-label" th:text="${playlistTitle}">Playlist Title</div>
     <div class="spacer"></div>
-    <button class="button" th:text="#{playlist_page.addTrack}">Add Track</button>
-    <button class="button" th:text="#{playlist_page.removeTrack}">Remove Track</button>
+    <a href="#add-tracks">
+        <button class="button" th:text="#{playlist_page.addTracks}">Add Tracks</button>
+    </a>
+    <button class="button" th:text="#{playlist_page.removeTracks}">Remove Tracks</button>
     <a th:href="@{/Logout}">
         <button type="submit" class="button logout" th:text="#{playlist_page.logout}">Logout</button>
     </a>
@@ -20,7 +22,7 @@
 <div class="items-container" th:remove="all-but-first">
     <!-- Five tracks per row of the corresponding playlist -->
     <form action="Track" method="GET" th:each="track : ${playlistTracks}">
-        <button class="single-item song-button" name="track_id" th:value="${track.id}">
+        <button class="single-item song-button first-line" name="track_id" th:value="${track.id}">
             <span class="first-line" th:text="${track.title}">TitleTrack</span><br/>
             <span class="second-line" th:text="${track.album_title}">AlbumTitle</span>
         </button>
@@ -58,6 +60,37 @@
     </a>
     <div class="spacer"></div>
     <button class="button" th:text="#{playlist_page.nextTracks}">Next Tracks</button>
+</div>
+<div id="add-tracks" class="modal-window">
+    <div>
+        <div class="nav-bar">
+            <div class="modal-title" th:text="#{playlist_page.addTracksToPlaylist}">Create new playlist</div>
+            <div class="spacer"></div>
+            <a href="#" title="Close" th:title="#{playlist_page.close}" class="modal-close" th:text="#{playlist_page.close}">Close</a>
+        </div>
+        </form>
+        <form action="/AddTracks" th:action="@{/AddTracks(playlistId=${playlistId})}" method="post">
+            <label class="label" for="trackSelector"
+                   th:text="${addableTracks.size()==0}? #{playlist_page.noTracksAvailable} : #{playlist_page.selectTracks}">Select
+                songs to add:</label>
+            <br>
+            <select th:classappend="${addableTracks.size()==0}? invisible" id="trackSelector"
+                    name="selectedTracks" multiple size="4"
+                    th:size="${addableTracks.size()>10} ? 10 : ${addableTracks.size()}" th:remove="all-but-first">
+                <option value="Track" th:value="${track.id}"
+                        th:text="${track.artist + ' - ' + track.title + ' (' + track.year + ')'}"
+                        th:each="track: ${addableTracks}"> Artist - Title (Year)
+                </option>
+                <option value="Track1">Artist 1 - Title 1 (2001)</option>
+                <option value="Track2">Artist 2 - Title 2 (2002)</option>
+                <option value="Track3">Artist 3 - Title 3 (2003)</option>
+            </select>
+            <div class="nav-bar">
+                <input class="button" type="submit" value="Create playlist"
+                       th:value="#{playlist_page.addTracks}"/>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

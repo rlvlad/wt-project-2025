@@ -75,7 +75,9 @@ public class HomepageController extends HttpServlet {
         try {
             playlists = playlistDAO.getUserPlaylists(user);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return;
         }
 
         TrackDAO trackDAO = new TrackDAO(connection);
@@ -84,7 +86,9 @@ public class HomepageController extends HttpServlet {
             userTracks = trackDAO.getUserTracks(user);
             userTracks.sort(Track::compareTo);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return;
         }
 
         ctx.setVariable("userTracks", userTracks);

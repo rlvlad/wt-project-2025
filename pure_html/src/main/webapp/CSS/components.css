@@ -199,3 +199,7 @@ hr {
 .invisible {
     visibility: hidden;
 }
+
+.playlist-title{
+    text-align: center;
+}

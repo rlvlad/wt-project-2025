@@ -93,7 +93,7 @@ public class UploadTrack extends HttpServlet {
         String genre = req.getParameter("genre");
         track = new Track(0, title, artist, year, album, genre, imagePath, songPath, songHash, imageHash);
 
-        // Try to add track
+        // Add track
         TrackDAO trackDAO = new TrackDAO(connection);
         try {
             trackDAO.addTrack(track, user);

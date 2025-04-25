@@ -1,6 +1,8 @@
 package it.polimi.tiw25.pure_html.controller;
 
 import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
+import it.polimi.tiw25.pure_html.DAO.TrackDAO;
+import it.polimi.tiw25.pure_html.entities.Playlist;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
 import jakarta.servlet.ServletContext;
@@ -69,23 +71,43 @@ public class PlaylistController extends HttpServlet {
 
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
-//        int playlistID = Integer.parseInt(req.getParameter("playlist_id"));
-        String playlistTitle = req.getParameter("playlist_title");
-
+        Integer playlistId = null;
+        try {
+            playlistId = Integer.parseInt(req.getParameter("playlistId"));
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlistId");
+            return;
+        }
+        String playlistTitle = null;
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 
-//        String playlistTitle = null;
-        List<Track> playlistTracks = null;
         try {
-//            playlistTitle = playlistDAO.getPlaylistTitle(playlistID);
-            playlistTracks = playlistDAO.getPlaylistTracksByTitle(playlistTitle, user);
+            playlistTitle = playlistDAO.getPlaylistTitle(playlistId);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
         }
 
+        List<Track> playlistTracks = null;
+        try {
+            playlistTracks = playlistDAO.getPlaylistTracksByTitle(playlistTitle, user);
+        } catch (SQLException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        List<Track> addableTracks = null;
+        try {
+            addableTracks = playlistDAO.getTracksNotInPlaylist(playlistTitle, user.id());
+        } catch (SQLException e) {
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        ctx.setVariable("playlistId", playlistId);
         ctx.setVariable("playlistTitle", playlistTitle);
+        ctx.setVariable("addableTracks", addableTracks);
         ctx.setVariable("playlistTracks", playlistTracks);
-//        String song_path = getServletContext().getContextPath() + "/playlist_page";
         String path = "playlist_page";
         templateEngine.process(path, ctx, resp.getWriter());
     }

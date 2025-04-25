@@ -63,18 +63,6 @@ public class PlaylistDAO {
         preparedStatement.setString(2, playlistTitle);
         ResultSet resultSet = preparedStatement.executeQuery();
 
-//        track_id
-//        user_id
-//        title
-//        album_title
-//        artist
-//        year
-//        genre
-//        song_checksum
-//        image_checksum
-//        song_path
-//        image_path
-
         while (resultSet.next()) {
             Track track = new Track(
                     resultSet.getInt("track_id"),
@@ -123,6 +111,48 @@ public class PlaylistDAO {
         }
 
         return tracks;
+    }
+
+    public List<Track> getTracksNotInPlaylist(String playlistTitle, Integer userId) throws SQLException {
+        List<Track> userTracks = new ArrayList<>();
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                 SELECT track_id,
+                        title,
+                        artist,
+                        year,
+                        album_title,
+                        genre,
+                        image_path,
+                        song_path,
+                        song_checksum,
+                        image_checksum
+                 FROM track
+                 WHERE user_id = ? AND track_id not in (
+                    SELECT t.track_id
+                    FROM playlist p NATURAL JOIN playlist_tracks pt JOIN track t ON t.track_id=pt.track_id
+                    WHERE p.playlist_title= ? AND p.user_id = ?
+                 )
+                """);
+        preparedStatement.setInt(1, userId);
+        preparedStatement.setString(2, playlistTitle);
+        preparedStatement.setInt(3, userId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Track track = new Track(
+                    resultSet.getInt("track_id"),
+                    resultSet.getString("title"),
+                    resultSet.getString("artist"),
+                    resultSet.getInt("year"),
+                    resultSet.getString("album_title"),
+                    resultSet.getString("genre"),
+                    resultSet.getString("image_path"),
+                    resultSet.getString("song_path"),
+                    resultSet.getString("song_checksum"),
+                    resultSet.getString("image_checksum")
+            );
+            userTracks.add(track);
+        }
+        return userTracks;
     }
 
     public String getPlaylistTitle(int playlistID) throws SQLException {
