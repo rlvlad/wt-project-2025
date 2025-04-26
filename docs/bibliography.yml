@@ -10,3 +10,7 @@ drawio:
   type: web
   title: Draw.io
   url: https://app.diagrams.net
+tinted-theming:
+  type: web
+  title: Tinted Theming
+  url: https://github.com/tinted-theming/home

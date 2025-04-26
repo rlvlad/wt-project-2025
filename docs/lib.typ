@@ -119,8 +119,24 @@
   // mainmatter
   outline()
 
+  show raw.where(block: true): it => {
+    // set text(font: "JetBrains Mono NF", weight: "light")
+    set text(size: 0.9em)
+    block(
+      width: 100%,
+      fill: rgb("#ebf1f5"),
+      inset: 10pt,
+      stroke: rgb("#9cc9e7"),
+      // radius: 4pt,
+      it,
+    )
+  }
+
   show heading.where(level: 1): it => pagebreak() + it
   show heading: it => it + v(6pt)
+
+  show ref: it => text(fill: orange, it)
+  show link: it => text(fill: blue, underline(stroke: blue, it))
 
   body
 }

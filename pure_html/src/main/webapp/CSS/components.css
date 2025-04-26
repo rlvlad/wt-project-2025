@@ -1,14 +1,10 @@
 body {
-    background-color: var(--default-background);
-    /*margin: 1rem;*/
+    height: 100vh;
     padding: 1rem 2rem 2rem 2rem;
+    background-color: var(--default-background);
+    font-family: "JetBrains Mono", monospace;
     line-height: 1.6;
     word-spacing: 1px;
-    font-family: "JetBrains Mono", monospace;
-    /*display: flex;*/
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     text-overflow: ellipsis;
 }
 
@@ -16,9 +12,9 @@ body {
 
 .text-field {
     width: 100%;
-    font-family: "JetBrains Mono", monospace;
     background-color: var(--selection-background);
     border: 2px solid var(--dark-foreground);
+    font-family: "JetBrains Mono", monospace;
 }
 
 .button {
@@ -49,12 +45,30 @@ body {
     background-color: var(--data-types);
 }
 
+/* used for login, register and track player */
 .center-panel {
     width: 300px;
     background-color: var(--lighter-background);
-    padding: 3rem;
     border: 1px solid var(--dark-foreground);
+    padding: 3rem;
     text-align: center;
+}
+
+
+.label {
+    font-size: 0.9rem;
+}
+
+.song-button {
+    width: 100%;
+}
+
+.playlist-title {
+    width: 100%;
+}
+
+.text-container {
+    flex-wrap: wrap;
 }
 
 /* ITEM CONTAINER AND ITEMS */
@@ -68,12 +82,10 @@ body {
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    /*padding: 0 2rem 0 2rem;*/
 }
 
 .items-container {
     width: 100%;
-    /*margin: 0 2rem 0 2rem;*/
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     align-content: baseline;
@@ -85,17 +97,17 @@ body {
 .single-item {
     display: flex;
     flex-wrap: nowrap;
-    align-items: end;
-    height: 150px;
     background-color: var(--light-background);
-    font-weight: 700;
-    padding: 1rem;
-    text-align: left;
     border: 2px solid var(--data-types);
-    color: var(--lighter-background);
     border-radius: 5px;
+    color: var(--lighter-background);
+    padding: 1rem;
+    height: 150px;
     font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    text-align: left;
     align-content: end;
+    align-items: end;
     justify-content: space-between;
 }
 
@@ -142,14 +154,14 @@ hr {
 
 .modal-window {
     position: fixed;
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.251);
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 999; /* on top of everything */
-    visibility: hidden;
-    pointer-events: none;
+    visibility: hidden; /* default visibility */
+    pointer-events: none; /* can't be targeted by cursor */
     transition: all 0.5s;
 }
 
@@ -192,20 +204,4 @@ hr {
 .modal-title {
     font-size: 1.3rem;
     padding-bottom: 1em;
-}
-
-.label {
-    font-size: 0.9rem;
-}
-
-.song-button {
-    width: 100%;
-}
-
-.playlist-title {
-    width: 100%;
-}
-
-.text-container {
-    flex-wrap: wrap;
 }

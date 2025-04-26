@@ -8,9 +8,10 @@
 #include "sections/submission.typ"
 // #include "sections/pipeline.typ"
 #include "sections/sequence_diagram.typ"
+#include "sections/css_rules.typ"
 
-// #bibliography(
-//   "bibliography.yml",
-//   style: "ieee",
-//   full: true,
-// )
+#bibliography(
+  "bibliography.yml",
+  style: "ieee",
+  full: true,
+)
