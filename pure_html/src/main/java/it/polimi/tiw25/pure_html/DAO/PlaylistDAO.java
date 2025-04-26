@@ -276,4 +276,32 @@ public class PlaylistDAO {
      */
     public void removeTrackFromPlaylist(Track track, Playlist playlist) throws SQLException {
     }
+
+    /**
+     * Checks if the requested Playlist actually belongs to the currently logged-in User.
+     *
+     * @param playlist_id playlist_id of the Playlist to check
+     * @param user user of which to check the ownership status
+     * @return true if the tracks belongs to the User; false otherwise
+     * @throws SQLException
+     */
+    public boolean checkPlaylistOwner(int playlist_id, User user) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                 SELECT playlist_id,
+                        user_id
+                 FROM playlist NATURAL JOIN user
+                 WHERE playlist_id = ?
+                """);
+
+        preparedStatement.setInt(1, playlist_id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        int userId = user.id();
+
+        if (!resultSet.isBeforeFirst()) {
+            return false;
+        } else {
+            resultSet.next();
+            return userId == resultSet.getInt("user_id");
+        }
+    }
 }

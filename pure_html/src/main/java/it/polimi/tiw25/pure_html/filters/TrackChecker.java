@@ -1,18 +1,13 @@
-package it.polimi.tiw25.pure_html.controller;
+package it.polimi.tiw25.pure_html.filters;
 
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
-import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.UnavailableException;
-import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
@@ -23,11 +18,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-@WebServlet("/Track")
-public class TrackController extends HttpServlet {
+/**
+ * Filter to check if the requested track belongs to the currently logged-in User.
+ */
+public class TrackChecker extends HttpServlet implements Filter {
     @Serial
     private static final long serialVersionUID = 1L;
-    private TemplateEngine templateEngine;
     private Connection connection = null;
 
     @Override
@@ -53,57 +49,36 @@ public class TrackController extends HttpServlet {
         WebApplicationTemplateResolver templateResolver = new WebApplicationTemplateResolver(webApplication);
 
         templateResolver.setTemplateMode(TemplateMode.HTML);
-        this.templateEngine = new TemplateEngine();
-        this.templateEngine.setTemplateResolver(templateResolver);
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
         templateResolver.setSuffix(".html");
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
-        WebContext ctx = new WebContext(webApplication.buildExchange(req, resp), req.getLocale());
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) servletRequest;
+        HttpServletResponse res = (HttpServletResponse) servletResponse;
+        String homepageWithError = req.getServletContext().getContextPath() + "/HomePage?trackError=true";
 
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
-        int trackId;
-        try {
-            trackId = Integer.parseInt(req.getParameter("track_id"));
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid trackId");
-            return;
-        }
-
-        // verify track ownership
+        String trackId = req.getParameter("trackId");
         TrackDAO trackDAO = new TrackDAO(connection);
-        boolean isOwner = false;
+        
+        boolean result;
         try {
-            isOwner = trackDAO.checkTrackOwner(trackId, user);
+            result = trackDAO.checkTrackOwner(Integer.parseInt(trackId), user);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        
+        if (!result) res.sendRedirect(homepageWithError);
 
-        if (!isOwner) {
-            resp.sendError(
-                    HttpServletResponse.SC_FORBIDDEN,
-                    "You don't have permission to access this track"
-            );
-        }
-
-        Track track = null;
-        try {
-            track = trackDAO.getTrackById(trackId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        ctx.setVariable("track", track);
-        String path = "player_page";
-        templateEngine.process(path, ctx, resp.getWriter());
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+    public void destroy() {
+        Filter.super.destroy();
     }
-
 }

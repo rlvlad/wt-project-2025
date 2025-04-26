@@ -1,6 +1,5 @@
 package it.polimi.tiw25.pure_html.DAO;
 
-import it.polimi.tiw25.pure_html.entities.Playlist;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
 
@@ -94,7 +93,6 @@ public class TrackDAO {
     }
 
 
-
     public Integer addTrack(Track track, User user) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("""
                 INSERT INTO track (user_id, title, artist, year, album_title, genre, image_path, song_path, song_checksum, image_checksum)
@@ -154,6 +152,34 @@ public class TrackDAO {
         else {
             result.next();
             return result.getString("image_path");
+        }
+    }
+
+    /**
+     * Checks if the requested Track actually belongs to the currently logged-in User.
+     *
+     * @param track_id track_id of the Track to check
+     * @param user user of which to check the ownership status
+     * @return true if the tracks belongs to the User; false otherwise
+     * @throws SQLException
+     */
+    public boolean checkTrackOwner(int track_id, User user) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                 SELECT track_id,
+                        user_id
+                 FROM track NATURAL JOIN user
+                 WHERE track_id = ?
+                """);
+
+        preparedStatement.setInt(1, track_id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        int userId = user.id();
+
+        if (!resultSet.isBeforeFirst()) {
+            return false;
+        } else {
+            resultSet.next();
+            return userId == resultSet.getInt("user_id");
         }
     }
 }

@@ -1,8 +1,6 @@
 package it.polimi.tiw25.pure_html.controller;
 
 import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
-import it.polimi.tiw25.pure_html.DAO.TrackDAO;
-import it.polimi.tiw25.pure_html.entities.Playlist;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
 import jakarta.servlet.ServletContext;
@@ -78,6 +76,23 @@ public class PlaylistController extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlistId");
             return;
         }
+
+        // verify playlist ownership
+        PlaylistDAO playlistDAO = new PlaylistDAO(connection);
+        boolean isOwner = false;
+        try {
+            isOwner = playlistDAO.checkPlaylistOwner(playlistId, user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (!isOwner) {
+            resp.sendError(
+                    HttpServletResponse.SC_FORBIDDEN,
+                    "You don't have permission to access this playlist"
+            );
+        }
+
         String trackGroupString = req.getParameter("gr");
         Integer trackGroup = 0;
         if (trackGroupString != null) {
@@ -88,7 +103,6 @@ public class PlaylistController extends HttpServlet {
         }
 
         String playlistTitle = null;
-        PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 
         try {
             playlistTitle = playlistDAO.getPlaylistTitle(playlistId);
