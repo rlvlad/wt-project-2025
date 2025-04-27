@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${track.title}">Track Title</title>
+    <link rel="stylesheet" href="CSS/colors.css" th:href="@{/CSS/colors.css}">
+    <link rel="stylesheet" href="CSS/components.css" th:href="@{/CSS/components.css}">
+    <link rel="stylesheet" href="CSS/player_page.css" th:href="@{/CSS/player_page.css}">
+    <link rel="icon" type="image/x-icon" href="img/icon.ico" th:href="@{/img/icon.ico}">
+</head>
+<body>
+<div class="nav-bar">
+    <div class="main-label" th:text="${track.title}">Track Title</div>
+    <div class="spacer"></div>
+    <a href="home_page.html" th:href="@{/HomePage}">
+        <button class="button">Home</button>
+    </a>
+    <a th:href="@{/Logout}">
+        <button type="submit" class="button logout" th:text="#{player_page.logout}">Logout</button>
+    </a>
+</div>
+<div class="center-panel">
+    <div class="track-metadata" th:text="${track.artist}">Track artist</div>
+    <div class="track-metadata" th:text="${track.album_title}">Album title</div>
+    <div class="track-metadata" th:text="${track.year}">Year</div>
+    <div class="track-metadata" th:text="${track.genre}">Track genre</div>
+    <hr>
+    <audio controls>
+        <source th:src="${track.song_path}" type="audio/mpeg">
+    </audio>
+</div>
+<!--<div class="nav-bar">-->
+<!--    <button class="button" th:text="#{player_page.nextTracks}">Previous Tracks</button>-->
+<!--    <div class="spacer"></div>-->
+<!--    <a href="home_page.html" th:href="@{/HomePage}">-->
+<!--        <button class="button">Home</button>-->
+<!--    </a>-->
+<!--    <div class="spacer"></div>-->
+<!--    <button class="button" th:text="#{player_page.nextTracks}">Next Tracks</button>-->
+<!--</div>-->
+</body>
+</html>

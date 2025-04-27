@@ -37,6 +37,9 @@ GRANT ALL PRIVILEGES ON db_name.* TO `user`@'hostname';
 exit;
 ```
 
+> [!NOTE]
+> The project assumes the user `tiw@localhost` is accessing the `tiw` database. 
+
 And finally load the SQL file:
 
 ```shell

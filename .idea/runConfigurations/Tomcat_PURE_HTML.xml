@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Tomcat PURE_HTML" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.34-dev" ALTERNATIVE_JRE_ENABLED="false">
+  <configuration default="false" name="Tomcat PURE_HTML" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.36-dev" ALTERNATIVE_JRE_ENABLED="false">
     <option name="UPDATING_POLICY" value="restart-server" />
     <deployment>
       <artifact name="pure_html:war exploded">
@@ -80,6 +80,7 @@
       </SHUTDOWN>
     </ConfigurationWrapper>
     <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="ConnectionTester" run_configuration_type="JUnit" />
       <option name="Make" enabled="true" />
       <option name="BuildArtifacts" enabled="true">
         <artifact name="pure_html:war exploded" />
