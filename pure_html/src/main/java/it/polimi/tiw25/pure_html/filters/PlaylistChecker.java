@@ -3,14 +3,7 @@ package it.polimi.tiw25.pure_html.filters;
 import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
 import it.polimi.tiw25.pure_html.entities.User;
 import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
-import org.thymeleaf.web.servlet.JakartaServletWebApplication;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -21,15 +14,15 @@ import java.sql.SQLException;
 /**
  * Filter to check if the requested playlist belongs to the currently logged-in User.
  */
-public class PlaylistChecker extends HttpServlet implements Filter {
+public class PlaylistChecker extends HttpFilter {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
 
     @Override
-    public void init() throws ServletException {
+    public void init(FilterConfig filterConfig) throws ServletException {
         try {
-            ServletContext context = getServletContext();
+            ServletContext context = filterConfig.getServletContext();
             String driver = context.getInitParameter("dbDriver");
             String url = context.getInitParameter("dbUrl");
             String user = context.getInitParameter("dbUser");
@@ -43,22 +36,10 @@ public class PlaylistChecker extends HttpServlet implements Filter {
             e.printStackTrace();
             throw new UnavailableException("Couldn't get db connection");
         }
-
-        ServletContext servletContext = getServletContext();
-        JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(servletContext);
-        WebApplicationTemplateResolver templateResolver = new WebApplicationTemplateResolver(webApplication);
-
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-        templateResolver.setSuffix(".html");
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) servletRequest;
-        HttpServletResponse res = (HttpServletResponse) servletResponse;
-        String homepageWithError = req.getServletContext().getContextPath() + "/HomePage?playlistError=true";
+    public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws IOException, ServletException {
 
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
@@ -69,16 +50,25 @@ public class PlaylistChecker extends HttpServlet implements Filter {
         try {
             result = playlistDAO.checkPlaylistOwner(Integer.parseInt(trackId), user);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        } catch (NumberFormatException e) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlistId");
+            return;
         }
 
-        if (!result) res.sendRedirect(homepageWithError);
+        if (!result) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Playlist does not exist");
+            return;
+        }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+
+        filterChain.doFilter(req, res);
     }
 
     @Override
     public void destroy() {
-        Filter.super.destroy();
+        super.destroy();
     }
 }

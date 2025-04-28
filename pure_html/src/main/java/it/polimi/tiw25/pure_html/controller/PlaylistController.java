@@ -63,13 +63,13 @@ public class PlaylistController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
         WebContext ctx = new WebContext(webApplication.buildExchange(req, resp), req.getLocale());
 
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
-        Integer playlistId = null;
+        int playlistId;
         try {
             playlistId = Integer.parseInt(req.getParameter("playlistId"));
         } catch (NumberFormatException e) {
@@ -77,32 +77,24 @@ public class PlaylistController extends HttpServlet {
             return;
         }
 
-        // verify playlist ownership
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
-        boolean isOwner = false;
-        try {
-            isOwner = playlistDAO.checkPlaylistOwner(playlistId, user);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (!isOwner) {
-            resp.sendError(
-                    HttpServletResponse.SC_FORBIDDEN,
-                    "You don't have permission to access this playlist"
-            );
-        }
 
         String trackGroupString = req.getParameter("gr");
-        Integer trackGroup = 0;
+        int trackGroup = 0;
         if (trackGroupString != null) {
-            Integer tmp = Integer.parseInt(trackGroupString);
+            int tmp;
+            try {
+                tmp = Integer.parseInt(trackGroupString);
+            } catch (NumberFormatException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid group");
+                return;
+            }
             if (tmp > 0) {
                 trackGroup = tmp;
             }
         }
 
-        String playlistTitle = null;
+        String playlistTitle;
 
         try {
             playlistTitle = playlistDAO.getPlaylistTitle(playlistId);
@@ -112,7 +104,7 @@ public class PlaylistController extends HttpServlet {
             return;
         }
 
-        List<Track> playlistTracks = null;
+        List<Track> playlistTracks;
         try {
             playlistTracks = playlistDAO.getTrackGroup(playlistId, trackGroup);
         } catch (SQLException e) {
@@ -121,7 +113,7 @@ public class PlaylistController extends HttpServlet {
             return;
         }
 
-        List<Track> addableTracks = null;
+        List<Track> addableTracks;
         try {
             addableTracks = playlistDAO.getTracksNotInPlaylist(playlistTitle, user.id());
         } catch (SQLException e) {
