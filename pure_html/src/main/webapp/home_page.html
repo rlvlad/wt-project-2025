@@ -33,32 +33,32 @@
         </button>
     </form>
     <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId">
+        <button class="single-item playlist-title" name="playlistId" value="1">
             <span class="first-line"> Playlist Title</span>
         </button>
     </form>
     <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId">
+        <button class="single-item playlist-title" name="playlistId" value="1">
             <span class="first-line"> Playlist Title</span>
         </button>
     </form>
     <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId">
+        <button class="single-item playlist-title" name="playlistId" value="1">
             <span class="first-line"> Playlist Title</span>
         </button>
     </form>
     <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId">
+        <button class="single-item playlist-title" name="playlistId" value="1">
             <span class="first-line"> Playlist Title</span>
         </button>
     </form>
     <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId">
+        <button class="single-item playlist-title" name="playlistId" value="1">
             <span class="first-line"> Playlist Title</span>
         </button>
     </form>
     <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId">
+        <button class="single-item playlist-title" name="playlistId" value="1">
             <span class="first-line"> Playlist Title</span>
         </button>
     </form>
@@ -79,7 +79,8 @@
             <div class="spacer"></div>
             <a href="#" title="Close" th:title="#{home_page.close}" class="modal-close" th:text="#{home_page.close}">Close</a>
         </div>
-        <form action="home_page.html" th:action="UploadTrack" method="post" enctype="multipart/form-data">
+        <form action="home_page.html" th:action="UploadTrack" method="post" enctype="multipart/form-data"
+              name="songAttributes">
             <input type="text" class="text-field" name="title" placeholder="Title" th:placeholder="#{home_page.title}">
             <br>
             <input type="text" class="text-field" name="artist" placeholder="Artist"
@@ -121,12 +122,13 @@
                    th:text="${userTracks.size()==0}? #{home_page.noTracksAvailable} : #{home_page.selectTracks}">Select
                 songs to add:</label>
             <br>
-            <select th:if="${userTracks.size()} != 0" id="trackSelector"
+            <select class="text-field" th:if="${userTracks.size()} != 0" id="trackSelector"
                     name="selectedTracks" multiple size="4"
                     th:size="${userTracks.size()>10} ? 10 : ${userTracks.size()}" th:remove="all-but-first">
                 <option value="Track" th:value="${track.id}"
                         th:text="${track.artist + ' - ' + track.title + ' (' + track.year + ')'}"
-                        th:each="track: ${userTracks}"> Artist - Title (Year)
+                        th:each="track: ${userTracks}">
+                    Artist - Title (Year)
                 </option>
                 <option value="Track1">Artist 1 - Title 1 (2001)</option>
                 <option value="Track2">Artist 2 - Title 2 (2002)</option>

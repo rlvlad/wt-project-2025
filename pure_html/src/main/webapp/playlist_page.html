@@ -23,10 +23,10 @@
     <!-- Five tracks per row of the corresponding playlist -->
     <form action="Track" method="GET" th:each="track : ${playlistTracks}" th:unless="${trackStat.index > 4}">
         <button class="single-item song-button" name="track_id" th:value="${track.id}">
-            <div class="text-container">
+            <span class="text-container">
                 <span class="first-line" th:text="${track.title}">TitleTrack</span><br/>
                 <span class="second-line" th:text="${track.album_title}">AlbumTitle</span>
-            </div>
+            </span>
             <img class="album-image" th:src="${track.image_path}" width="100" height="100">
         </button>
     </form>
@@ -86,7 +86,7 @@
                    th:text="${addableTracks.size()==0}? #{playlist_page.noTracksAvailable} : #{playlist_page.selectTracks}">Select
                 songs to add:</label>
             <br>
-            <select th:if="${addableTracks.size()}!=0" id="trackSelector"
+            <select class="text-field" th:if="${addableTracks.size()}!=0" id="trackSelector"
                     name="selectedTracks" multiple size="4"
                     th:size="${addableTracks.size()>10} ? 10 : ${addableTracks.size()}" th:remove="all-but-first">
                 <option value="Track" th:value="${track.id}"
