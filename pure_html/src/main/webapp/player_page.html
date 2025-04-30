@@ -25,6 +25,7 @@
     <div class="track-metadata" th:text="${track.year}">Year</div>
     <div class="track-metadata" th:text="${track.genre}">Track genre</div>
     <hr>
+    <img th:src="${track.image_path()}" width="200" height="200">
     <audio controls>
         <source th:src="${track.song_path}" type="audio/mpeg">
     </audio>
