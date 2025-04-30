@@ -35,7 +35,7 @@
       context {
         let sizeof(it) = measure(it).width
         // Queries the heading FOR THE CURRENT PAGE
-        let headings1 = query(selector(heading.where(level: 1))).filter(h1 => here().page()-1 == h1.location().page())
+        let headings1 = query(selector(heading.where(level: 1))).filter(h1 => here().page() - 1 == h1.location().page())
         let before = query(selector(heading.where(level: 1)).before(here()))
 
         let output
@@ -51,8 +51,8 @@
             height: 1em,
             width: 1em,
             radius: 2pt,
-            fill: colortheme,
-            stroke: colortheme,
+            fill: orange.lighten(10%),
+            stroke: orange.lighten(10%),
             baseline: 0.15 * 1em,
             align(
               center + horizon,

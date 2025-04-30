@@ -2,9 +2,11 @@
 
 = CSS styling
 
-/ Introduction: The project is based on a single CSS files, `components.css`, and all the others rely upon it to display the styles. Futhermore, all the colours are sourced from the `colors.css` file, which is itself is based on #emph[tinted-theming] @tinted-theming, a collection of commonly used themes in the developing world. We have chosen to use the #emph[Classic Light theme]#footnote[Very similar to #link("https://nothing.community/d/22988-nothing-os-30-general-release")[NothingOS] colorscheme.].
+== Introduction
 
-If you want to change the overall theme of the website, just switch to a new colorscheme by looking at the #link("https://tinted-theming.github.io/tinted-gallery/")[gallery].
+The project is based on a single CSS file, `components.css`, and all the others rely upon it to retrieve the styles. Futhermore, all the colours are sourced from the `colors.css` file, which is itself is based on #emph[tinted-theming] @tinted-theming, a collection of commonly used themes in the developing world. We have chosen to use the #emph[Classic Light theme]#footnote[Very similar to #link("https://nothing.community/d/22988-nothing-os-30-general-release")[NothingOS] colorscheme.].
+
+If you want to change the overall theme of the website, just switch to a new colorscheme by looking at the #link("https://tinted-theming.github.io/tinted-gallery/")[gallery]. In `colors.css` there are commented styles to choose from.
 
 #let css_explanation(css_source_code, comment) = {
   table(
