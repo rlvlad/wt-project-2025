@@ -56,8 +56,16 @@ public class CreatePlaylist extends HttpServlet {
 
         String[] selectedTracksStringIds = req.getParameterValues("selectedTracks");
         List<Integer> selectedTracksIds = new ArrayList<>();
-        if (selectedTracksStringIds != null)
-            Arrays.asList(selectedTracksStringIds).forEach(id -> selectedTracksIds.add(Integer.parseInt(id)));
+        if (selectedTracksStringIds != null) {
+            for (String id : selectedTracksStringIds) {
+                try {
+                    selectedTracksIds.add(Integer.parseInt(id));
+                } catch (NumberFormatException e) {
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid trackId");
+                    return;
+                }
+            }
+        }
 
         if (playlistTitle == null || playlistTitle.isEmpty()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Playlist title not valid");

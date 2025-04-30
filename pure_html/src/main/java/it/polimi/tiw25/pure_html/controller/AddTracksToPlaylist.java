@@ -50,18 +50,29 @@ public class AddTracksToPlaylist extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
         user = (User) req.getSession().getAttribute("user");
-        String playlistId = req.getParameter("playlistId");
         String[] selectedTracksStringIds = req.getParameterValues("selectedTracks");
         List<Integer> selectedTracksIds = new ArrayList<>();
-        if (selectedTracksStringIds != null)
-            Arrays.asList(selectedTracksStringIds).forEach(id -> selectedTracksIds.add(Integer.parseInt(id)));
-        if (playlistId == null || playlistId.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlist");
+        if (selectedTracksStringIds != null) {
+            for (String id : selectedTracksStringIds) {
+                try {
+                    selectedTracksIds.add(Integer.parseInt(id));
+                } catch (NumberFormatException e) {
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid trackId");
+                    return;
+                }
+            }
+        }
+
+        int playlistId;
+        try {
+            playlistId = Integer.parseInt(req.getParameter("playlistId"));
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlistId");
             return;
         }
 
         try {
-            playlistDAO.addTracksToPlaylist(selectedTracksIds, Integer.parseInt(playlistId));
+            playlistDAO.addTracksToPlaylist(selectedTracksIds, playlistId);
         } catch (SQLIntegrityConstraintViolationException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "One or more tracks were already added: operation aborted");
             return;

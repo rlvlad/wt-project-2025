@@ -71,26 +71,46 @@ public class UploadTrack extends HttpServlet {
         user = (User) req.getSession().getAttribute("user");
 
         // Initialize track
+        String title = req.getParameter("title");
+        if (title == null || title.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid title");
+            return;
+        }
+        String artist = req.getParameter("artist");
+        if (artist == null || artist.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid artist");
+            return;
+        }
+        String album = req.getParameter("album");
+        if (album == null || album.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid album");
+            return;
+        }
+        int year;
+        try {
+            year = Integer.parseInt(req.getParameter("year"));
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
+            return;
+        }
+        String genre = req.getParameter("genre");
+        if (genre == null || genre.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid genre");
+            return;
+        }
         String songPath = null;
         String imagePath = null;
         try {
             songPath = processPart(req.getPart("musicTrack"), "audio");
             imagePath = processPart(req.getPart("image"), "image");
-        } catch (ClientErrorException e) {
+        } catch (ClientErrorException | InternalServerErrorException e) {
             resp.sendError(e.getResponse().getStatus(), e.getMessage());
-        } catch (InternalServerErrorException e) {
-            resp.sendError(e.getResponse().getStatus(), e.getMessage());
+            return;
         } catch (SQLException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
         }
 
-        if (songPath == null || imagePath == null)
-            return;
-        String title = req.getParameter("title");
-        String artist = req.getParameter("artist");
-        String album = req.getParameter("album");
-        int year = Integer.parseInt(req.getParameter("year"));
-        String genre = req.getParameter("genre");
         track = new Track(0, title, artist, year, album, genre, imagePath, songPath, songHash, imageHash);
 
         // Add track
