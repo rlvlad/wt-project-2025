@@ -8,28 +8,6 @@ The project is based on a single CSS file, `components.css`, and all the others 
 
 If you want to change the overall theme of the website, just switch to a new colorscheme by looking at the #link("https://tinted-theming.github.io/tinted-gallery/")[gallery]. In `colors.css` there are commented styles to choose from.
 
-#let css_explanation(css_source_code, comment) = {
-  table(
-    inset: 10pt,
-    stroke: (left: orange.lighten(50%) + 2pt, rest: none),
-    // fill: orange.lighten(80%),
-    {
-      css_source_code
-      text(
-        weight: "bold",
-        "Comment —",
-      )
-      comment
-    },
-  )
-  // css_source_code
-  // text(
-  //   weight: "bold",
-  //   "Comment —",
-  // )
-  // comment
-}
-
 #css_explanation(
   ```css
   body {
@@ -234,7 +212,7 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
       rect(
         width: width,
         height: height,
-        fill: orange.lighten(50%),
+        fill: comments,
         align(
           start,
           "nav-bar",
@@ -243,7 +221,7 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
       rect(
         width: width,
         height: height,
-        fill: orange.lighten(50%),
+        fill: comments,
         align(
           start,
           "nav-bar",
@@ -256,8 +234,8 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
               fill: rgb(255, 255, 255, 25%),
               box(
                 inset: 4pt,
-                stroke: orange.lighten(10%),
-                fill: orange.lighten(70%),
+                stroke: variables,
+                fill: lighter-background,
                 "modal-window",
               ),
             ),
@@ -268,7 +246,7 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
   caption: [Modal representation.],
 )
 
-#pagebreak()
+// #pagebreak()
 
 - The target, when the user presses a button that launches the modal (e.g. Upload Track)
 

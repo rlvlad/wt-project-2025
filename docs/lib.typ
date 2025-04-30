@@ -1,5 +1,24 @@
 #let colortheme = orange
 
+#let colors = yaml("classic-light.yaml")
+
+#let default-background = rgb(colors.palette.base00)
+#let lighter-background = rgb(colors.palette.base01)
+#let selection-background = rgb(colors.palette.base02)
+#let comments = rgb(colors.palette.base03)
+#let dark-foreground = rgb(colors.palette.base04)
+#let default-foreground = rgb(colors.palette.base05)
+#let light-foreground = rgb(colors.palette.base06)
+#let light-background = rgb(colors.palette.base07)
+#let variables = rgb(colors.palette.base08)
+#let data-types = rgb(colors.palette.base09)
+#let support-types = rgb(colors.palette.base0A)
+#let string = rgb(colors.palette.base0B)
+#let support = rgb(colors.palette.base0C)
+#let functions = rgb(colors.palette.base0D)
+#let keywords = rgb(colors.palette.base0E)
+#let deprecated = rgb(colors.palette.base0F)
+
 #let project(
   title: "",
   subtitle: "",
@@ -19,22 +38,15 @@
   )
 
   set page(
-    // margin: (
-    //   top: 2.5cm,
-    //   rest: 2cm,
-    // ),
-    // margin: (
-    //   top: 2cm,
-    //   rest: 1.5cm,
-    // ),
-    fill: colortheme.lighten(90%),
+    // fill: colortheme.lighten(95%),
+    fill: default-background,
     columns: columns,
     numbering: "1",
     header: {
-      set text(6 / 7 * 1em, font: "Libertinus Serif")
+      set text(6 / 7 * 1em, font: "JetBrains Mono")
       context {
         let sizeof(it) = measure(it).width
-        // Queries the heading FOR THE CURRENT PAGE
+        // Queries the heading FOR THE PREVIOUS PAGE
         let headings1 = query(selector(heading.where(level: 1))).filter(h1 => here().page() - 1 == h1.location().page())
         let before = query(selector(heading.where(level: 1)).before(here()))
 
@@ -46,31 +58,20 @@
         } else if (before.len() != 0) {
           // otherwise it's the name of the current lvl 1 heading
           let numbering = counter(heading.where(level: 1)).display().first()
-          box(
-            inset: 10pt,
-            height: 1em,
-            width: 1em,
-            radius: 2pt,
-            fill: orange.lighten(10%),
-            stroke: orange.lighten(10%),
-            baseline: 0.15 * 1em,
-            align(
-              center + horizon,
-              text(
-                fill: colortheme.lighten(85%),
-                numbering,
-              ),
-            ),
+          text(
+            // fill: light-background,
+            {
+              numbering
+              [ --- ]
+              before.last().body
+            },
           )
-          " "
-          before.last().body
         }
 
-        show text: it => smallcaps(it)
         if (calc.even(here().page())) {
           counter(page).display()
           h(1fr)
-          output
+          title
         } else {
           output
           h(1fr)
@@ -86,15 +87,19 @@
   set text(
     // font: "Libre Caslon Text",
     // font: "New Computer Modern",
-    font: "EB Garamond",
-    size: 12pt,
+    // font: "EB Garamond",
+    // font: "Poppins",
+    font: "Barlow",
+    // weight: "regular",
+    size: 11.5pt,
     lang: "en",
+    fill: light-background
   )
 
   set par(justify: true, linebreaks: "optimized")
   set list(indent: 1.2em, tight: false)
   set enum(indent: 1.2em, tight: false)
-  set heading(numbering: "1.1.")
+  set heading(numbering: "1.1")
   // show math.equation: set text(font: "Fira Math")
 
   // title page
@@ -107,7 +112,7 @@
       text(
         size: 3em,
         weight: "bold",
-        title,
+        title.replace("@", "\n@"),
       )
 
       parbreak()
@@ -123,9 +128,9 @@
         center,
         {
           set text(size: 1.1em)
-          smallcaps(fullname) + linebreak()
+          strong(smallcaps(fullname)) + linebreak()
           link("mailto:" + mail, raw(mail)) + linebreak()
-          text(fill: blue, link(github, github))
+          text(fill: variables, link(github, github))
         },
       )
 
@@ -207,22 +212,38 @@
     )
   }
 
+  show heading: it => {
+    set text(font: "JetBrains Mono")
+    box(
+      width: 1fr,
+      inset: 10pt,
+      fill: light-background,
+      stroke: data-types,
+      align(
+        center,
+        text(
+          fill: selection-background,
+          smallcaps(it),
+        ),
+      ),
+    )
+    // v(6pt)
+  }
+
   show heading.where(level: 1): it => context {
     set page(header: { })
     pagebreak(to: "even", weak: true)
     set page(header: { })
-    v(10%)
     let number = if it.numbering != none { counter(heading.where(level: 1)).display().first() }
-    v(-15%)
-    set text(size: 2em)
+    set text(size: 1.75em, font: "JetBrains Mono", hyphenate: false)
+    v(-5%)
     align(
-      smallcaps(text(font: "Liberation Serif", number) + linebreak() + box(width: 21cm, it.body)),
       center + horizon,
+      smallcaps(number + v(0.7em) + it.body),
     )
   }
-  show heading: it => it + v(6pt)
 
-  show ref: it => text(fill: orange, it)
+  show ref: it => text(fill: functions, it)
   show link: it => text(fill: blue, underline(stroke: blue, it))
 
   body
@@ -258,20 +279,12 @@
 #let attr(string) = text(fill: olive, weight: "semibold", string)
 #let attr_spec(string) = text(fill: olive, style: "oblique", string)
 #let rel(string) = text(fill: blue, weight: "semibold", string)
-// #let entity(string) = highlight(fill: red, text(fill: white, string))
-// #let attr(string) = highlight(fill: olive, text(fill: white, string))
-// #let attr_spec(string) = underline(stroke: olive + 1.5pt, string)
-// #let rel(string) = highlight(fill: blue, text(fill: white, string))
 
 // BEHAVIOURS
 #let user_action(string) = text(fill: orange, weight: "semibold", string)
 #let element(string) = text(fill: aqua.darken(40%), weight: "semibold", string)
 #let page(string) = text(fill: purple, weight: "semibold", string)
 #let server_action(string) = text(fill: yellow.darken(20%), weight: "semibold", string)
-// #let user_action(string) = highlight(fill: orange, string)
-// #let element(string) = highlight(fill: aqua, string)
-// #let page(string) = highlight(fill: purple.lighten(50%), string)
-// #let server_action(string) = highlight(fill: yellow, string)
 
 // PIPELINE
 
@@ -303,8 +316,31 @@
   text(weight: "bold", "Comment")
   [ --- ]
   emph(comment)
+  pagebreak(weak: true)
 }
 
 #let redirects = $-->$
 
 #import "@preview/subpar:0.2.2": *
+
+#let css_explanation(css_source_code, comment) = {
+  table(
+    inset: 10pt,
+    stroke: (left: data-types + 2pt, rest: none),
+    // fill: orange.lighten(80%),
+    {
+      css_source_code
+      text(
+        weight: "bold",
+        "Comment —",
+      )
+      comment
+    },
+  )
+  // css_source_code
+  // text(
+  //   weight: "bold",
+  //   "Comment —",
+  // )
+  // comment
+}
