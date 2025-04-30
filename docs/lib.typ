@@ -27,9 +27,59 @@
     //   top: 2cm,
     //   rest: 1.5cm,
     // ),
+    fill: colortheme.lighten(90%),
     columns: columns,
     numbering: "1",
-    header: { },
+    header: {
+      set text(6 / 7 * 1em, font: "Libertinus Serif")
+      context {
+        let sizeof(it) = measure(it).width
+        // Queries the heading FOR THE CURRENT PAGE
+        let headings1 = query(selector(heading.where(level: 1))).filter(h1 => here().page()-1 == h1.location().page())
+        let before = query(selector(heading.where(level: 1)).before(here()))
+
+        let output
+
+        output = if (headings1.len() != 0) {
+          // if there is a lvl 1 heading on the page before, the header must be empty
+          none
+        } else if (before.len() != 0) {
+          // otherwise it's the name of the current lvl 1 heading
+          let numbering = counter(heading.where(level: 1)).display().first()
+          box(
+            inset: 10pt,
+            height: 1em,
+            width: 1em,
+            radius: 2pt,
+            fill: colortheme,
+            stroke: colortheme,
+            baseline: 0.15 * 1em,
+            align(
+              center + horizon,
+              text(
+                fill: colortheme.lighten(85%),
+                numbering,
+              ),
+            ),
+          )
+          " "
+          before.last().body
+        }
+
+        show text: it => smallcaps(it)
+        if (calc.even(here().page())) {
+          counter(page).display()
+          h(1fr)
+          output
+        } else {
+          output
+          h(1fr)
+          counter(page).display()
+        }
+        // v(-0.5em)
+        // line(length: 100%, stroke: 0.1pt + black)
+      }
+    },
     footer: { },
   )
 
@@ -98,25 +148,50 @@
 
   pagebreak()
 
-  set page(
-    header: context {
-      let output
-      if (literal-numbering) {
-        output = "Page " + counter(page).display() + " of " + str(counter(page).final().at(0))
-      } else {
-        output = counter(page).display()
-      }
-      if (calc.odd(here().page())) {
-        h(1fr)
-        output
-      } else {
-        output
-        h(1fr)
-      }
-    },
-  )
+  // set page(
+  //   header: context {
+  //     let output
+  //     if (literal-numbering) {
+  //       output = "Page " + counter(page).display() + " of " + str(counter(page).final().at(0))
+  //     } else {
+  //       output = counter(page).display()
+  //     }
+  //     if (calc.odd(here().page())) {
+  //       h(1fr)
+  //       output
+  //     } else {
+  //       output
+  //       h(1fr)
+  //     }
+  //   },
+  // )
 
   // mainmatter
+  show outline.entry: it => {
+    v(1em, weak: true)
+    link(
+      it.element.location(),
+      it.indented(
+        it.prefix(),
+        it.element.body + box(width: 1fr, repeat([\u{0009} . \u{0009} \u{0009}])) + it.page(),
+      ),
+    )
+  }
+
+  show outline.entry.where(level: 1): it => {
+    v(1.6em, weak: true)
+    link(
+      it.element.location(),
+      strong(
+        it.indented(
+          it.prefix(),
+          it.element.body + h(1fr) + it.page(),
+        ),
+      ),
+    )
+  }
+
+
   outline()
 
   show raw.where(block: true): it => {
@@ -132,7 +207,19 @@
     )
   }
 
-  show heading.where(level: 1): it => pagebreak() + it
+  show heading.where(level: 1): it => context {
+    set page(header: { })
+    pagebreak(to: "even", weak: true)
+    set page(header: { })
+    v(10%)
+    let number = if it.numbering != none { counter(heading.where(level: 1)).display().first() }
+    v(-15%)
+    set text(size: 2em)
+    align(
+      smallcaps(text(font: "Liberation Serif", number) + linebreak() + box(width: 21cm, it.body)),
+      center + horizon,
+    )
+  }
   show heading: it => it + v(6pt)
 
   show ref: it => text(fill: orange, it)

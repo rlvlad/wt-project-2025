@@ -222,41 +222,47 @@ Finally, without a doubt the most difficult CSS component in this project is the
 ```
 it's `hidden` by default, but once it's invoked it must be be above everything -- this is handled by the `z-index` property. Its position must be `fixed`, since it's not a movable window; also it can't be targeted by cursor: `pointer-events` are none. Another key aspect is the background color: in order to make it stand from its background, a slight blurred white is needed:
 #figure(
-  stack(
-    dir: ltr,
-    spacing: 1em,
-    rect(
-      width: 5cm,
-      height: 2cm,
-      fill: orange.lighten(50%),
-      align(
-        start,
-        "nav-bar",
-      ),
-    ),
-    rect(
-      width: 5cm,
-      height: 2cm,
-      fill: orange.lighten(50%),
-      align(
-        start,
-        "nav-bar",
-      )
-        + place(
-          center + horizon,
-          rect(
-            width: 5cm,
-            height: 2cm,
-            fill: rgb(255, 255, 255, 25%),
-            box(
-              inset: 4pt,
-              stroke: orange.lighten(10%),
-              "modal-window",
-            )
-          ),
+  {
+    let height = 3cm
+    let width = 7cm
+    let spacing = 1fr
+    stack(
+      dir: ltr,
+      spacing: spacing,
+      rect(
+        width: width,
+        height: height,
+        fill: orange.lighten(50%),
+        align(
+          start,
+          "nav-bar",
         ),
-    ),
-  ),
+      ),
+      rect(
+        width: width,
+        height: height,
+        fill: orange.lighten(50%),
+        align(
+          start,
+          "nav-bar",
+        )
+          + place(
+            center + horizon,
+            rect(
+              width: width,
+              height: height,
+              fill: rgb(255, 255, 255, 25%),
+              box(
+                inset: 4pt,
+                stroke: orange.lighten(10%),
+                fill: orange.lighten(70%),
+                "modal-window",
+              ),
+            ),
+          ),
+      ),
+    )
+  },
   caption: [Modal representation.],
 )
 
