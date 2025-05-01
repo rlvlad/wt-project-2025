@@ -118,14 +118,12 @@ A central part of a Playlist Manager is displaying all the playlist and tracks o
 
     The layout is computed as follows:
     #table(
-      columns: (auto, 1fr) + (auto,) * 4,
+      columns: (auto, 1fr) + (auto,) * 2,
       stroke: silver,
       align: center,
-      `main-title`,
+      `title`,
       table.cell(fill: purple.transparentize(50%), `spacer`),
-      `button1`,
-      `button2`,
-      `button_n`,
+      `button`,
       `logout`,
     )
     so we created the `spacer` element:

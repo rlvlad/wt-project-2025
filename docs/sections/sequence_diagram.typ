@@ -59,7 +59,8 @@
     _seq("B", "F", disable-src: true, comment: "Redirect")
   }),
   comment: [
-    Once the server is up and running, the Client requests the Login page. Then, thymeleaf processes the request and returns the correct context, to index the chosen locale. Afterwards, the User inserts their credentials.
+    Once the server is up and running, the Client requests the Login page. Then, thymeleaf processes the request and returns the correct context, to index the chosen locale.\
+    Afterwards, the User inserts their credentials.
 
     Those values are passed to the `checkUser()` function that returns `schrödingerUser` -- as the name implies, the variable might return a User; otherwise `null`. If `null`, then the credentials inserted do not match any record in the database; else the User is redirected to their HomePage and the `user` variable is set for the current session.
   ],
@@ -179,9 +180,9 @@
     _seq("B", "A", disable-src: true, comment: "player_page.html")
   }),
   comment: [
-    Once the User has displayed all the tracks from a playlist, the program allows to play them individually. Similarly to the `getPlaylistTracks()`, to retrieve all the informations about a single track the program is given the `track_id` parameter by pressing the corresponding button.
+    Once the User has displayed all the tracks from a playlist, the program allows to play them individually. In a similar fashion of the `getPlaylistTracks()` method, to retrieve all the informations about a single track the program is given the `track_id` parameter by pressing the corresponding button.
 
-    Finally, `getTrackById()` returns the track metadata, thymeleaf processes the context and display all the informations.
+    Finally, `getTrackById()` returns the track metadata, thymeleaf processes the context and displays all the informations.
   ],
 )
 
