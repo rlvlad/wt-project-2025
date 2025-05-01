@@ -37,9 +37,22 @@
     ),
   )
 
+  let color_filter(correct, overridden) = {
+    let correct_components = correct.rgb().components().slice(0, 3).map(x => x / 100% * 256)
+
+    let red = correct_components.at(0)
+    let green = correct_components.at(1)
+    let blue = correct_components.at(2)
+
+    if (red > 235 and green > 235 and blue > 235) {
+      return overridden
+    } else {
+      return correct
+    }
+  }
+
   set page(
-    // fill: colortheme.lighten(95%),
-    fill: default-background,
+    fill: color_filter(default-background, colortheme.lighten(90%)),
     columns: columns,
     numbering: "1",
     header: {
@@ -93,7 +106,7 @@
     // weight: "regular",
     size: 11.5pt,
     lang: "en",
-    fill: light-background
+    fill: light-background,
   )
 
   set par(justify: true, linebreaks: "optimized")
