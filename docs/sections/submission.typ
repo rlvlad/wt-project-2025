@@ -20,21 +20,19 @@ Each #entity[user] has a #attr[username], #attr[password], #attr[name] and #attr
 
 After the login, the user is able to #rel[create tracks by loading their data and then group them in playlists]. A #entity[playlist] is a #attr_spec[set of chosen tracks from the uploaded ones of the user]. A playlist has a #attr[title], a #attr[creation date] and is #attr[associated to its creator].
 
-#grid(
-  figure(
-    image("../misc/er_html.svg", width: 15cm),
-    caption: [ER diagram, .],
-  ), <er-diagram>,
-  figure(
-    "",
-    caption: [UML diagram.],
-  ), <uml-diagram>,
-  columns: 70%,
-  caption: [Database diagrams.],
-  label: <db-diagrams>,
-  // placement: bottom,
-  // scope: "parent",
-)
+#figure(
+  placement: bottom,
+  scope: "parent",
+  image("../misc/er_html.svg", width: 15cm),
+  caption: [ER diagram, .],
+)<er-diagram>
+
+#figure(
+  placement: bottom,
+  scope: "parent",
+  "",
+  caption: [UML diagram.],
+)<uml-diagram>
 
 == Behaviour
 
@@ -69,7 +67,7 @@ After adding a new track to the current playlist, the application #server_action
 
 #figure(
   "",
-  // placement: bottom,
-  // scope: "parent",
+  placement: bottom,
+  scope: "parent",
   caption: [IFML diagram.],
 )

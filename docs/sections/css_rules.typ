@@ -202,6 +202,8 @@ Finally, without a doubt the most difficult CSS component in this project is the
 ```
 it's `hidden` by default, but once it's invoked it must be be above everything -- this is handled by the `z-index` property. Its position must be `fixed`, since it's not a movable window; also it can't be targeted by cursor: `pointer-events` are none. Another key aspect is the background color: in order to make it stand from its background, a slight blurred white is needed:
 #figure(
+  scope: "parent",
+  placement: bottom,
   {
     let height = 3cm
     let width = 7cm

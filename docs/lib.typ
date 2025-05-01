@@ -53,7 +53,6 @@
 
   set page(
     fill: color_filter(default-background, colortheme.lighten(90%)),
-    columns: columns,
     numbering: "1",
     header: {
       set text(6 / 7 * 1em, font: "JetBrains Mono")
@@ -209,7 +208,7 @@
     )
   }
 
-
+  set page(columns: columns)
   outline()
 
   show raw.where(block: true): it => {
@@ -236,7 +235,7 @@
         center,
         text(
           fill: selection-background,
-          smallcaps(it),
+          smallcaps(counter(heading).display() + " " + it.body),
         ),
       ),
     )
@@ -246,7 +245,7 @@
   show heading.where(level: 1): it => context {
     set page(header: { })
     pagebreak(to: "even", weak: true)
-    set page(header: { })
+    set page(header: { }, columns: 1)
     let number = if it.numbering != none { counter(heading.where(level: 1)).display().first() }
     set text(size: 1.75em, font: "JetBrains Mono", hyphenate: false)
     v(-5%)
@@ -264,25 +263,20 @@
 
 // LEGEND
 #let legend(arr) = {
+  let num = int(arr.len()/2)
   grid(
-    columns: (1fr,) + (1fr,) * arr.len(),
+    columns: (auto,) + (1fr,) * num,
     align: center + horizon,
-    stroke: (x, y) => (
-      right: if x == 0 or x == arr.len() {
-        silver
-      },
-      left: if x == 0 {
-        silver
-      },
-      top: if y == 0 {
-        silver
-      },
-      bottom: if y == 0 {
-        silver
-      },
-    ),
+    stroke: silver,
     inset: 10pt,
-    text(weight: "bold", style: "italic", smallcaps("Legend")),
+    grid.cell(
+      rowspan: num,
+      rotate(
+        -90deg,
+        reflow: true,
+        text(weight: "bold", style: "italic", smallcaps("Legend"))
+      )
+    ),
     ..arr.flatten()
   )
 }
@@ -322,12 +316,22 @@
   //     text(14pt, smallcaps(title)),
   //   ),
   // )
-  heading(level: 2, title)
+  place(
+    top,
+    scope: "parent",
+    float: true,
+    heading(level: 2, title)
+  )
   [
-    #figure(diagram-code)#label(label_)
+    #figure(
+      scope: "parent",
+      placement: top,
+      diagram-code
+    )
+    #label(label_)
   ]
-  text(weight: "bold", "Comment")
-  [ --- ]
+  // text(weight: "bold", "Comment")
+  // [ --- ]
   emph(comment)
   pagebreak(weak: true)
 }

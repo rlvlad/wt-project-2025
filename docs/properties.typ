@@ -15,4 +15,5 @@
       github: "https://github.com/rokuban"
     ),
   ),
+  columns: 2
 )
