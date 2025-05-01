@@ -24,7 +24,7 @@
   subtitle: "",
   authors: (),
   columns: 1,
-  literal-numbering: false,
+  tech-stack: false,
   body,
 ) = {
   set document(
@@ -115,7 +115,6 @@
   // show math.equation: set text(font: "Fira Math")
 
   // title page
-
   align(
     left + horizon,
     {
@@ -160,28 +159,25 @@
       )
 
       v(3em)
+
+      // tech stack
+      if (tech-stack) {
+        let logos = (
+          image(width: 3cm, "img/java.svg"),
+          image(width: 3cm, "img/thymeleaf.svg"),
+          image(width: 3cm, "img/javascript.svg"),
+        )
+        grid(
+          columns: (1fr,) * logos.len(),
+          align: center + horizon,
+          gutter: 1em,
+          ..logos
+        )
+      }
     },
   )
 
   pagebreak()
-
-  // set page(
-  //   header: context {
-  //     let output
-  //     if (literal-numbering) {
-  //       output = "Page " + counter(page).display() + " of " + str(counter(page).final().at(0))
-  //     } else {
-  //       output = counter(page).display()
-  //     }
-  //     if (calc.odd(here().page())) {
-  //       h(1fr)
-  //       output
-  //     } else {
-  //       output
-  //       h(1fr)
-  //     }
-  //   },
-  // )
 
   // mainmatter
   show outline.entry: it => {
@@ -304,7 +300,7 @@
 
 #import "@preview/chronos:0.2.1": * // sequence diagrams
 
-#let thymeleaf = image("img/thymeleaf.png", width: 1.5em, height: 1.5em, fit: "contain")
+#let thymeleaf = image("img/thymeleaf.svg", width: 1.5em, height: 1.5em, fit: "contain")
 
 #let balance(content) = context {
   let height = measure(block(width: 21cm, content)).height

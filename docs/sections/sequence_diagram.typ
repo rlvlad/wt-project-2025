@@ -2,31 +2,12 @@
 
 = Sequence diagrams
 
-// Components:
-// - DAOs
-//   - PlaylistDAO
-//   - TrackDAO
-//   - UserDAO
-// - Entities
-//   - Playlist
-//   - Track
-//   - User
-// - Servlets
-//   - Login #redirects `index.html`
-//   - HomePage #redirects `home_page.html`
-//   - PlaylistPage #redirects `playlist_page.html`
-//   - Register #redirects `register_page.html`
-//   - Track #redirects `player_page.html`
-//   - Logout #redirects Login
-// - Filters
-//   - UserChecker #redirects Login, $star$
-
 #show "thymeleaf": (
   "thymeleaf"
     + h(0.1cm)
     + box(
       image(
-        "../img/thymeleaf.png",
+        "../img/thymeleaf.svg",
         width: 1em,
         height: 1em,
       ),
