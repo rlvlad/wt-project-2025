@@ -52,6 +52,10 @@
   }
 
   set page(
+    margin: (
+      rest: 1.6cm,
+      top: 2cm,
+    ),
     fill: color_filter(default-background, colortheme.lighten(90%)),
     numbering: "1",
     header: {
@@ -247,12 +251,31 @@
     v(-5%)
     align(
       center + horizon,
-      smallcaps(number + v(0.7em) + it.body),
+      block(width: page.width * 0.6, smallcaps(number + v(0.7em) + it.body)),
     )
   }
 
   show ref: it => text(fill: functions, it)
   show link: it => text(fill: blue, underline(stroke: blue, it))
+
+  show "thymeleaf": (
+    text(fill: rgb("#005F0F"), "thymeleaf")
+      + h(0.1cm)
+      + box(
+        image(
+          "img/thymeleaf.svg",
+          width: 1em,
+          height: 1em,
+        ),
+        // width: 1em,
+        // height: 1em,
+        baseline: 0.1cm,
+      )
+  )
+
+  show "Thymeleaf": text(fill: rgb("#005F0F"), "Thymeleaf")
+
+  // set figure(gap: 2em)
 
   body
 }
@@ -315,7 +338,7 @@
   )
 }
 
-#let seq_diagram(title, diagram-code, label_: "", comment: "") = {
+#let seq_diagram(title, diagram-code, label_: "", comment: "", next_page: true) = {
   place(
     top,
     scope: "parent",
@@ -333,7 +356,9 @@
   // text(weight: "bold", "Comment")
   // [ --- ]
   balance(emph(comment))
-  pagebreak(weak: true)
+  if (next_page) {
+    pagebreak(weak: true)
+  }
 }
 
 #let redirects = $-->$
@@ -347,11 +372,12 @@
     // fill: orange.lighten(80%),
     {
       css_source_code
-      text(
-        weight: "bold",
-        "Comment —",
-      )
-      comment
+      // text(
+      //   weight: "bold",
+      //   "Comment",
+      // )
+      // [ --- ]
+      emph(comment)
     },
   )
   // css_source_code

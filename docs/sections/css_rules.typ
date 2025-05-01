@@ -4,9 +4,9 @@
 
 == Introduction
 
-The project is based on a single CSS file, `components.css`, and all the others rely upon it to retrieve the styles. Futhermore, all the colours are sourced from the `colors.css` file, which is itself is based on #emph[tinted-theming] @tinted-theming, a collection of commonly used themes in the developing world. We have chosen to use the #emph[Classic Light theme]#footnote[Very similar to #link("https://nothing.community/d/22988-nothing-os-30-general-release")[NothingOS] colorscheme.].
+The project is based on a single CSS file, `components.css`, and all the others rely upon it to retrieve the styles. Furthermore, all the colours are sourced from the `colors.css` file, which is based on #emph[tinted-theming] @tinted-theming, a collection of commonly used themes in the developing world. We have chosen to use the #emph[Classic Light theme]#footnote[This very documentation also is sourced from the exact same colourscheme.].
 
-If you want to change the overall theme of the website, just switch to a new colorscheme by looking at the #link("https://tinted-theming.github.io/tinted-gallery/")[gallery]. In `colors.css` there are commented styles to choose from.
+If you want to change the overall theme of the website, just switch to a new colorscheme by looking at the #link("https://tinted-theming.github.io/tinted-gallery/")[tinted-theming gallery]. In `colors.css` there are a few commented styles to choose from.
 
 #css_explanation(
   ```css
@@ -45,7 +45,7 @@ After the body, we styled all the elements in a consistent manner.
   }
   ```,
   [
-    Every button is derived from the one above. The text is aligned in the center both horizontally and vertically, bold. Then there are some margin and padding to help the user see better#footnote[There will be later an exception.].
+    Every button is derived from the one above. The text is aligned in the center both horizontally and vertically; its weight set to bold. Then there are some margin and padding to help the user see better#footnote[There will be later an exception.].
   ],
 )
 
@@ -63,15 +63,15 @@ A notable exception to the buttons colorscheme is the `logout` button:
   }
   ```,
   [
-    Both the `background-color`, `font-weight` and `color` are different, to further imply that button is different from the others (upload track, create playlist...).
+    Both the `background-color`, `font-weight` and `color` are different, to further imply that the logout button is different from the others (upload track, create playlist...).
   ],
 )
 
-The same can be said to the `close` button in the modal, will be explained below.
+// The same can be said for the `close` button in the modal, which will be explained after.
 
 == Containers
 
-The first container the user encounters is the Login one, which shares its design with Register and the track player:
+The first container the user sees is the Login one, which shares its design with Register and the track player:
 #css_explanation(
   ```css
   .center-panel {
@@ -84,21 +84,23 @@ The first container the user encounters is the Login one, which shares its desig
   ```,
   [
     An important aspect of login and register is their horizontal bar:
-    ```css
-    hr {
-      display: block;
-      height: 1px;
-      border: 0;
-      border-top: 1px solid var(--light-background);
-      margin: 1em 0;
-      padding: 0;
-    }
-    ```
+    #emph[
+      ```css
+      hr {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid var(--light-background);
+        margin: 1em 0;
+        padding: 0;
+      }
+      ```
+    ]
     which is not used in the track player.
   ],
 )
 
-A central part of a Playlist Manager is displaying all the playlist and tracks of a given user. To achieve that, we opted for a classic layout composed of a top and bottom navigation bars and a main section.
+A basic function of a Playlist Manager is being able to display all the playlists and tracks of a given user. To achieve that, we opted for a classic layout composed of a top and bottom navigation bars and a main, central section.
 
 #css_explanation(
   ```css
@@ -118,20 +120,23 @@ A central part of a Playlist Manager is displaying all the playlist and tracks o
 
     The layout is computed as follows:
     #table(
-      columns: (auto, 1fr) + (auto,) * 2,
+      columns: (auto, 1fr) + (auto,) * 3,
       stroke: silver,
       align: center,
       `title`,
       table.cell(fill: purple.transparentize(50%), `spacer`),
       `button`,
+      `button`,
       `logout`,
     )
     so we created the `spacer` element:
-    ```css
-    .spacer {
-        flex-grow: 1;
-    }
-    ```
+    #emph[
+      ```css
+      .spacer {
+          flex-grow: 1;
+      }
+      ```
+    ]
     which takes all the space available.
   ],
 )
@@ -173,15 +178,15 @@ Next, the tracks and playlists containers.
   }
   ```,
   [
-    According to project specifications, there must be #strong[at most 5 tracks per page]: we opted for a CSS grid. This works well along witht the `body` previously set because the grid can expand and shrink its items accordingly.
+    According to project the specifications (@project-breakdown), there must be #emph[at most 5 tracks per page]: we opted for a CSS grid. This works well along with the `body` previously set because the grid can expand and shrink its items accordingly.
 
-    As per the navigation bar, the single items are themselves flexible boxes. The different is they are not allowed to wrap -- one might ask: why not, since the tracks must list the title and the album? because we handle that line break manually with the `<br` tag.
+    As per the navigation bar, the single items are themselves flexible boxes. The difference lies in the fact they are not allowed to wrap -- one might ask: why not, since the tracks must list both track title and album title? because we handle that line break manually with the `<br>` tag.
   ],
 )
 
 == Modal
 
-Finally, without a doubt the most difficult CSS component in this project is the modal, which is a dialog window created entirely with CSS. As a complex element, it can be broke into multiple parts:
+Finally, without a doubt the most difficult CSS component in this project is the modal, which is a dialog window created entirely with CSS. As a complex element, it can be broken in multiple parts:
 
 - The window
 ```css
@@ -205,7 +210,7 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
   {
     let height = 3cm
     let width = 7cm
-    let spacing = 1fr
+    let spacing = 1.25cm
     stack(
       dir: ltr,
       spacing: spacing,
@@ -291,4 +296,4 @@ once the modal has been invoked, its visibility must be switched to `visible` an
     color: black;
 }
 ```
-as stated previously, the `modal-close` button is an exception to the `button` rule. It's considerably smaller than the others, the cursor is immediately `pointer`. In conclusion its position is computed on the `modal-window`, from above right.
+as stated previously, the `modal-close` button is an exception to the `button` rule. It's considerably smaller than the others, the cursor is immediately `pointer`. Its position is computed on the `modal-window`, from above right.

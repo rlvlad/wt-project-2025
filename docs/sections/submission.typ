@@ -1,6 +1,6 @@
 #import "../lib.typ": *
 
-= Project submission breakdown
+= Project submission breakdown<project-breakdown>
 
 == Database logic
 

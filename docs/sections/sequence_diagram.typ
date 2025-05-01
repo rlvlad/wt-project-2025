@@ -1,22 +1,7 @@
 #import "../lib.typ": *
+// #show: project.with()
 
 = Sequence diagrams
-
-#show "thymeleaf": (
-  "thymeleaf"
-    + h(0.1cm)
-    + box(
-      image(
-        "../img/thymeleaf.svg",
-        width: 1em,
-        height: 1em,
-      ),
-      // width: 1em,
-      // height: 1em,
-      baseline: 0.1cm,
-    )
-  // + h(0.05cm)
-)
 
 #seq_diagram(
   "Login sequence diagram",
@@ -161,7 +146,7 @@
     _seq("B", "A", disable-src: true, comment: "player_page.html")
   }),
   comment: [
-    Once the User has displayed all the tracks from a playlist, the program allows to play them individually. In a similar fashion of the `getPlaylistTracks()` method, to retrieve all the informations about a single track the program is given the `track_id` parameter by pressing the corresponding button.
+    Once the program has lodead all the tracks associated to a playlist, it allows to play them one by one in the dedicated player page. In a similar fashion to the `getPlaylistTracks()` method, in order to retrieve all the informations regarding a single track the program is given the `track_id` parameter by pressing the corresponding button.
 
     Finally, `getTrackById()` returns the track metadata, thymeleaf processes the context and displays all the informations.
   ],
@@ -228,6 +213,6 @@
     _seq("B", "D", disable-src: true, comment: "Redirect")
   }),
   comment: [
-    From nearly every page, the User is able to logout, at any moment. It's a GET request to the Logout servlet: it invalidates the session and redirects the User to the Login page.
+    From every web page except Login and Register, the User is able to logout, at any moment. It's a simple `GET` request to the Logout servlet, which checks if the `user` session attribute exists; if it does, then it invalidates the session and redirects the User to the Login page.
   ],
 )
