@@ -263,7 +263,7 @@
 
 // LEGEND
 #let legend(arr) = {
-  let num = int(arr.len()/2)
+  let num = int(arr.len() / 2)
   grid(
     columns: (auto,) + (1fr,) * num,
     align: center + horizon,
@@ -274,8 +274,8 @@
       rotate(
         -90deg,
         reflow: true,
-        text(weight: "bold", style: "italic", smallcaps("Legend"))
-      )
+        text(weight: "bold", style: "italic", smallcaps("Legend")),
+      ),
     ),
     ..arr.flatten()
   )
@@ -306,33 +306,37 @@
 
 #let thymeleaf = image("img/thymeleaf.png", width: 1.5em, height: 1.5em, fit: "contain")
 
-#let seq_diagram(title, diagram-code, label_: "", comment: "") = {
-  // align(
-  //   center,
-  //   box(
-  //     width: 70%,
-  //     stroke: (bottom: black),
-  //     inset: (bottom: 1em),
-  //     text(14pt, smallcaps(title)),
-  //   ),
-  // )
+#let balance(content) = context {
+  let height = measure(block(width: 21cm, content)).height
   place(
     top,
     scope: "parent",
     float: true,
-    heading(level: 2, title)
+    block(
+      height: height * 1.3, // to fix calculation error
+      columns(2, content),
+    ),
+  )
+}
+
+#let seq_diagram(title, diagram-code, label_: "", comment: "") = {
+  place(
+    top,
+    scope: "parent",
+    float: true,
+    heading(level: 2, title),
   )
   [
     #figure(
       scope: "parent",
       placement: top,
-      diagram-code
+      diagram-code,
     )
     #label(label_)
   ]
   // text(weight: "bold", "Comment")
   // [ --- ]
-  emph(comment)
+  balance(emph(comment))
   pagebreak(weak: true)
 }
 
