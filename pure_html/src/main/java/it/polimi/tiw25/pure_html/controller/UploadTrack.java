@@ -16,7 +16,6 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.ServerErrorException;
 import jakarta.ws.rs.core.Response;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
@@ -26,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.*;
+import java.util.function.Function;
 
 @WebServlet("/UploadTrack")
 @MultipartConfig
@@ -65,22 +65,16 @@ public class UploadTrack extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         user = (User) req.getSession().getAttribute("user");
 
+        // Check param validity and return its value if ok
+        Function<String, String> getParam = (paramName) -> {
+            String paramValue = req.getParameter(paramName);
+            if (paramValue == null || paramValue.isEmpty()) {
+                throw new ClientErrorException("Missing " + paramName, Response.Status.BAD_REQUEST);
+            }
+            return paramValue;
+        };
+
         // Initialize track
-        String title = req.getParameter("title");
-        if (title == null || title.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing title");
-            return;
-        }
-        String artist = req.getParameter("artist");
-        if (artist == null || artist.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing artist");
-            return;
-        }
-        String album = req.getParameter("album");
-        if (album == null || album.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing album");
-            return;
-        }
         int year;
         try {
             year = Integer.parseInt(req.getParameter("year"));
@@ -90,17 +84,12 @@ public class UploadTrack extends HttpServlet {
         }
         if (year < 1901 || year > 2155) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
-        }
-        String genre = req.getParameter("genre");
-        if (genre == null || genre.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing genre");
             return;
         }
-        String songPath;
-        String imagePath;
+
         try {
-            songPath = processPart(req.getPart("musicTrack"), "audio");
-            imagePath = processPart(req.getPart("image"), "image");
+            track = new Track(0, getParam.apply("title"), getParam.apply("artist"), year, getParam.apply("album"), getParam.apply("genre"),
+                    processPart(req.getPart("image"), "image"), processPart(req.getPart("musicTrack"), "audio"), songHash, imageHash);
         } catch (ClientErrorException | InternalServerErrorException e) {
             resp.sendError(e.getResponse().getStatus(), e.getMessage());
             return;
@@ -108,8 +97,6 @@ public class UploadTrack extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
-
-        track = new Track(0, title, artist, year, album, genre, imagePath, songPath, songHash, imageHash);
 
         // Add track
         TrackDAO trackDAO = new TrackDAO(connection);
