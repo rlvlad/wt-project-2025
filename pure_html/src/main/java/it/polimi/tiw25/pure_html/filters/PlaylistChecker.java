@@ -43,12 +43,12 @@ public class PlaylistChecker extends HttpFilter {
 
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
-        String trackId = req.getParameter("playlistId");
+        String playlistId = req.getParameter("playlistId");
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 
         boolean result;
         try {
-            result = playlistDAO.checkPlaylistOwner(Integer.parseInt(trackId), user);
+            result = playlistDAO.checkPlaylistOwner(Integer.parseInt(playlistId), user);
         } catch (SQLException e) {
             e.printStackTrace();
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);

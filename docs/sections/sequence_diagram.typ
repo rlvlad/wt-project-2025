@@ -30,6 +30,7 @@
 
     Those values are passed to the `checkUser()` function that returns `schrödingerUser` -- as the name implies, the variable might return a User; otherwise `null`. If `null`, then the credentials inserted do not match any record in the database; else the User is redirected to their HomePage and the `user` variable is set for the current session.
   ],
+  label_: "login-sequence"
 )
 
 #seq_diagram(
@@ -65,6 +66,7 @@
     Else the program appends `isUserAdded` with `false` value and redirects to the Registration servlet: thymeleaf checks for that context variable and if it evaluates to false, it prints an error.
 
   ],
+  label_: "register-sequence"
 )
 
 #seq_diagram(
@@ -90,6 +92,7 @@
   comment: [
     Once the Login is complete, the User is redirected to their HomePage, which hosts all their Playlists. In order to do so, the program needs to User attribute -- which is retrieved via the session; then, it is passed to the `getUserPlaylists` function and finally thymeleaf displays all values.
   ],
+  label_: "homepage-sequence"
 )
 
 #seq_diagram(
@@ -123,6 +126,7 @@
 
     Then those value are passed to `getPlaylistTracks()`, that returns all the tracks. Finally, thymeleaf processes the context and display all the tracks.
   ],
+  label_: "playlistpage-sequence"
 )
 
 #seq_diagram(
@@ -146,10 +150,11 @@
     _seq("B", "A", disable-src: true, comment: "player_page.html")
   }),
   comment: [
-    Once the program has lodead all the tracks associated to a playlist, it allows to play them one by one in the dedicated player page. In a similar fashion to the `getPlaylistTracks()` method, in order to retrieve all the informations regarding a single track the program is given the `track_id` parameter by pressing the corresponding button.
+    Once the program has lodead all the tracks associated to a playlist, it allows to play them one by one in the dedicated player page. In a similar fashion to the `getPlaylistTracks()` method, in order to retrieve all the information regarding a single track the program is given the `track_id` parameter by pressing the corresponding button.
 
-    Finally, `getTrackById()` returns the track metadata, thymeleaf processes the context and displays all the informations.
+    Finally, `getTrackById()` returns the track metadata, thymeleaf processes the context and displays all the information.
   ],
+  label_: "track-sequence"
 )
 
 #seq_diagram(
@@ -175,6 +180,7 @@
     _seq("B", "C", comment: [addTrack(track)])
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
+  label_: "uploadtrack-sequence"
 )
 
 #seq_diagram(
@@ -197,6 +203,7 @@
     _seq("B", "E", comment: [addTracksToPlaylist(playlistId,selectedTracksIds)])
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
+  label_: "createplaylist-sequence"
 )
 
 #seq_diagram(
@@ -215,4 +222,5 @@
   comment: [
     From every web page except Login and Register, the User is able to logout, at any moment. It's a simple `GET` request to the Logout servlet, which checks if the `user` session attribute exists; if it does, then it invalidates the session and redirects the User to the Login page.
   ],
+  label_: "logout-sequence"
 )

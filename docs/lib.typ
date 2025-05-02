@@ -53,50 +53,11 @@
 
   set page(
     margin: (
-      rest: 1.6cm,
-      top: 2cm,
+      rest: 1.5cm,
+      top: 2.2cm,
     ),
     fill: color_filter(default-background, colortheme.lighten(90%)),
-    numbering: "1",
-    header: {
-      set text(6 / 7 * 1em, font: "JetBrains Mono")
-      context {
-        let sizeof(it) = measure(it).width
-        // Queries the heading FOR THE PREVIOUS PAGE
-        let headings1 = query(selector(heading.where(level: 1))).filter(h1 => here().page() - 1 == h1.location().page())
-        let before = query(selector(heading.where(level: 1)).before(here()))
-
-        let output
-
-        output = if (headings1.len() != 0) {
-          // if there is a lvl 1 heading on the page before, the header must be empty
-          none
-        } else if (before.len() != 0) {
-          // otherwise it's the name of the current lvl 1 heading
-          let numbering = counter(heading.where(level: 1)).display().first()
-          text(
-            // fill: light-background,
-            {
-              numbering
-              [ --- ]
-              before.last().body
-            },
-          )
-        }
-
-        if (calc.even(here().page())) {
-          counter(page).display()
-          h(1fr)
-          title
-        } else {
-          output
-          h(1fr)
-          counter(page).display()
-        }
-        // v(-0.5em)
-        // line(length: 100%, stroke: 0.1pt + black)
-      }
-    },
+    header: { },
     footer: { },
   )
 
@@ -181,7 +142,49 @@
     },
   )
 
-  pagebreak()
+  set page(
+    numbering: "1",
+    header: {
+      set text(6 / 7 * 1em, font: "JetBrains Mono")
+      context {
+        let sizeof(it) = measure(it).width
+        // Queries the heading FOR THE PREVIOUS PAGE
+        let headings1 = query(selector(heading.where(level: 1))).filter(h1 => here().page() - 1 == h1.location().page())
+        let before = query(selector(heading.where(level: 1)).before(here()))
+
+        let output
+
+        output = if (headings1.len() != 0) {
+          // if there is a lvl 1 heading on the page before, the header must be empty
+          none
+        } else if (before.len() != 0) {
+          // otherwise it's the name of the current lvl 1 heading
+          let numbering = counter(heading.where(level: 1)).display().first()
+          text(
+            // fill: light-background,
+            {
+              numbering
+              [ --- ]
+              before.last().body
+            },
+          )
+        }
+
+        if (calc.even(here().page())) {
+          counter(page).display()
+          h(1fr)
+          title
+        } else {
+          output
+          h(1fr)
+          counter(page).display()
+        }
+        // v(-0.5em)
+        // line(length: 100%, stroke: 0.1pt + black)
+      }
+    },
+    header-ascent: 40%,
+  )
 
   // mainmatter
   show outline.entry: it => {
@@ -248,9 +251,9 @@
     set page(header: { }, columns: 1)
     let number = if it.numbering != none { counter(heading.where(level: 1)).display().first() }
     set text(size: 1.75em, font: "JetBrains Mono", hyphenate: false)
-    v(-5%)
+    v(30%)
     align(
-      center + horizon,
+      center,
       block(width: page.width * 0.6, smallcaps(number + v(0.7em) + it.body)),
     )
   }
@@ -300,6 +303,12 @@
   )
 }
 
+#let SINGLE_COLUMN(body) = {
+  set page(columns: 1)
+
+  body
+}
+
 // DATABASE
 #let entity(string) = text(fill: red, weight: "semibold", string)
 #let attr(string) = text(fill: olive, weight: "semibold", string)
@@ -313,7 +322,6 @@
 #let server_action(string) = text(fill: yellow.darken(20%), weight: "semibold", string)
 
 // PIPELINE
-
 #let addon = emoji.rocket
 #let u_action = emoji.person
 #let s_action = emoji.computer
@@ -321,29 +329,38 @@
 
 #let comment(string) = text(fill: black.lighten(40%), h(1em) + raw("// " + string))
 
+// Sequence diagrams
+
 #import "@preview/chronos:0.2.1": * // sequence diagrams
 
 #let thymeleaf = image("img/thymeleaf.svg", width: 1.5em, height: 1.5em, fit: "contain")
 
 #let balance(content) = context {
-  let height = measure(block(width: 21cm, content)).height
+  let height = measure(
+    // width: page.width - page.margin.left.length - page.margin.left.length,
+    width: 21cm - 1.5cm - 1.5cm,
+    content,
+  ).height
   place(
     top,
     scope: "parent",
     float: true,
     block(
-      height: height * 1.3, // to fix calculation error
+      height: height, // to fix calculation error
       columns(2, content),
     ),
   )
 }
 
-#let seq_diagram(title, diagram-code, label_: "", comment: "", next_page: true) = {
+#let seq_diagram(title, diagram-code, label_: "", comment: "", next_page: true, add_comment: true) = {
   place(
     top,
     scope: "parent",
     float: true,
-    heading(level: 2, title),
+    [
+      #heading(level: 2, title)
+      #label(label_)
+    ],
   )
   [
     #figure(
@@ -351,9 +368,20 @@
       placement: top,
       diagram-code,
     )
-    #label(label_)
   ]
-  // text(weight: "bold", "Comment")
+  if (add_comment) {
+    place(
+      top,
+      scope: "parent",
+      float: true,
+      grid(
+        columns: (auto, 1fr),
+        column-gutter: 1em,
+        align: center + horizon,
+        text(weight: "bold", style: "oblique", "Comment"), line(length: 100%, stroke: 0.5pt + variables),
+      ),
+    )
+  }
   // [ --- ]
   balance(emph(comment))
   if (next_page) {
@@ -364,6 +392,8 @@
 #let redirects = $-->$
 
 #import "@preview/subpar:0.2.2": *
+
+// CSS
 
 #let css_explanation(css_source_code, comment) = {
   table(
@@ -386,4 +416,13 @@
   //   "Comment —",
   // )
   // comment
+}
+
+#let double_col_spaces(v_space) = {
+  place(
+    top,
+    scope: "parent",
+    float: true,
+    v(v_space),
+  )
 }
