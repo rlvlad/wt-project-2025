@@ -3,7 +3,6 @@ package it.polimi.tiw25.pure_html.controller;
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
-import jakarta.activation.MimeTypeParseException;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
@@ -23,14 +22,10 @@ import java.io.IOException;
 import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.rmi.ServerError;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HexFormat;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @WebServlet("/UploadTrack")
 @MultipartConfig
@@ -73,17 +68,17 @@ public class UploadTrack extends HttpServlet {
         // Initialize track
         String title = req.getParameter("title");
         if (title == null || title.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid title");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing title");
             return;
         }
         String artist = req.getParameter("artist");
         if (artist == null || artist.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid artist");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing artist");
             return;
         }
         String album = req.getParameter("album");
         if (album == null || album.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid album");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing album");
             return;
         }
         int year;
@@ -93,13 +88,16 @@ public class UploadTrack extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
             return;
         }
+        if (year < 1901 || year > 2155) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
+        }
         String genre = req.getParameter("genre");
         if (genre == null || genre.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid genre");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing genre");
             return;
         }
-        String songPath = null;
-        String imagePath = null;
+        String songPath;
+        String imagePath;
         try {
             songPath = processPart(req.getPart("musicTrack"), "audio");
             imagePath = processPart(req.getPart("image"), "image");

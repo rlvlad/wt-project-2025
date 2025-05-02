@@ -133,6 +133,7 @@ public class PlaylistDAO {
                     FROM playlist p NATURAL JOIN playlist_tracks pt JOIN track t ON t.track_id=pt.track_id
                     WHERE p.playlist_title= ? AND p.user_id = ?
                  )
+                 ORDER BY artist ASC, YEAR ASC, title ASC
                 """);
         preparedStatement.setInt(1, userId);
         preparedStatement.setString(2, playlistTitle);

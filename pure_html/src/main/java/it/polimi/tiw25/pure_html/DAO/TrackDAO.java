@@ -71,6 +71,7 @@ public class TrackDAO {
                         image_checksum
                  FROM track
                  WHERE user_id = ?
+                 ORDER BY artist ASC, YEAR ASC, title ASC
                 """);
         preparedStatement.setInt(1, user.id());
         ResultSet resultSet = preparedStatement.executeQuery();

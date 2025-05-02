@@ -84,7 +84,6 @@ public class HomepageController extends HttpServlet {
         List<Track> userTracks = null;
         try {
             userTracks = trackDAO.getUserTracks(user);
-            userTracks.sort(Track::compareTo);
         } catch (SQLException e) {
             res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();

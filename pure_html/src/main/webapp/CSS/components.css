@@ -141,6 +141,10 @@ hr {
     flex-grow: 1;
 }
 
+.hidden{
+    visibility: hidden;
+}
+
 /* LABELS */
 
 .main-label {
