@@ -182,7 +182,7 @@
         _seq(
           "B",
           "B",
-          comment: [newFiles.add(outputFile) \ relativeFilePath=relativeOutputFolder+"/" \ +mimetype+outputFile.getName()],
+          comment: [newFiles.add(outputFile) \ relativeFilePath=relativeOutputFolder+ File.separator \ +mimetype+ File.separator + outputFile.getName()],
         )
       },
     )
@@ -203,13 +203,13 @@
   }),
   comment: [
     The User can upload tracks from the appropriate form in the homepage (@homepage-sequence). When the POST request is received, the request parameters are checked for null values and emptiness (omitted in the diagram for the sake of simplicity), and the uploaded files are written to disk by the `processPart` method, which has two parameters: a Part object, which "represents a part or form item that was received within a multipart/form-data POST request" @part, and its expected MIME type. The latter does not need to be fully specified (i.e. the subtype can be omitted).
-    
+
     Before writing the file to disk, the method checks for duplicates of the file by calculating its SHA256 hash and querying the database with the two methods: `isTrackFileAlreadyPresent` and `isImageFileAlreadyPresent`; present in TrackDAO.
-    
+
     Those two return the relative file path corresponding to the file hash if a matching one is found, otherwise null. In the former case, `processPart` returns the found path and the new track is uploaded using the already present file, this avoiding creating duplicates; in the latter case `processPart` proceeds by writing the file to disk and returning the new file's path.
-    
-    To write the file to the correct path in the webapp folder (`realOutputFolder`), the method `context.getRealPath(relativeOutputFolder)` is called, where `relativeOutputFolder` is obtained from the `web.xml` file and is, in our case, `"uploads"`; `realOutputFolder` is obtained by appending, with the needed separators, the MIME type to the result of `getRealPath`; to get `realOutputFilePath`, a random UUID and the filename are appended to `realOutputFolder`. Having obtained the desired path, the file can be created and then written with the `Files.copy` method.
-    
+
+    To write the file to the correct path in the webapp folder (`realOutputFolder`), the method `context.getRealPath(relativeOutputFolder)` is called, where `relativeOutputFolder` is obtained from the `web.xml` file and is, in our case, `"uploads"`; `realOutputFolder` is obtained by appending, with the needed separators, the MIME type to the result of `getRealPath`; to get `realOutputFilePath`, a random UUID and the file extension are appended to `realOutputFolder`. Having obtained the desired path, the file can be created and then written with the `Files.copy` method. The file can be found in target/#emph[artifactId]-#emph[version]/uploads/ in the project folder.
+
     In conclusion, `processPart` adds the new file to the newFiles list in `UploadTrack` and returns the path relative to the webapp folder because that's where the application will be looking for when it has to retrieve files. Once this is completed, the new Track object is created and passed to the `addTrack` method of TrackDAO; if an `SQLException` is thrown, all the files in `newFiles` list are deleted and then, in the finally block, the list is cleared.
   ],
   label_: "uploadtrack-sequence",
@@ -232,11 +232,22 @@
     _seq("G", "B", disable-src: true, comment: [return selectedTracks])
     _seq("B", "E", enable-dst: true, comment: [createPlaylist(playlistTitle)])
     _seq("E", "B", disable-src: true, comment: [return playlistId])
-    _seq("B", "E", comment: [addTracksToPlaylist(playlistId,selectedTracksIds)])
+    _alt(
+      "!selectedTracksIds.isEmpty()",
+      {
+        _seq("B", "E", comment: [addTracksToPlaylist(playlistId,selectedTracksIds)])
+      },
+    )
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
+  comment: [
+    The user can create playlists with the appropriate form in the homepage. There, a title needs to be inserted and, optionally, one or more tracks can be chosen from the ones uploaded by the user. When the servlet gets the POST request, it interacts with the PlaylistDAO to create the playlist with the createPlaylist method and to add the selected tracks with the addTracksToPlaylist method.
+
+    Note that selectedTracksIds is a list of integers obtained by converting the strings inside the array returned by getParameterValues("selectedTracks") with the Integer.parseInt method.
+  ],
   label_: "createplaylist-sequence",
 )
+
 
 #seq_diagram(
   [Logout sequence diagram],

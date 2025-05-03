@@ -2,9 +2,9 @@
 
 = Abstract
 
-/ Overview: This projects hosts the source code -- whicn can be found #link("https://github.com/VictuarVi/tiw-project-2025")[on Github] -- for a web server that handles a playlist management system. A user is able to register, login and then upload tracks. The tracks are strickly associated to one user, similar to a cloud service works. The user will be able to create playlist, sourcing from its tracks, and listem to them.
+/ Overview: This project hosts the source code -- which can be found #link("https://github.com/VictuarVi/tiw-project-2025")[on Github] -- for a web server that handles a playlist management system. A user is able to register, login and then upload tracks. The tracks are strictly associated to one user, similar to how a cloud service works. The user will be able to create playlists, sourcing from their tracks, and listem to them.
 
-It should be noted there are two versions: a *only-HTML version*, which is structured as a series of seperate webpages; and a *JS version*, which is structured a single-page webapp. The functionalities are the same, the code changes at a frontend level. For more information see @original-submission.
+It should be noted there are two versions: a *only-HTML version*, which is structured as a series of seperate webpages; and a *JS version*, which is structured a single-page webapp. The functionalities are mostly the same, the code changes at a frontend level. For more information see @original-submission.
 
 Both of the them feature the same CSS code (see @css-styling).
 
@@ -19,7 +19,7 @@ _Some liberties were taken_ and we decided to use #text(fill: rgb("#192C5F"), we
 - Thymeleaf @thymeleaf
 - MariaDB @mariadb
 
-The IDE we opted to use has been #link("https://www.jetbrains.com/idea/")[IntelliJ Idea Ultimate Edition], though there are no restrictions -- feel free to use Eclipse#footnote[#emph[I wrote that out of kindess, since I wouldn't recommed it even to my worst enemy. --- `victuarvi`.]]. Once you made sure are all the dependencies are correctly installed, let Tomcat run the server, which will be found at:
+The IDE we opted to use is #link("https://www.jetbrains.com/idea/")[IntelliJ Idea Ultimate Edition], though there are no restrictions -- feel free to use Eclipse#footnote[#emph[I wrote that out of kindess, since I wouldn't recommed it even to my worst enemy. --- `victuarvi`.]]. Once you made sure are all the dependencies are correctly installed, let Tomcat run the server, which will be found at:
 
 #align(center, link("http://localhost:8080/pure_html_war_exploded", `http://localhost:8080/pure_html_war_exploded`))
 
