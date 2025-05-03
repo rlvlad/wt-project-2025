@@ -8,20 +8,25 @@ It should be noted there are two versions: a *only-HTML version*, which is struc
 
 Both of the them feature the same CSS code (see @css-styling).
 
-/ Technologies used: In order to create the project, our professor decided to adopt the following technologies: #text(fill: rgb("#5283A2"), weight: "bold", "Java"), for the backend server with servlets leveraging Jakarta's API capabilities; #text(fill: rgb("#005F0F"), weight: "bold", "Thymeleaf"), a template engine; and #text(fill: rgb("#ae8e26"), weight: "bold", "Apache Tomcat"), to run the server.
+/ Tools: To create the project, our professor decided to adopt the following technologies: #text(fill: rgb("#5283A2"), weight: "bold", "Java"), for the backend server with servlets leveraging Jakarta's API capabilities; #text(fill: rgb("#005F0F"), weight: "bold", "Thymeleaf"), a template engine; and #text(fill: rgb("#ae8e26"), weight: "bold", "Apache Tomcat"), to run the server.
 
 _Some liberties were taken_ and we decided to use #text(fill: rgb("#192C5F"), weight: "bold")[MariaDB] for the database#footnote[We also could have used SQLite and go for a static webpage.] instead of MySQL, since the former is a open source fork of MySQL, one of the most widely used DBMS.
 
-/ Running: In order to run this project, the following programs are to be installed:
-- Java JDK @java
+Last but absolutely not least, this very document you are reading now has been typeset with none-other than #text(fill: eastern, weight: "bold")[Typst] @typst, the much needed successor to LaTeX. Also, to create sequence diagrams we made use of the `chronos` package @chronos.
+
+/ Configuration & Run: In order to run this project, the following packages and their respective versions are to be installed:
+- Java JDK 24 @java
 - Apache Maven @maven
-- Apache Tomcat @tomcat
+- Apache Tomcat 10 @tomcat
 - Thymeleaf @thymeleaf
 - MariaDB @mariadb
 
-The IDE we opted to use is #link("https://www.jetbrains.com/idea/")[IntelliJ Idea Ultimate Edition], though there are no restrictions -- feel free to use Eclipse#footnote[#emph[I wrote that out of kindess, since I wouldn't recommed it even to my worst enemy. --- `victuarvi`.]]. Once you made sure are all the dependencies are correctly installed, let Tomcat run the server, which will be found at:
+Then Maven will fetch all the corrected dependencies (such as the JDBC driver). We opted to use IntelliJ Idea Ultimate Edition @intellij though there are no restrictions -- feel free to use whatever editor you want, even Eclipse, if you must#footnote[#emph[I wrote that #emph[only] out of kindess, since I wouldn't recommed it even to my worst enemy. --- `victuarvi`.]]. Once you made sure all the dependencies are correctly installed, let Tomcat deploy the server, which will be found at#footnote[`[version]` is either `pure_html` or `js` depending on what you run.]:
 
-#align(center, link("http://localhost:8080/pure_html_war_exploded", `http://localhost:8080/pure_html_war_exploded`))
+#align(
+  center,
+  link("http://localhost:8080/pure_html_war_exploded", "http://localhost:8080/[version]_war_exploded"),
+)
 
 The credentials are stored in plain text in the database (see @register-sequence), while the tracks and images are stored in `target/webapp` (see @uploadtrack-sequence).
 

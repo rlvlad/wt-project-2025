@@ -5,15 +5,15 @@
   ],
   authors: (
     (
-      fullname: "Vittorio Robecchi",
-      mail: "vittorio.robecchi@gmail.com",
-      github: "https://github.com/VictuarVi"
-    ),
-    (
       fullname: "Vlad Raileanu",
       mail: "raileanu.vlad29@gmail.com",
-      github: "https://github.com/rokuban"
+      github: "https://github.com/rokuban",
+    ),
+    (
+      fullname: "Vittorio Robecchi",
+      mail: "vittorio.robecchi@gmail.com",
+      github: "https://github.com/VictuarVi",
     ),
   ),
-  columns: 2
+  columns: 2,
 )
