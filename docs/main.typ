@@ -3,8 +3,13 @@
 
 #show: project.with(..properties)
 
+#show: frontmatter.with()
+#include "sections/abstract.typ"
+
+#show: mainmatter.with()
 #include "sections/original_submission.typ"
 
+// our work
 #include "sections/submission.typ"
 // #include "sections/pipeline.typ"
 #include "sections/sequence_diagram.typ"
@@ -14,5 +19,5 @@
 #bibliography(
   "bibliography.yml",
   style: "ieee",
-  full: true,
+  full: false,
 )

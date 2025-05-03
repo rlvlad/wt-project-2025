@@ -18,3 +18,23 @@ part:
   type: web
   title: Part class
   url: https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/part
+java:
+  type: web
+  title: Java Development Kit
+  url: https://openjdk.java.net
+maven:
+  type: web
+  title: Apache Maven
+  url: https://maven.apache.org
+tomcat:
+  type: web
+  title: Apache Tomcat
+  url: https://tomcat.apache.org
+thymeleaf:
+  type: web
+  title: Thymeleaf
+  url: https://www.thymeleaf.org
+mariadb:
+  type: web
+  title: MariaDB
+  url: https://mariadb.org

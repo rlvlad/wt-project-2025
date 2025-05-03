@@ -1,5 +1,6 @@
 #import "../lib.typ": *
-// #show: project.with()
+
+#show: thymeleaf_trick.with()
 
 = Sequence diagrams
 
@@ -201,7 +202,15 @@
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
   comment: [
-    The user can upload tracks from the appropriate form in the homepage. When the POST request is received, the request parameters are checked for null values and emptiness (omitted in the diagram for the sake of simplicity), and the uploaded files are written to disk by the processPart method, which has two parameters: a Part object, which "represents a part or form item that was received within a multipart/form-data POST request" @part, and its expected MIME type. The latter does not need to be fully specified (i.e. the subtype can be omitted). Before writing the file to disk, the method checks for duplicates of the file by calculating its SHA256 hash and querying the database with the isTrackFileAlreadyPresent and isImageFileAlreadyPresent methods present in TrackDAO. These two methods return the relative file path corresponding to the file hash if a matching one is found, otherwise null is returned; in the former case, processPart returns the found path and the new track is uploaded using the already present file, managing to avoid creating duplicates, in the latter case processPart proceeds by writing the file to disk and returning the new file's path. To write the file to the correct path in the webapp folder (realOutputFolder), context.getRealPath(relativeOutputFolder) is called, where relativeOutputFolder is obtained from the web.xml and is, in our case, "uploads"; realOutputFolder is obtained by appending, with the appropriate separators, the MIME type to the result of getRealPath; to get realOutputFilePath, a random UUID and the filename are appended to realOutputFolder. Having obtained the desired path, the file can be created and then written with the Files.copy method. Lastly, processPart adds the new file to the newFiles list in UploadTrack and returns the path relative to the webapp folder because that's where the application will be looking when its has to retrieve files. With this done, the new Track object is created and passed to the addTrack method of TrackDAO; if an SQLException is thrown, all the files in newFiles list are deleted and then, in the finally block, the list is cleared.
+    The User can upload tracks from the appropriate form in the homepage (@homepage-sequence). When the POST request is received, the request parameters are checked for null values and emptiness (omitted in the diagram for the sake of simplicity), and the uploaded files are written to disk by the `processPart` method, which has two parameters: a Part object, which "represents a part or form item that was received within a multipart/form-data POST request" @part, and its expected MIME type. The latter does not need to be fully specified (i.e. the subtype can be omitted).
+    
+    Before writing the file to disk, the method checks for duplicates of the file by calculating its SHA256 hash and querying the database with the two methods: `isTrackFileAlreadyPresent` and `isImageFileAlreadyPresent`; present in TrackDAO.
+    
+    Those two return the relative file path corresponding to the file hash if a matching one is found, otherwise null. In the former case, `processPart` returns the found path and the new track is uploaded using the already present file, this avoiding creating duplicates; in the latter case `processPart` proceeds by writing the file to disk and returning the new file's path.
+    
+    To write the file to the correct path in the webapp folder (`realOutputFolder`), the method `context.getRealPath(relativeOutputFolder)` is called, where `relativeOutputFolder` is obtained from the `web.xml` file and is, in our case, `"uploads"`; `realOutputFolder` is obtained by appending, with the needed separators, the MIME type to the result of `getRealPath`; to get `realOutputFilePath`, a random UUID and the filename are appended to `realOutputFolder`. Having obtained the desired path, the file can be created and then written with the `Files.copy` method.
+    
+    In conclusion, `processPart` adds the new file to the newFiles list in `UploadTrack` and returns the path relative to the webapp folder because that's where the application will be looking for when it has to retrieve files. Once this is completed, the new Track object is created and passed to the `addTrack` method of TrackDAO; if an `SQLException` is thrown, all the files in `newFiles` list are deleted and then, in the finally block, the list is cleared.
   ],
   label_: "uploadtrack-sequence",
 )

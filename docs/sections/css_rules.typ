@@ -1,6 +1,6 @@
 #import "../lib.typ": *
 
-= CSS styling
+= Cascading Style Sheets (CSS) styling<css-styling>
 
 == Introduction
 

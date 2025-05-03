@@ -227,56 +227,8 @@
     )
   }
 
-  show heading: it => {
-    set text(font: "JetBrains Mono")
-    box(
-      width: 1fr,
-      inset: 10pt,
-      fill: light-background,
-      stroke: data-types,
-      align(
-        center,
-        text(
-          fill: selection-background,
-          smallcaps(counter(heading).display() + " " + it.body),
-        ),
-      ),
-    )
-    // v(6pt)
-  }
-
-  show heading.where(level: 1): it => context {
-    set page(header: { })
-    pagebreak(to: "even", weak: true)
-    set page(header: { }, columns: 1)
-    let number = if it.numbering != none { counter(heading.where(level: 1)).display().first() }
-    set text(size: 1.75em, font: "JetBrains Mono", hyphenate: false)
-    v(30%)
-    align(
-      center,
-      block(width: page.width * 0.6, smallcaps(number + v(0.7em) + it.body)),
-    )
-  }
-
   show ref: it => text(fill: functions, it)
   show link: it => text(fill: blue, underline(stroke: blue, it))
-
-  show "thymeleaf": (
-    text(fill: rgb("#005F0F"), "thymeleaf")
-      + h(0.1cm)
-      + box(
-        image(
-          "img/thymeleaf.svg",
-          width: 1em,
-          height: 1em,
-        ),
-        // width: 1em,
-        // height: 1em,
-        baseline: 0.1cm,
-      )
-  )
-
-  show "Thymeleaf": text(fill: rgb("#005F0F"), "Thymeleaf")
 
   // set figure(gap: 2em)
 
@@ -305,6 +257,84 @@
 
 #let SINGLE_COLUMN(body) = {
   set page(columns: 1)
+
+  body
+}
+
+#let frontmatter(body) = {
+  set page(columns: 1)
+  set heading(numbering: none, outlined: false, bookmarked: true)
+
+  show heading: it => {
+    text(size: 1.2em, it)
+    v(6pt)
+  }
+
+  body
+}
+
+#let mainmatter(body) = {
+  set page(columns: 2)
+  set heading(numbering: "1.1", outlined: true)
+
+  show heading: it => {
+    set text(font: "JetBrains Mono")
+    box(
+      width: 1fr,
+      inset: 10pt,
+      fill: light-background,
+      stroke: data-types,
+      align(
+        center,
+        text(
+          fill: selection-background,
+          smallcaps(counter(heading).display() + " " + it.body),
+        ),
+      ),
+    )
+    // v(6pt)
+  }
+
+  show heading.where(level: 1): it => context {
+    set page(header: { })
+    pagebreak(to: "even", weak: true)
+    set page(header: { }, columns: 1)
+    let number = if it.numbering != none { counter(heading.where(level: 1)).display().first() }
+    set text(size: 1.75em, font: "JetBrains Mono", hyphenate: false)
+    v(30%)
+    align(
+      center,
+      block(
+        width: page.width * 0.61,
+        smallcaps(number + v(0.7em) + it.body),
+      ),
+    )
+  }
+
+  body
+}
+
+#let backmatter(body) = {
+  body
+}
+
+#let thymeleaf_trick(body) = {
+  show "thymeleaf": (
+    text(fill: rgb("#005F0F"), "thymeleaf")
+      + h(0.1cm)
+      + box(
+        image(
+          "img/thymeleaf.svg",
+          width: 1em,
+          height: 1em,
+        ),
+        // width: 1em,
+        // height: 1em,
+        baseline: 0.1cm,
+      )
+  )
+
+  show "Thymeleaf": text(fill: rgb("#005F0F"), "Thymeleaf")
 
   body
 }

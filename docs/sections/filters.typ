@@ -5,7 +5,7 @@
 #double_col_spaces(1cm)
 
 #seq_diagram(
-  "UserChecker",
+  "UserChecker filter",
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "UserChecker")
@@ -30,7 +30,7 @@
 #double_col_spaces(1cm)
 
 #seq_diagram(
-  "InvalidUserChecker",
+  "InvalidUserChecker  filter",
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "InvalidUserChecker")
@@ -55,7 +55,7 @@
 #pagebreak()
 
 #seq_diagram(
-  "PlaylistChecker",
+  "PlaylistChecker filter",
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "PlaylistChecker")
@@ -84,7 +84,7 @@
 )
 
 #seq_diagram(
-  "TrackChecker",
+  "TrackChecker filter",
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "PlaylistChecker")
