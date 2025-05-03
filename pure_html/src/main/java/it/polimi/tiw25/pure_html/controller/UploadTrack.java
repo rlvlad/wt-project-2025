@@ -16,6 +16,7 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.ServerErrorException;
 import jakarta.ws.rs.core.Response;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
@@ -33,7 +34,7 @@ public class UploadTrack extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    String relativeOutputPath;
+    String relativeOutputFolder;
     String imageHash;
     String songHash;
     User user;
@@ -50,7 +51,7 @@ public class UploadTrack extends HttpServlet {
             String password = context.getInitParameter("dbPassword");
             Class.forName(driver);
             connection = DriverManager.getConnection(url, user, password);
-            relativeOutputPath = getServletContext().getInitParameter("outputPath");
+            relativeOutputFolder = getServletContext().getInitParameter("outputPath");
             newFiles = new ArrayList<>();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -75,21 +76,25 @@ public class UploadTrack extends HttpServlet {
         };
 
         // Initialize track
-        int year;
         try {
-            year = Integer.parseInt(req.getParameter("year"));
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
-            return;
-        }
-        if (year < 1901 || year > 2155) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
-            return;
-        }
-
-        try {
-            track = new Track(0, getParam.apply("title"), getParam.apply("artist"), year, getParam.apply("album"), getParam.apply("genre"),
-                    processPart(req.getPart("image"), "image"), processPart(req.getPart("musicTrack"), "audio"), songHash, imageHash);
+            String title = getParam.apply("title");
+            String artist = getParam.apply("artist");
+            int year;
+            try {
+                year = Integer.parseInt(req.getParameter("year"));
+            } catch (NumberFormatException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
+                return;
+            }
+            if (year < 1901 || year > 2155) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
+                return;
+            }
+            String album = getParam.apply("album");
+            String genre = getParam.apply("genre");
+            String imagePath = processPart(req.getPart("image"), "image");
+            String songPath = processPart(req.getPart("musicTrack"), "audio");
+            track = new Track(0, title, artist, year, album, genre, imagePath, songPath, songHash, imageHash);
         } catch (ClientErrorException | InternalServerErrorException e) {
             resp.sendError(e.getResponse().getStatus(), e.getMessage());
             return;
@@ -109,6 +114,7 @@ public class UploadTrack extends HttpServlet {
             newFiles.forEach(file -> file.delete());
         } catch (SQLException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            newFiles.forEach(file -> file.delete());
             e.printStackTrace();
         } finally {
             newFiles.clear();
@@ -122,6 +128,7 @@ public class UploadTrack extends HttpServlet {
      * @throws IOException
      */
     private String processPart(Part part, String mimeType) throws IOException, SQLException {
+        String relativeFilePath = null;
         // Check item size
         if (part == null || part.getSize() <= 0) {
             throw new ClientErrorException("Missing " + mimeType, Response.Status.BAD_REQUEST);
@@ -133,29 +140,28 @@ public class UploadTrack extends HttpServlet {
         }
 
         TrackDAO trackDAO = new TrackDAO(connection);
-        String alreadyPresentPath = null;
 
         // Save item hash and try to find existing DB entries with the same hash; if present, their file path is returned
         switch (mimeType) {
             case "audio":
                 songHash = getSHA256Hash(part.getInputStream().readAllBytes());
                 if (songHash != null)
-                    alreadyPresentPath = trackDAO.isTrackFileAlreadyPresent(songHash);
+                    relativeFilePath = trackDAO.isTrackFileAlreadyPresent(songHash);
                 break;
             case "image":
                 imageHash = getSHA256Hash(part.getInputStream().readAllBytes());
                 if (imageHash != null)
-                    alreadyPresentPath = trackDAO.isImageFileAlreadyPresent(imageHash);
+                    relativeFilePath = trackDAO.isImageFileAlreadyPresent(imageHash);
                 break;
         }
 
-        if (alreadyPresentPath != null)
-            return alreadyPresentPath;
+        if (relativeFilePath != null)
+            return relativeFilePath;
 
-        String outputFolder = context.getRealPath(relativeOutputPath) + "/" + mimeType + "/";
+        String realOutputFolder = context.getRealPath(relativeOutputFolder) + "/" + mimeType + "/";
         String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-        String outputPath = outputFolder + UUID.randomUUID() + "-" + filename;
-        File folder = new File(outputFolder);
+        String realOutputFilePath = realOutputFolder + UUID.randomUUID() + "-" + filename;
+        File folder = new File(realOutputFolder);
 
         // Try to create the output folder if it doesn't already exist
         if (!folder.exists())
@@ -163,14 +169,16 @@ public class UploadTrack extends HttpServlet {
                 throw new ServerErrorException("Error while saving file", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
 
-        File file = new File(outputPath);
-        newFiles.add(file);
+        File outputFile = new File(realOutputFilePath);
 
         // Write the received item on disk
         try {
-            Files.copy(part.getInputStream(), file.toPath());
-            return relativeOutputPath + "/" + mimeType + "/" + file.getName();
+            Files.copy(part.getInputStream(), outputFile.toPath());
+            newFiles.add(outputFile);
+            relativeFilePath = relativeOutputFolder + "/" + mimeType + "/" + outputFile.getName();
+            return relativeFilePath;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ServerErrorException("Error while saving file", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
