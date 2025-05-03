@@ -14,3 +14,7 @@ tinted-theming:
   type: web
   title: Tinted Theming
   url: https://github.com/tinted-theming/home
+part:
+  type: web
+  title: Part class
+  url: https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/part

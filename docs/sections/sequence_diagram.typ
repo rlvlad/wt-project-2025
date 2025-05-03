@@ -30,7 +30,7 @@
 
     Those values are passed to the `checkUser()` function that returns `schrödingerUser` -- as the name implies, the variable might return a User; otherwise `null`. If `null`, then the credentials inserted do not match any record in the database; else the User is redirected to their HomePage and the `user` variable is set for the current session.
   ],
-  label_: "login-sequence"
+  label_: "login-sequence",
 )
 
 #seq_diagram(
@@ -66,7 +66,7 @@
     Else the program appends `isUserAdded` with `false` value and redirects to the Registration servlet: thymeleaf checks for that context variable and if it evaluates to false, it prints an error.
 
   ],
-  label_: "register-sequence"
+  label_: "register-sequence",
 )
 
 #seq_diagram(
@@ -92,7 +92,7 @@
   comment: [
     Once the Login is complete, the User is redirected to their HomePage, which hosts all their Playlists. In order to do so, the program needs to User attribute -- which is retrieved via the session; then, it is passed to the `getUserPlaylists` function and finally thymeleaf displays all values.
   ],
-  label_: "homepage-sequence"
+  label_: "homepage-sequence",
 )
 
 #seq_diagram(
@@ -126,7 +126,7 @@
 
     Then those value are passed to `getPlaylistTracks()`, that returns all the tracks. Finally, thymeleaf processes the context and display all the tracks.
   ],
-  label_: "playlistpage-sequence"
+  label_: "playlistpage-sequence",
 )
 
 #seq_diagram(
@@ -154,7 +154,7 @@
 
     Finally, `getTrackById()` returns the track metadata, thymeleaf processes the context and displays all the information.
   ],
-  label_: "track-sequence"
+  label_: "track-sequence",
 )
 
 #seq_diagram(
@@ -162,25 +162,48 @@
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "UploadTrack")
+    _par("E", display-name: "Track")
     _par("C", display-name: "TrackDAO")
-    _par("G", display-name: "Request")
+    _par("F", display-name: "File")
+    _par("G", display-name: "Files")
     _par("D", display-name: "HomePage")
-
-    _seq("A", "B", enable-dst: true, comment: "doGet()")
-    _seq("B", "G", enable-dst: true, comment: [getParameter("title")])
-    _seq("G", "B", disable-src: true, comment: [return title])
-    _seq("B", "G", enable-dst: true, comment: [getParameter("artist")])
-    _seq("G", "B", disable-src: true, comment: [return artist])
-    _seq("B", "G", enable-dst: true, comment: [getParameter("album")])
-    _seq("G", "B", disable-src: true, comment: [return album])
-    _seq("B", "G", enable-dst: true, comment: [getParameter("year")])
-    _seq("G", "B", disable-src: true, comment: [return year])
-    _seq("B", "G", enable-dst: true, comment: [getParameter("genre")])
-    _seq("G", "B", disable-src: true, comment: [return genre])
-    _seq("B", "C", comment: [addTrack(track)])
+    _seq("A", "B", enable-dst: true, comment: "doPost()")
+    _note("right", [POST /UploadTrack \ title, artist, album, \ year, genre, \ musicTrack, image])
+    _seq("B", "B", enable-dst: true, comment: [imagePath = processPart(image, "image")])
+    _seq("B", "B", comment: [imageHash = getSHA256Hash(image\ .getInputStream().readAllBytes())])
+    _seq("B", "C", enable-dst: true, comment: [relativeFilePath = isImageFileAlreadyPresent(hash)])
+    _seq("C", "B", disable-src: true, comment: [return path || null])
+    _alt(
+      "relativeFilePath==null",
+      {
+        _seq("B", "F", comment: [outputFile = new File(realOutputFilePath)])
+        _seq("B", "G", comment: [copy(image.getInputStream(), outputFile.toPath())])
+        _seq(
+          "B",
+          "B",
+          comment: [newFiles.add(outputFile) \ relativeFilePath=relativeOutputFolder+"/" \ +mimetype+outputFile.getName()],
+        )
+      },
+    )
+    _seq("B", "B", disable-src: true, comment: [return relativeFilePath])
+    _seq("B", "B", comment: [songPath = processPart(musicTrack, "audio")])
+    _seq("B", "E", comment: [track = new Track(...)])
+    _alt(
+      "try",
+      { _seq("B", "C", comment: [addTrack(track)]) },
+      "catch SQLException",
+      { _seq("B", "B", comment: [newFiles.forEach(file -> file.delete())]) },
+      [finally],
+      {
+        _seq("B", "B", comment: [newFiles.clear()])
+      },
+    )
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
-  label_: "uploadtrack-sequence"
+  comment: [
+    The user can upload tracks from the appropriate form in the homepage. When the POST request is received, the request parameters are checked for null values and emptiness (omitted in the diagram for the sake of simplicity), and the uploaded files are written to disk by the processPart method, which has two parameters: a Part object, which "represents a part or form item that was received within a multipart/form-data POST request" @part, and its expected MIME type. The latter does not need to be fully specified (i.e. the subtype can be omitted). Before writing the file to disk, the method checks for duplicates of the file by calculating its SHA256 hash and querying the database with the isTrackFileAlreadyPresent and isImageFileAlreadyPresent methods present in TrackDAO. These two methods return the relative file path corresponding to the file hash if a matching one is found, otherwise null is returned; in the former case, processPart returns the found path and the new track is uploaded using the already present file, managing to avoid creating duplicates, in the latter case processPart proceeds by writing the file to disk and returning the new file's path. To write the file to the correct path in the webapp folder (realOutputFolder), context.getRealPath(relativeOutputFolder) is called, where relativeOutputFolder is obtained from the web.xml and is, in our case, "uploads"; realOutputFolder is obtained by appending, with the appropriate separators, the MIME type to the result of getRealPath; to get realOutputFilePath, a random UUID and the filename are appended to realOutputFolder. Having obtained the desired path, the file can be created and then written with the Files.copy method. Lastly, processPart adds the new file to the newFiles list in UploadTrack and returns the path relative to the webapp folder because that's where the application will be looking when its has to retrieve files. With this done, the new Track object is created and passed to the addTrack method of TrackDAO; if an SQLException is thrown, all the files in newFiles list are deleted and then, in the finally block, the list is cleared.
+  ],
+  label_: "uploadtrack-sequence",
 )
 
 #seq_diagram(
@@ -193,7 +216,7 @@
     _par("E", display-name: "PlaylistDAO")
     _par("D", display-name: "HomePage")
 
-    _seq("A", "B", enable-dst: true, comment: "doGet()")
+    _seq("A", "B", enable-dst: true, comment: "doPost()")
     _seq("B", "G", enable-dst: true, comment: [getParameter("playlistTitle")])
     _seq("G", "B", disable-src: true, comment: [return playlistTitle])
     _seq("B", "G", enable-dst: true, comment: [getParameterValues("selectedTracks")])
@@ -203,7 +226,7 @@
     _seq("B", "E", comment: [addTracksToPlaylist(playlistId,selectedTracksIds)])
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
-  label_: "createplaylist-sequence"
+  label_: "createplaylist-sequence",
 )
 
 #seq_diagram(
@@ -222,5 +245,5 @@
   comment: [
     From every web page except Login and Register, the User is able to logout, at any moment. It's a simple `GET` request to the Logout servlet, which checks if the `user` session attribute exists; if it does, then it invalidates the session and redirects the User to the Login page.
   ],
-  label_: "logout-sequence"
+  label_: "logout-sequence",
 )
