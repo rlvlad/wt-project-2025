@@ -74,7 +74,8 @@ public class CreatePlaylist extends HttpServlet {
         try {
             Integer playlistId = null;
             playlistId = playlistDAO.createPlaylist(playlist);
-            playlistDAO.addTracksToPlaylist(selectedTracksIds, playlistId);
+            if (!selectedTracksIds.isEmpty())
+                playlistDAO.addTracksToPlaylist(selectedTracksIds, playlistId);
         } catch (SQLIntegrityConstraintViolationException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "A playlist with that title already exists");
             return;

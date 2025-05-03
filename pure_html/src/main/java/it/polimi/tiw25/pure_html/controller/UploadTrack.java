@@ -34,13 +34,13 @@ public class UploadTrack extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    String relativeOutputFolder;
-    String imageHash;
-    String songHash;
-    User user;
-    Track track;
-    List<File> newFiles;
-    ServletContext context;
+    private String relativeOutputFolder;
+    private String imageHash;
+    private String songHash;
+    private User user;
+    private Track track;
+    private List<File> newFiles;
+    private ServletContext context;
 
     public void init() throws ServletException {
         try {
@@ -158,9 +158,9 @@ public class UploadTrack extends HttpServlet {
         if (relativeFilePath != null)
             return relativeFilePath;
 
-        String realOutputFolder = context.getRealPath(relativeOutputFolder) + "/" + mimeType + "/";
+        String realOutputFolder = context.getRealPath(relativeOutputFolder) + File.separator + mimeType + File.separator;
         String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-        String realOutputFilePath = realOutputFolder + UUID.randomUUID() + "-" + filename;
+        String realOutputFilePath = realOutputFolder + UUID.randomUUID() + filename.substring(filename.lastIndexOf('.'));
         File folder = new File(realOutputFolder);
 
         // Try to create the output folder if it doesn't already exist
@@ -175,7 +175,7 @@ public class UploadTrack extends HttpServlet {
         try {
             Files.copy(part.getInputStream(), outputFile.toPath());
             newFiles.add(outputFile);
-            relativeFilePath = relativeOutputFolder + "/" + mimeType + "/" + outputFile.getName();
+            relativeFilePath = relativeOutputFolder + File.separator + mimeType + File.separator + outputFile.getName();
             return relativeFilePath;
         } catch (Exception e) {
             e.printStackTrace();
