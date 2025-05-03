@@ -169,7 +169,7 @@
     _par("G", display-name: "Files")
     _par("D", display-name: "HomePage")
     _seq("A", "B", enable-dst: true, comment: "doPost()")
-    _note("right", [POST /UploadTrack \ title, artist, album, \ year, genre, \ musicTrack, image])
+    _note("right", [POST /UploadTrack \ title, artist, album, year, \ genre, musicTrack, image])
     _seq("B", "B", enable-dst: true, comment: [imagePath = processPart(image, "image")])
     _seq("B", "B", comment: [imageHash = getSHA256Hash(image\ .getInputStream().readAllBytes())])
     _seq("B", "C", enable-dst: true, comment: [relativeFilePath = isImageFileAlreadyPresent(hash)])
@@ -182,7 +182,7 @@
         _seq(
           "B",
           "B",
-          comment: [newFiles.add(outputFile) \ relativeFilePath=relativeOutputFolder+ File.separator \ +mimetype+ File.separator + outputFile.getName()],
+          comment: [newFiles.add(outputFile) \ relativeFilePath = relativeOutputFolder \ + File.separator + mimetype \ + File.separator + outputFile.getName()],
         )
       },
     )
