@@ -51,3 +51,7 @@ typst:
   author: ["Mädje, Laurenz", "Haug, Martin", "The Typst Project Developers"]
   url: https://github.com/typst/typst
   license: Apache-2.0
+ncs:
+  type: audio
+  title: NoCopyrightSounds
+  url: https://ncs.io/

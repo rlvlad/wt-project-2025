@@ -30,4 +30,4 @@ Then Maven will fetch all the corrected dependencies (such as the JDBC driver). 
 
 The credentials are stored in plain text in the database (see @register-sequence), while the tracks and images are stored in `target/webapp` (see @uploadtrack-sequence).
 
-The repository is bundled with some mock data, which can be found in the corresponding folder at the root of the project. They are copyright free songs because we didn't want to get sued #emoji.face.cover.
+The repository is bundled with some mock data, which can be found in the corresponding folder at the root of the project. They are copyright free songs @ncs because we didn't want to get sued #emoji.face.cover.
