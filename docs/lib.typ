@@ -1,23 +1,72 @@
 #let colortheme = orange
 
-#let colors = yaml("classic-light.yaml")
+// Get current theme
+#let theme-state = state(
+  "theme",
+  // default theme
+  "classic-light.yaml",
+)
 
-#let default-background = rgb(colors.palette.base00)
-#let lighter-background = rgb(colors.palette.base01)
-#let selection-background = rgb(colors.palette.base02)
-#let comments = rgb(colors.palette.base03)
-#let dark-foreground = rgb(colors.palette.base04)
-#let default-foreground = rgb(colors.palette.base05)
-#let light-foreground = rgb(colors.palette.base06)
-#let light-background = rgb(colors.palette.base07)
-#let variables = rgb(colors.palette.base08)
-#let data-types = rgb(colors.palette.base09)
-#let support-types = rgb(colors.palette.base0A)
-#let string = rgb(colors.palette.base0B)
-#let support = rgb(colors.palette.base0C)
-#let functions = rgb(colors.palette.base0D)
-#let keywords = rgb(colors.palette.base0E)
-#let deprecated = rgb(colors.palette.base0F)
+// Indivudal colors from base-16
+
+#let get-default-background() = {
+  rgb(theme-state.at(here()).palette.base00)
+}
+#let get-lighter-background() = {
+  rgb(theme-state.at(here()).palette.base01)
+}
+#let get-selection-background() = {
+  rgb(theme-state.at(here()).palette.base02)
+}
+#let get-comments() = {
+  rgb(theme-state.at(here()).palette.base03)
+}
+#let get-dark-foreground() = {
+  rgb(theme-state.at(here()).palette.base04)
+}
+#let get-default-foreground() = {
+  rgb(theme-state.at(here()).palette.base05)
+}
+#let get-light-foreground() = {
+  rgb(theme-state.at(here()).palette.base06)
+}
+#let get-light-background() = {
+  rgb(theme-state.at(here()).palette.base07)
+}
+#let get-variables() = {
+  rgb(theme-state.at(here()).palette.base08)
+}
+#let get-data-types() = {
+  rgb(theme-state.at(here()).palette.base09)
+}
+#let get-support-types() = {
+  rgb(theme-state.at(here()).palette.base0A)
+}
+#let get-string() = {
+  rgb(theme-state.at(here()).palette.base0B)
+}
+#let get-support() = {
+  rgb(theme-state.at(here()).palette.base0C)
+}
+#let get-functions() = {
+  rgb(theme-state.at(here()).palette.base0D)
+}
+#let get-keywords() = {
+  rgb(theme-state.at(here()).palette.base0E)
+}
+#let get-deprecated() = {
+  rgb(theme-state.at(here()).palette.base0F)
+}
+
+// Setting the theme for the rest of the document
+#let set-theme(yaml_file) = {
+  assert(type(yaml_file) == str or type(yaml_file) == dictionary, message: "The theme must be either a filename or the filename in a yaml() function.")
+  if (type(yaml_file) == str) {
+    theme-state.update(yaml(yaml_file))
+  } else {
+    theme-state.update(yaml_file)
+  }
+}
 
 #let project(
   title: "",
@@ -26,7 +75,7 @@
   columns: 1,
   tech-stack: false,
   body,
-) = {
+) = context {
   set document(
     title: title,
     author: authors.map(a => sym.copyright + " " + a.fullname),
@@ -37,6 +86,7 @@
     ),
   )
 
+  // Given two colors, if the former is too bright, then the latter is returned
   let color_filter(correct, overridden) = {
     let correct_components = correct.rgb().components().slice(0, 3).map(x => x / 100% * 256)
 
@@ -56,21 +106,16 @@
       rest: 1.5cm,
       top: 2.2cm,
     ),
-    fill: color_filter(default-background, colortheme.lighten(90%)),
+    fill: color_filter(get-default-background(), colortheme.lighten(90%)),
     header: { },
     footer: { },
   )
 
   set text(
-    // font: "Libre Caslon Text",
-    // font: "New Computer Modern",
-    // font: "EB Garamond",
-    // font: "Poppins",
     font: "Barlow",
-    // weight: "regular",
     size: 11.5pt,
     lang: "en",
-    fill: light-background,
+    fill: get-light-background(),
   )
 
   set par(justify: true, linebreaks: "optimized")
@@ -106,7 +151,7 @@
           set text(size: 1.1em)
           strong(smallcaps(fullname)) + linebreak()
           link("mailto:" + mail, raw(mail)) + linebreak()
-          text(fill: variables, link(github, github))
+          text(fill: get-variables(), link(github, github))
         },
       )
 
@@ -227,7 +272,7 @@
     )
   }
 
-  show ref: it => text(fill: functions, it)
+  show ref: it => text(fill: get-functions(), it)
   show link: it => text(fill: blue, underline(stroke: blue, it))
 
   // set figure(gap: 2em)
@@ -282,12 +327,12 @@
     box(
       width: 1fr,
       inset: 10pt,
-      fill: light-background,
-      stroke: data-types,
+      fill: get-light-background(),
+      stroke: get-data-types(),
       align(
         center,
         text(
-          fill: selection-background,
+          fill: get-selection-background(),
           smallcaps(counter(heading).display() + " " + it.body),
         ),
       ),
@@ -382,7 +427,7 @@
   )
 }
 
-#let seq_diagram(title, diagram-code, label_: "", comment: "", next_page: true, add_comment: true) = {
+#let seq_diagram(title, diagram-code, label_: "", comment: "", next_page: true, add_comment: true) = context {
   place(
     top,
     scope: "parent",
@@ -408,7 +453,15 @@
         columns: (auto, 1fr),
         column-gutter: 1em,
         align: center + horizon,
-        text(weight: "bold", style: "oblique", "Comment"), line(length: 100%, stroke: 0.5pt + variables),
+        text(
+          weight: "bold",
+          style: "oblique",
+          "Comment",
+        ),
+        line(
+          length: 100%,
+          stroke: 0.5pt + get-variables(),
+        ),
       ),
     )
   }
@@ -425,10 +478,10 @@
 
 // CSS
 
-#let css_explanation(css_source_code, comment) = {
+#let css_explanation(css_source_code, comment) = context {
   table(
     inset: 10pt,
-    stroke: (left: data-types + 2pt, rest: none),
+    stroke: (left: get-data-types() + 2pt, rest: none),
     // fill: orange.lighten(80%),
     {
       css_source_code

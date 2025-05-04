@@ -1,6 +1,8 @@
 #import "lib.typ": *
 #import "properties.typ": *
 
+#set-theme(yaml("classic-light.yaml"))
+
 #show: project.with(..properties)
 
 #show: frontmatter.with()

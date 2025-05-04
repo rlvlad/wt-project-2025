@@ -204,7 +204,7 @@ Finally, without a doubt the most difficult CSS component in this project is the
 }
 ```
 it's `hidden` by default, but once it's invoked it must be be above everything -- this is handled by the `z-index` property. Its position must be `fixed`, since it's not a movable window; also it can't be targeted by cursor: `pointer-events` are none. Another key aspect is the background color: in order to make it stand from its background, a slight blurred white is needed:
-#figure(
+#context figure(
   scope: "parent",
   placement: bottom,
   {
@@ -217,7 +217,7 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
       rect(
         width: width,
         height: height,
-        fill: comments,
+        fill: get-comments(),
         align(
           start,
           "nav-bar",
@@ -226,7 +226,7 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
       rect(
         width: width,
         height: height,
-        fill: comments,
+        fill: get-comments(),
         align(
           start,
           "nav-bar",
@@ -239,8 +239,8 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
               fill: rgb(255, 255, 255, 25%),
               box(
                 inset: 4pt,
-                stroke: variables,
-                fill: lighter-background,
+                stroke: get-variables(),
+                fill: get-lighter-background(),
                 "modal-window",
               ),
             ),
