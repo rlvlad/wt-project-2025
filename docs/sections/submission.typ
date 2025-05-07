@@ -23,16 +23,16 @@ After the login, the user is able to #rel[create tracks] by loading their data a
 #figure(
   placement: bottom,
   scope: "parent",
-  image("../misc/er_html.svg", width: 15cm),
+  image("../misc/er_html.svg", width: 100%),
   caption: [ER diagram, .],
 )<er-diagram>
 
 #figure(
-  placement: bottom,
-  scope: "parent",
+  // placement: bottom,
+  // scope: "parent",
   image(
-    width: 50%,
-    "../img/uml.png",
+    width: 100%,
+    "../img/uml_arancio.png",
   ),
   caption: [UML diagram.],
 )<uml-diagram>
@@ -60,7 +60,7 @@ When a user #user_action[clicks] on a playlist in the #page[HOME PAGE], the appl
 - The tracks are ordered from left to right by artist name in ascending alphabetic order and by ascending album release date
 - If a playlist contains more than 5 tracks, there are available commands to see the others (in blocks of five)
 
-#colbreak()
+// #colbreak()
 
 / Playlist tracks navigation: If the #page[PLAYLIST PAGE]:
 
@@ -73,7 +73,7 @@ When a user #user_action[clicks] on a playlist in the #page[HOME PAGE], the appl
 After adding a new track to the current playlist, the application #server_action[refreshes the page] to display the first block of the playlist (the first 5 tracks). Once a user #user_action[selects the title of a track], the #page[PLAYER PAGE] #server_action[shows] all of the #element[track data] and the #element[audio player].
 
 #figure(
-  placement: bottom,
+  placement: top,
   scope: "parent",
   image(
     width: 110%,
