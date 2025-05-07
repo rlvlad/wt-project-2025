@@ -166,7 +166,7 @@ hr {
     z-index: 999; /* on top of everything */
     visibility: hidden; /* default visibility */
     pointer-events: none; /* can't be targeted by cursor */
-    transition: all 0.5s;
+    /*transition: all 1s;*/
 }
 
 .modal-window:target {

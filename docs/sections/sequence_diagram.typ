@@ -4,6 +4,36 @@
 
 = Sequence diagrams
 
+== Components
+
+The projects is built from the following components:
+
+- DAOs
+  - PlaylistDAO
+  - TrackDAO
+  - UserDAO
+
+- Entities
+  - Playlist
+  - Track
+  - User
+j
+- Servlets
+  - Login
+  - HomePage
+  - PlaylistPage
+  - Register
+  - Track
+  - Logout
+
+- Filters
+  - UserChecker
+  - InvalidUserChecker
+  - TrackChecker
+  - PlaylistChecker
+
+#pagebreak()
+
 #seq_diagram(
   "Login sequence diagram",
   diagram({

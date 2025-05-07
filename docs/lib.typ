@@ -60,7 +60,10 @@
 
 // Setting the theme for the rest of the document
 #let set-theme(yaml_file) = {
-  assert(type(yaml_file) == str or type(yaml_file) == dictionary, message: "The theme must be either a filename or the filename in a yaml() function.")
+  assert(
+    type(yaml_file) == str or type(yaml_file) == dictionary,
+    message: "The theme must be either a filename or the filename in a yaml() function.",
+  )
   if (type(yaml_file) == str) {
     theme-state.update(yaml(yaml_file))
   } else {
@@ -410,14 +413,14 @@
 
 #let thymeleaf = image("img/thymeleaf.svg", width: 1.5em, height: 1.5em, fit: "contain")
 
-#let balance(content) = context {
+#let balance(content, position: top) = context {
   let height = measure(
     // width: page.width - page.margin.left.length - page.margin.left.length,
     width: 21cm - 1.5cm - 1.5cm,
     content,
   ).height
   place(
-    top,
+    position,
     scope: "parent",
     float: true,
     block(
@@ -427,9 +430,17 @@
   )
 }
 
-#let seq_diagram(title, diagram-code, label_: "", comment: "", next_page: true, add_comment: true) = context {
+#let seq_diagram(
+  title,
+  diagram-code,
+  label_: "",
+  comment: "",
+  next_page: true,
+  add_comment: true,
+  position: top,
+) = context {
   place(
-    top,
+    position,
     scope: "parent",
     float: true,
     [
@@ -440,13 +451,13 @@
   [
     #figure(
       scope: "parent",
-      placement: top,
+      placement: position,
       diagram-code,
     )
   ]
   if (add_comment) {
     place(
-      top,
+      position,
       scope: "parent",
       float: true,
       grid(
@@ -466,7 +477,7 @@
     )
   }
   // [ --- ]
-  balance(emph(comment))
+  balance(emph(comment), position: position)
   if (next_page) {
     pagebreak(weak: true)
   }
