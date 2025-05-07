@@ -8,29 +8,62 @@
 
 The projects is built from the following components:
 
-- DAOs
++ DAOs
   - PlaylistDAO
   - TrackDAO
   - UserDAO
 
-- Entities
++ Entities
   - Playlist
   - Track
   - User
-j
-- Servlets
+
++ Servlets
   - Login
   - HomePage
-  - PlaylistPage
+  - Playlist
   - Register
   - Track
   - Logout
+  - AddTracks
+  - CreatePlaylist
 
-- Filters
++ Filters
   - UserChecker
   - InvalidUserChecker
   - TrackChecker
   - PlaylistChecker
+
+#colbreak()
+
+== DAOs methods
+
+PlaylistDAO methods:
+
+- getPlaylistTitle
+- deletePlaylist
+- getTrackGroup
+- addTracksToPlaylist
+- removeTracksFromPlaylist
+- checkPlaylistOwner
+- getUserPlaylists
+- getPlaylistTracksByTitle
+- createPlaylist
+- getPlaylistTracksById
+
+TrackDAO methods:
+
+- addTrack
+- isImageFileAlreadyPresent
+- checkTrackOwner
+- isTrackFileAlreadyPresent
+- getTrackById
+- getUserTracks
+
+UserDAO methods:
+
+- checkUser
+- addUser
 
 #pagebreak()
 

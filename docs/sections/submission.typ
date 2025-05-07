@@ -30,7 +30,10 @@ After the login, the user is able to #rel[create tracks] by loading their data a
 #figure(
   placement: bottom,
   scope: "parent",
-  "",
+  image(
+    width: 50%,
+    "../img/uml.png",
+  ),
   caption: [UML diagram.],
 )<uml-diagram>
 
