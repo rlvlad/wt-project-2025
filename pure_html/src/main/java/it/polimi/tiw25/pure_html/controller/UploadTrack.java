@@ -1,5 +1,6 @@
 package it.polimi.tiw25.pure_html.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
@@ -13,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import jakarta.ws.rs.ClientErrorException;
-import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.ServerErrorException;
 import jakarta.ws.rs.core.Response;
 
@@ -41,9 +41,11 @@ public class UploadTrack extends HttpServlet {
     private Track track;
     private List<File> newFiles;
     private ServletContext context;
+    private List<String> genres;
 
     public void init() throws ServletException {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
             context = getServletContext();
             String driver = context.getInitParameter("dbDriver");
             String url = context.getInitParameter("dbUrl");
@@ -53,12 +55,16 @@ public class UploadTrack extends HttpServlet {
             connection = DriverManager.getConnection(url, user, password);
             relativeOutputFolder = getServletContext().getInitParameter("outputPath");
             newFiles = new ArrayList<>();
+            genres = List.of(objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream("genres.json"), String[].class));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new UnavailableException("Can't load database driver");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnavailableException("Couldn't get db connection");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UnavailableException("Couldn't load genres");
         }
     }
 
@@ -92,10 +98,14 @@ public class UploadTrack extends HttpServlet {
             }
             String album = getParam.apply("album");
             String genre = getParam.apply("genre");
+            if (!genres.contains(genre)) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid genre");
+                return;
+            }
             String imagePath = processPart(req.getPart("image"), "image");
             String songPath = processPart(req.getPart("musicTrack"), "audio");
             track = new Track(0, title, artist, year, album, genre, imagePath, songPath, songHash, imageHash);
-        } catch (ClientErrorException | InternalServerErrorException e) {
+        } catch (ClientErrorException | ServerErrorException e) {
             resp.sendError(e.getResponse().getStatus(), e.getMessage());
             return;
         } catch (SQLException e) {
@@ -109,7 +119,9 @@ public class UploadTrack extends HttpServlet {
             trackDAO.addTrack(track, user);
             resp.sendRedirect(getServletContext().getContextPath() + "/HomePage");
         } catch (SQLIntegrityConstraintViolationException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Duplicate track");
+            if (e.getMessage().contains("Duplicate")) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Duplicate track");
+            }
             // Delete newly created files if addTrack fails
             newFiles.forEach(file -> file.delete());
         } catch (SQLException e) {
@@ -164,10 +176,11 @@ public class UploadTrack extends HttpServlet {
         File folder = new File(realOutputFolder);
 
         // Try to create the output folder if it doesn't already exist
-        if (!folder.exists())
+        if (!folder.exists()) {
             if (!folder.mkdirs()) {
                 throw new ServerErrorException("Error while saving file", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
+        }
 
         File outputFile = new File(realOutputFilePath);
 

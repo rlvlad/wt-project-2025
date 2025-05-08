@@ -16,9 +16,27 @@
     <predefined_log_file id="Tomcat Manager" />
     <predefined_log_file id="Tomcat Host Manager" />
     <predefined_log_file id="Tomcat Localhost Access" />
+    <RunnerSettings RunnerId="AppServerDebuggerRunner">
+      <option name="DEBUG_PORT" value="37345" />
+    </RunnerSettings>
     <RunnerSettings RunnerId="Debug">
       <option name="DEBUG_PORT" value="41777" />
     </RunnerSettings>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="AppServerDebuggerRunner">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
     <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
       <option name="USE_ENV_VARIABLES" value="true" />
       <STARTUP>
@@ -82,9 +100,7 @@
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="ConnectionTester" run_configuration_type="JUnit" />
       <option name="Make" enabled="true" />
-      <option name="BuildArtifacts" enabled="true">
-        <artifact name="pure_html:war exploded" />
-      </option>
+      <option name="BuildArtifacts" enabled="false" />
     </method>
   </configuration>
 </component>

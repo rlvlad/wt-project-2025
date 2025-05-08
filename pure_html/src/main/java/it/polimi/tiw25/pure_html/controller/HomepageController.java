@@ -1,5 +1,7 @@
 package it.polimi.tiw25.pure_html.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Playlist;
@@ -19,6 +21,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
@@ -32,10 +35,12 @@ public class HomepageController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private Connection connection = null;
+    private List<String> genres;
 
     @Override
     public void init() throws ServletException {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
             ServletContext context = getServletContext();
             String driver = context.getInitParameter("dbDriver");
             String url = context.getInitParameter("dbUrl");
@@ -43,12 +48,16 @@ public class HomepageController extends HttpServlet {
             String password = context.getInitParameter("dbPassword");
             Class.forName(driver);
             connection = DriverManager.getConnection(url, user, password);
+            genres = List.of(objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream("genres.json"), String[].class));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new UnavailableException("Can't load database driver");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnavailableException("Couldn't get db connection");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new UnavailableException("Couldn't load genres");
         }
 
         ServletContext servletContext = getServletContext();
@@ -92,6 +101,7 @@ public class HomepageController extends HttpServlet {
 
         ctx.setVariable("userTracks", userTracks);
         ctx.setVariable("playlists", playlists);
+        ctx.setVariable("genres", genres);
         templateEngine.process("home_page.html", ctx, res.getWriter());
     }
 

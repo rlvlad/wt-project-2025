@@ -15,8 +15,8 @@
     <a href="#create-playlist">
         <button class="button" th:text="#{home_page.addPlaylist}">Add Playlist</button>
     </a>
-    <button class="button" th:text="#{home_page.removePlaylist}">Remove Playlist</button>
-    <button class="button" th:text="#{home_page.allSongs}">View All Songs</button>
+<!--    <button class="button" th:text="#{home_page.removePlaylist}">Remove Playlist</button>-->
+<!--    <button class="button" th:text="#{home_page.allSongs}">View All Songs</button>-->
     <a href="#open-modal">
         <button class="button" th:text="#{home_page.addTrack}">Add Track</button>
     </a>
@@ -28,7 +28,7 @@
     <!-- Redirects to corresponding playlist page name -->
     <!-- No more than 5 per row -->
     <form action="playlist_page.html" th:action="Playlist" method="GET" th:each="playlist : ${playlists}">
-        <button class="single-item playlist-title" name="playlistId" th:value="${playlist.id}">
+        <button class="single-item playlist-title" name="playlistId" value="1" th:value="${playlist.id}">
             <span class="first-line" th:text="${playlist.title}"> Playlist Title</span>
         </button>
     </form>
@@ -64,13 +64,13 @@
     </form>
 </div>
 <div class="nav-bar">
-    <button class="button" th:text="#{home_page.previousPlaylists}">Previous Playlists</button>
+<!--    <button class="button" th:text="#{home_page.previousPlaylists}">Previous Playlists</button>-->
     <div class="spacer"></div>
     <a href="home_page.html" th:href="@{/HomePage}">
         <button class="button">Home</button>
     </a>
     <div class="spacer"></div>
-    <button class="button" th:text="#{home_page.nextPlaylists}">Next Playlists</button>
+<!--    <button class="button" th:text="#{home_page.nextPlaylists}">Next Playlists</button>-->
 </div>
 <div id="open-modal" class="modal-window">
     <div>
@@ -81,25 +81,33 @@
         </div>
         <form action="home_page.html" th:action="UploadTrack" method="post" enctype="multipart/form-data"
               name="songAttributes">
-            <input type="text" class="text-field" name="title" placeholder="Title" th:placeholder="#{home_page.title}">
+            <input type="text" class="text-field" name="title" placeholder="Title" th:placeholder="#{home_page.title}"
+                   required>
             <br>
             <input type="text" class="text-field" name="artist" placeholder="Artist"
-                   th:placeholder="#{home_page.artist}">
+                   th:placeholder="#{home_page.artist}" required>
             <br>
             <input type="text" class="text-field" name="album" placeholder="Album title"
-                   th:placeholder="#{home_page.albumTitle}">
+                   th:placeholder="#{home_page.albumTitle}" required>
             <br>
             <input type="number" class="text-field" min="1901" th:max="${#dates.year(#dates.createNow())}" name="year"
-                   placeholder="Year" th:placeholder="#{home_page.year}">
+                   placeholder="Year" th:placeholder="#{home_page.year}" required>
             <br>
-            <input type="text" class="text-field" name="genre" placeholder="Genre" th:placeholder="#{home_page.genre}">
+            <label class="label" for="genre" th:text="#{home_page.genre} + ':'">Genre:</label>
+            <select name="genre" id="genre" th:remove="all-but-first" required >
+                <option th:each="genre:${genres}" th:value="${genre}" th:text="${genre}">Genre</option>
+                <option>Genre</option>
+                <option>Genre</option>
+                <option>Genre</option>
+            </select>
             <br>
             <label class="label" for="musicTrack" th:text="#{home_page.track} + ':'">Track:</label>
             <input type="file" name="musicTrack" id="musicTrack" placeholder="Track"
-                   th:placeholder="#{home_page.track}">
+                   th:placeholder="#{home_page.track}" required>
             <br>
             <label class="label" for="image" th:text="#{home_page.albumImage} + ':'">Album image:</label>
-            <input type="file" name="image" id="image" placeholder="Image" th:placeholder="#{home_page.albumImage}">
+            <input type="file" name="image" id="image" placeholder="Image" th:placeholder="#{home_page.albumImage}"
+                   required>
             <div class="nav-bar">
                 <input type="submit" class="button" value="Add Track" th:value="#{home_page.addNewTrack}"/>
             </div>
@@ -116,7 +124,7 @@
         </form>
         <form action="home_page.html" th:action="@{/CreatePlaylist}" method="post">
             <input type="text" class="text-field" name="playlistTitle" placeholder="Title"
-                   th:placeholder="#{home_page.title}">
+                   th:placeholder="#{home_page.title}" required>
             <br> <br>
             <label class="label" for="trackSelector"
                    th:text="${userTracks.size()==0}? #{home_page.noTracksAvailable} : #{home_page.selectTracks}">Select
