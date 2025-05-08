@@ -23,7 +23,7 @@ After the login, the user is able to #rel[create tracks] by loading their data a
 #figure(
   placement: bottom,
   scope: "parent",
-  image("../misc/er_html.svg", width: 100%),
+  image("../img/er_diagram.svg", width: 100%),
   caption: [ER diagram, .],
 )<er-diagram>
 
@@ -32,7 +32,7 @@ After the login, the user is able to #rel[create tracks] by loading their data a
   // scope: "parent",
   image(
     width: 100%,
-    "../img/uml_arancio.png",
+    "../img/uml_nero.png",
   ),
   caption: [UML diagram.],
 )<uml-diagram>
