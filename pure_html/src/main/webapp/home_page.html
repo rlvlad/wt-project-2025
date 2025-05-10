@@ -15,8 +15,8 @@
     <a href="#create-playlist">
         <button class="button" th:text="#{home_page.addPlaylist}">Add Playlist</button>
     </a>
-<!--    <button class="button" th:text="#{home_page.removePlaylist}">Remove Playlist</button>-->
-<!--    <button class="button" th:text="#{home_page.allSongs}">View All Songs</button>-->
+    <!--    <button class="button" th:text="#{home_page.removePlaylist}">Remove Playlist</button>-->
+    <!--    <button class="button" th:text="#{home_page.allSongs}">View All Songs</button>-->
     <a href="#open-modal">
         <button class="button" th:text="#{home_page.addTrack}">Add Track</button>
     </a>
@@ -64,13 +64,13 @@
     </form>
 </div>
 <div class="nav-bar">
-<!--    <button class="button" th:text="#{home_page.previousPlaylists}">Previous Playlists</button>-->
+    <!--    <button class="button" th:text="#{home_page.previousPlaylists}">Previous Playlists</button>-->
     <div class="spacer"></div>
     <a href="home_page.html" th:href="@{/HomePage}">
         <button class="button">Home</button>
     </a>
     <div class="spacer"></div>
-<!--    <button class="button" th:text="#{home_page.nextPlaylists}">Next Playlists</button>-->
+    <!--    <button class="button" th:text="#{home_page.nextPlaylists}">Next Playlists</button>-->
 </div>
 <div id="open-modal" class="modal-window">
     <div>
@@ -90,11 +90,11 @@
             <input type="text" class="text-field" name="album" placeholder="Album title"
                    th:placeholder="#{home_page.albumTitle}" required>
             <br>
-            <input type="number" class="text-field" min="1901" th:max="${#dates.year(#dates.createNow())}" name="year"
+            <input type="number" class="text-field" min="1901" max="2155" name="year"
                    placeholder="Year" th:placeholder="#{home_page.year}" required>
             <br>
             <label class="label" for="genre" th:text="#{home_page.genre} + ':'">Genre:</label>
-            <select name="genre" id="genre" th:remove="all-but-first" required >
+            <select name="genre" id="genre" th:remove="all-but-first" required>
                 <option th:each="genre:${genres}" th:value="${genre}" th:text="${genre}">Genre</option>
                 <option>Genre</option>
                 <option>Genre</option>
@@ -138,9 +138,9 @@
                         th:each="track: ${userTracks}">
                     Artist - Title (Year)
                 </option>
-                <option value="Track1">Artist 1 - Title 1 (2001)</option>
-                <option value="Track2">Artist 2 - Title 2 (2002)</option>
-                <option value="Track3">Artist 3 - Title 3 (2003)</option>
+                <option value="Track1">Artist - Title (Year)</option>
+                <option value="Track2">Artist - Title (Year)</option>
+                <option value="Track3">Artist - Title (Year)</option>
             </select>
             <div class="nav-bar">
                 <input class="button" type="submit" value="Create playlist"

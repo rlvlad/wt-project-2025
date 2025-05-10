@@ -35,8 +35,6 @@ public class UploadTrack extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
     private String relativeOutputFolder;
-    private String imageHash;
-    private String songHash;
     private User user;
     private Track track;
     private List<File> newFiles;
@@ -45,13 +43,13 @@ public class UploadTrack extends HttpServlet {
 
     public void init() throws ServletException {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             context = getServletContext();
             String driver = context.getInitParameter("dbDriver");
             String url = context.getInitParameter("dbUrl");
             String user = context.getInitParameter("dbUser");
             String password = context.getInitParameter("dbPassword");
             Class.forName(driver);
+            ObjectMapper objectMapper = new ObjectMapper();
             connection = DriverManager.getConnection(url, user, password);
             relativeOutputFolder = getServletContext().getInitParameter("outputPath");
             newFiles = new ArrayList<>();
@@ -85,6 +83,7 @@ public class UploadTrack extends HttpServlet {
         try {
             String title = getParam.apply("title");
             String artist = getParam.apply("artist");
+
             int year;
             try {
                 year = Integer.parseInt(req.getParameter("year"));
@@ -96,14 +95,25 @@ public class UploadTrack extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
                 return;
             }
+
             String album = getParam.apply("album");
+
             String genre = getParam.apply("genre");
             if (!genres.contains(genre)) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid genre");
                 return;
             }
-            String imagePath = processPart(req.getPart("image"), "image");
-            String songPath = processPart(req.getPart("musicTrack"), "audio");
+
+            FileDetails fileDetails;
+
+            fileDetails = processPart(req.getPart("image"), "image");
+            String imagePath = fileDetails.path();
+            String imageHash = fileDetails.hash();
+
+            fileDetails = processPart(req.getPart("musicTrack"), "audio");
+            String songPath = fileDetails.path();
+            String songHash = fileDetails.hash();
+
             track = new Track(0, title, artist, year, album, genre, imagePath, songPath, songHash, imageHash);
         } catch (ClientErrorException | ServerErrorException e) {
             resp.sendError(e.getResponse().getStatus(), e.getMessage());
@@ -136,11 +146,14 @@ public class UploadTrack extends HttpServlet {
     /**
      * @param part     item received with the form
      * @param mimeType expected MIME type
-     * @return String containing the file path of the received item; in case of errors, null is returned
+     * @return record containing the file path and hash of the received item
      * @throws IOException
+     * @throws SQLException
      */
-    private String processPart(Part part, String mimeType) throws IOException, SQLException {
-        String relativeFilePath = null;
+    private FileDetails processPart(Part part, String mimeType) throws IOException, SQLException {
+        String relativeFilePath;
+        String hash;
+
         // Check item size
         if (part == null || part.getSize() <= 0) {
             throw new ClientErrorException("Missing " + mimeType, Response.Status.BAD_REQUEST);
@@ -154,21 +167,16 @@ public class UploadTrack extends HttpServlet {
         TrackDAO trackDAO = new TrackDAO(connection);
 
         // Save item hash and try to find existing DB entries with the same hash; if present, their file path is returned
-        switch (mimeType) {
-            case "audio":
-                songHash = getSHA256Hash(part.getInputStream().readAllBytes());
-                if (songHash != null)
-                    relativeFilePath = trackDAO.isTrackFileAlreadyPresent(songHash);
-                break;
-            case "image":
-                imageHash = getSHA256Hash(part.getInputStream().readAllBytes());
-                if (imageHash != null)
-                    relativeFilePath = trackDAO.isImageFileAlreadyPresent(imageHash);
-                break;
-        }
+        hash = getSHA256Hash(part.getInputStream().readAllBytes());
+        relativeFilePath = switch (mimeType) {
+            case "audio" -> trackDAO.isTrackFileAlreadyPresent(hash);
+            case "image" -> trackDAO.isImageFileAlreadyPresent(hash);
+            default -> null;
+        };
 
-        if (relativeFilePath != null)
-            return relativeFilePath;
+        if (relativeFilePath != null) {
+            return new FileDetails(relativeFilePath, hash);
+        }
 
         String realOutputFolder = context.getRealPath(relativeOutputFolder) + File.separator + mimeType + File.separator;
         String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
@@ -189,7 +197,7 @@ public class UploadTrack extends HttpServlet {
             Files.copy(part.getInputStream(), outputFile.toPath());
             newFiles.add(outputFile);
             relativeFilePath = relativeOutputFolder + File.separator + mimeType + File.separator + outputFile.getName();
-            return relativeFilePath;
+            return new FileDetails(relativeFilePath, hash);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServerErrorException("Error while saving file", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -207,9 +215,13 @@ public class UploadTrack extends HttpServlet {
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            return null;
+            e.printStackTrace();
+            throw new ServerErrorException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         byte[] hash = digest.digest(input);
         return hex.formatHex(hash);
+    }
+
+    record FileDetails(String path, String hash) {
     }
 }
