@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
+import it.polimi.tiw25.pure_html.utils.ConnectionHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
@@ -42,24 +43,14 @@ public class UploadTrack extends HttpServlet {
     private List<String> genres;
 
     public void init() throws ServletException {
+        context = getServletContext();
+        connection = ConnectionHandler.openConnection(context);
+        relativeOutputFolder = getServletContext().getInitParameter("outputPath");
+        newFiles = new ArrayList<>();
+
         try {
-            context = getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
             ObjectMapper objectMapper = new ObjectMapper();
-            connection = DriverManager.getConnection(url, user, password);
-            relativeOutputFolder = getServletContext().getInitParameter("outputPath");
-            newFiles = new ArrayList<>();
             genres = List.of(objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream("genres.json"), String[].class));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Couldn't get db connection");
         } catch (IOException e) {
             e.printStackTrace();
             throw new UnavailableException("Couldn't load genres");
@@ -130,7 +121,7 @@ public class UploadTrack extends HttpServlet {
             resp.sendRedirect(getServletContext().getContextPath() + "/HomePage");
         } catch (SQLIntegrityConstraintViolationException e) {
             if (e.getMessage().contains("Duplicate")) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Duplicate track");
+                resp.sendRedirect(getServletContext().getContextPath() + "/HomePage?duplicateTrack=true#open-modal");
             }
             // Delete newly created files if addTrack fails
             newFiles.forEach(file -> file.delete());
@@ -220,6 +211,11 @@ public class UploadTrack extends HttpServlet {
         }
         byte[] hash = digest.digest(input);
         return hex.formatHex(hash);
+    }
+
+    @Override
+    public void destroy() {
+        ConnectionHandler.closeConnection(connection);
     }
 
     record FileDetails(String path, String hash) {

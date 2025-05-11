@@ -72,6 +72,12 @@ public class TrackChecker extends HttpFilter {
 
     @Override
     public void destroy() {
-        super.destroy();
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

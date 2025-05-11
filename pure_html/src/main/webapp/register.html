@@ -13,7 +13,7 @@
     <div class="welcome" th:text="#{register.welcome}">Register</div>
     <hr>
     <div th:if="${isUserAdded == false}" class="sql-error">
-        Username already taken; choose another one
+        <span th:text="#{register.taken}">Nickname already taken</span>
         <hr>
     </div>
     <form action="Register" method="POST">
@@ -23,9 +23,9 @@
             <input class="text-field" type="password" id="password" name="password"
                    placeholder="Password" required>
             <input class="text-field" type="text" id="name" name="name"
-                   placeholder="Name" required>
+                   placeholder="Name" th:placeholder="#{register.name}" required>
             <input class="text-field" type="text" id="surname" name="surname"
-                   placeholder="Surname" required>
+                   placeholder="Surname" th:placeholder="#{register.surname}" required>
         </div>
         <div class="nav-bar">
             <input type="submit" class="button" value="Create Account" th:value="#{register.createAccount}">

@@ -2,9 +2,9 @@ package it.polimi.tiw25.pure_html.controller;
 
 import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
 import it.polimi.tiw25.pure_html.entities.User;
+import it.polimi.tiw25.pure_html.utils.ConnectionHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
@@ -27,25 +26,12 @@ public class AddTracksToPlaylist extends HttpServlet {
     User user;
 
     public void init() throws ServletException {
-        try {
-            ServletContext context = getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Couldn't get db connection");
-        }
+        ServletContext context = getServletContext();
+        connection = ConnectionHandler.openConnection(context);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
         user = (User) req.getSession().getAttribute("user");
         String[] selectedTracksStringIds = req.getParameterValues("selectedTracks");
@@ -81,5 +67,10 @@ public class AddTracksToPlaylist extends HttpServlet {
         }
 
         resp.sendRedirect(getServletContext().getContextPath() + "/Playlist?playlistId=" + playlistId);
+    }
+
+    @Override
+    public void destroy() {
+        ConnectionHandler.closeConnection(connection);
     }
 }

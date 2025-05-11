@@ -3,9 +3,10 @@ package it.polimi.tiw25.pure_html.controller;
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
+import it.polimi.tiw25.pure_html.utils.ConnectionHandler;
+import it.polimi.tiw25.pure_html.utils.TemplateEngineHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,14 +14,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @WebServlet("/Track")
@@ -32,30 +30,9 @@ public class TrackController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        try {
-            ServletContext context = getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Couldn't get db connection");
-        }
-
-        ServletContext servletContext = getServletContext();
-        JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(servletContext);
-        WebApplicationTemplateResolver templateResolver = new WebApplicationTemplateResolver(webApplication);
-
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        this.templateEngine = new TemplateEngine();
-        this.templateEngine.setTemplateResolver(templateResolver);
-        templateResolver.setSuffix(".html");
+        ServletContext context = getServletContext();
+        connection = ConnectionHandler.openConnection(context);
+        templateEngine = TemplateEngineHandler.getTemplateEngine(context);
     }
 
     @Override
@@ -68,8 +45,10 @@ public class TrackController extends HttpServlet {
         int trackId;
         try {
             trackId = Integer.parseInt(req.getParameter("track_id"));
+            if (trackId < 0)
+                throw new NumberFormatException();
         } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid trackId");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Invalid trackId");
             return;
         }
 
@@ -79,21 +58,26 @@ public class TrackController extends HttpServlet {
         try {
             isOwner = trackDAO.checkTrackOwner(trackId, user);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
         }
 
         if (!isOwner) {
             resp.sendError(
-                    HttpServletResponse.SC_FORBIDDEN,
-                    "You don't have permission to access this track"
+                    HttpServletResponse.SC_NOT_FOUND,
+                    "Track does not exist"
             );
+            return;
         }
 
         Track track = null;
         try {
             track = trackDAO.getTrackById(trackId);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
         }
 
         ctx.setVariable("track", track);
@@ -106,4 +90,9 @@ public class TrackController extends HttpServlet {
         super.doPost(req, resp);
     }
 
+
+    @Override
+    public void destroy() {
+        ConnectionHandler.closeConnection(connection);
+    }
 }

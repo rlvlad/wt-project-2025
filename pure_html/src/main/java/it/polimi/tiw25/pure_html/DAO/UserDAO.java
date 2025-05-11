@@ -1,13 +1,14 @@
 package it.polimi.tiw25.pure_html.DAO;
 
 import it.polimi.tiw25.pure_html.entities.User;
+import jakarta.ws.rs.ClientErrorException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDAO {
+public class UserDAO implements DAO {
     private final Connection connection;
 
     public UserDAO(Connection connection) {
@@ -31,20 +32,21 @@ public class UserDAO {
 
         ResultSet result = statement.executeQuery();
 
+        User user = null;
         if (result.isBeforeFirst()) {
             // the user exists
             result.next();
-            return new User(
+            user = new User(
                     result.getInt("user_id"),
                     result.getString("nickname"),
                     result.getString("password"),
                     result.getString("name"),
                     result.getString("surname")
             );
-        } else {
-            // the user does not exist
-            return null;
         }
+
+        close(result, statement);
+        return user;
     }
 
     /**
@@ -54,8 +56,9 @@ public class UserDAO {
      * @return false if the user is not added to the database
      */
     public boolean addUser(User user) {
+        PreparedStatement statement = null;
         try {
-            PreparedStatement statement = connection.prepareStatement(
+            statement = connection.prepareStatement(
                     "INSERT INTO user(nickname, password, name, surname)VALUES( ?, ?, ?, ?)"
             );
 
@@ -69,6 +72,10 @@ public class UserDAO {
             // the user could not be added
             System.out.println(e.getMessage());
             return false;
+        } finally {
+            if (statement != null) {
+                close(statement);
+            }
         }
 
         // the operation succeded

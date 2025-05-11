@@ -71,6 +71,17 @@ body {
     flex-wrap: wrap;
 }
 
+.error{
+    color: var(--variables);
+    padding-top: 0.5rem;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;
+}
+
 /* ITEM CONTAINER AND ITEMS */
 
 .nav-bar {

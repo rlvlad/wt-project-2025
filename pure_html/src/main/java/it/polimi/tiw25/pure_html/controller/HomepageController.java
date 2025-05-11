@@ -1,12 +1,13 @@
 package it.polimi.tiw25.pure_html.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.Playlist;
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
+import it.polimi.tiw25.pure_html.utils.ConnectionHandler;
+import it.polimi.tiw25.pure_html.utils.TemplateEngineHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
@@ -17,15 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -39,35 +36,16 @@ public class HomepageController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        ServletContext context = getServletContext();
+        connection = ConnectionHandler.openConnection(context);
+        templateEngine = TemplateEngineHandler.getTemplateEngine(context);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            ServletContext context = getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url, user, password);
             genres = List.of(objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream("genres.json"), String[].class));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Couldn't get db connection");
         } catch (IOException e) {
             e.printStackTrace();
             throw new UnavailableException("Couldn't load genres");
         }
-
-        ServletContext servletContext = getServletContext();
-        JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(servletContext);
-        WebApplicationTemplateResolver templateResolver = new WebApplicationTemplateResolver(webApplication);
-
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        this.templateEngine = new TemplateEngine();
-        this.templateEngine.setTemplateResolver(templateResolver);
-        templateResolver.setSuffix(".html");
     }
 
     @Override
@@ -99,6 +77,15 @@ public class HomepageController extends HttpServlet {
             return;
         }
 
+        String duplicateTrack = req.getParameter("duplicateTrack");
+        if (duplicateTrack != null && duplicateTrack.equals("true")) {
+            ctx.setVariable("duplicateTrack", "true");
+        }
+        String duplicatePlaylist = req.getParameter("duplicatePlaylist");
+        if (duplicatePlaylist != null && duplicatePlaylist.equals("true")) {
+            ctx.setVariable("duplicatePlaylist", "true");
+        }
+
         ctx.setVariable("userTracks", userTracks);
         ctx.setVariable("playlists", playlists);
         ctx.setVariable("genres", genres);
@@ -108,5 +95,10 @@ public class HomepageController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         super.doPost(req, res);
+    }
+
+    @Override
+    public void destroy() {
+        ConnectionHandler.closeConnection(connection);
     }
 }

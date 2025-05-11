@@ -23,6 +23,9 @@
             <input class="text-field" type="password" id="password" name="password"
                    placeholder="Password" required>
         </div>
+        <div class="error" th:if="${error != null && error.equals('true')}">
+            <span th:text="#{index.invalidCredentials}">Invalid credentials</span>
+        </div>
         <div class="nav-bar">
             <input type="submit" class="button" value="Login" th:value="#{index.login}">
         </div>

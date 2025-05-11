@@ -43,12 +43,15 @@ public class PlaylistChecker extends HttpFilter {
 
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
-        String playlistId = req.getParameter("playlistId");
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
+        int playlistId;
 
         boolean result;
         try {
-            result = playlistDAO.checkPlaylistOwner(Integer.parseInt(playlistId), user);
+            playlistId = Integer.parseInt(req.getParameter("playlistId"));
+            if (playlistId < 0)
+                throw new NumberFormatException();
+            result = playlistDAO.checkPlaylistOwner(playlistId, user);
         } catch (SQLException e) {
             e.printStackTrace();
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -69,6 +72,12 @@ public class PlaylistChecker extends HttpFilter {
 
     @Override
     public void destroy() {
-        super.destroy();
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

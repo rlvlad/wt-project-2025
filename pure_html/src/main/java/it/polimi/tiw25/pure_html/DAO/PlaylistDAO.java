@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaylistDAO {
+public class PlaylistDAO implements DAO {
     private final Connection connection;
 
     public PlaylistDAO(Connection connection) {
@@ -44,7 +44,7 @@ public class PlaylistDAO {
             );
             playlists.add(playlist);
         }
-
+        close(resultSet, preparedStatement);
         return playlists;
     }
 
@@ -80,6 +80,7 @@ public class PlaylistDAO {
             tracks.add(track);
         }
 
+        close(resultSet, preparedStatement);
         return tracks;
     }
 
@@ -111,6 +112,7 @@ public class PlaylistDAO {
             tracks.add(track);
         }
 
+        close(resultSet, preparedStatement);
         return tracks;
     }
 
@@ -154,6 +156,7 @@ public class PlaylistDAO {
             );
             userTracks.add(track);
         }
+        close(resultSet, preparedStatement);
         return userTracks;
     }
 
@@ -189,6 +192,7 @@ public class PlaylistDAO {
             tracks.add(track);
         }
 
+        close(resultSet, preparedStatement);
         return tracks;
     }
 
@@ -202,11 +206,12 @@ public class PlaylistDAO {
         preparedStatement.setInt(1, playlistID);
         ResultSet resultSet = preparedStatement.executeQuery();
 
+        String playlistTitle = null;
         if (resultSet.next()) {
-            return resultSet.getString("playlist_title");
-        } else {
-            return null;
+            playlistTitle = resultSet.getString("playlist_title");
         }
+        close(resultSet, preparedStatement);
+        return playlistTitle;
     }
 
     /**
@@ -223,9 +228,13 @@ public class PlaylistDAO {
         preparedStatement.setInt(2, playlist.user().id());
         preparedStatement.executeQuery();
         ResultSet rs = preparedStatement.getGeneratedKeys();
+
+        Integer playlistID = null;
         if (rs.next())
-            return rs.getInt(1);
-        return null;
+            playlistID = rs.getInt(1);
+
+        close(rs, preparedStatement);
+        return playlistID;
     }
 
 
@@ -264,6 +273,7 @@ public class PlaylistDAO {
             throw new SQLException();
         } finally {
             connection.setAutoCommit(true);
+            close(preparedStatement);
         }
     }
 
@@ -282,7 +292,7 @@ public class PlaylistDAO {
      * Checks if the requested Playlist actually belongs to the currently logged-in User.
      *
      * @param playlist_id playlist_id of the Playlist to check
-     * @param user user of which to check the ownership status
+     * @param user        user of which to check the ownership status
      * @return true if the tracks belongs to the User; false otherwise
      * @throws SQLException
      */
@@ -298,11 +308,13 @@ public class PlaylistDAO {
         ResultSet resultSet = preparedStatement.executeQuery();
         int userId = user.id();
 
-        if (!resultSet.isBeforeFirst()) {
-            return false;
-        } else {
+        boolean result = false;
+        if (resultSet.isBeforeFirst()) {
             resultSet.next();
-            return userId == resultSet.getInt("user_id");
+            result = userId == resultSet.getInt("user_id");
         }
+
+        close(resultSet, preparedStatement);
+        return result;
     }
 }

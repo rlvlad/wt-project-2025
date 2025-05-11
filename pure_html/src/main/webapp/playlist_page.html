@@ -112,7 +112,7 @@
                 <option value="Track2">Artist 2 - Title 2 (2002)</option>
                 <option value="Track3">Artist 3 - Title 3 (2003)</option>
             </select>
-            <div class="nav-bar">
+            <div th:if="${addableTracks.size()}!=0" class="nav-bar">
                 <input class="button" type="submit" value="Create playlist"
                        th:value="#{playlist_page.addTracks}"/>
             </div>

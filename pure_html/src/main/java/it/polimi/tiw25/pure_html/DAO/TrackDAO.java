@@ -2,12 +2,14 @@ package it.polimi.tiw25.pure_html.DAO;
 
 import it.polimi.tiw25.pure_html.entities.Track;
 import it.polimi.tiw25.pure_html.entities.User;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.core.Response;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackDAO {
+public class TrackDAO implements DAO {
     private Connection connection;
 
     public TrackDAO(Connection connection) {
@@ -42,7 +44,7 @@ public class TrackDAO {
 
         resultSet.next();
 
-        return new Track(
+        Track track = new Track(
                 resultSet.getInt("track_id"),
                 resultSet.getString("title"),
                 resultSet.getString("artist"),
@@ -54,6 +56,9 @@ public class TrackDAO {
                 resultSet.getString("song_checksum"),
                 resultSet.getString("image_checksum")
         );
+
+        close(resultSet, preparedStatement);
+        return track;
     }
 
     public List<Track> getUserTracks(User user) throws SQLException {
@@ -90,6 +95,8 @@ public class TrackDAO {
             );
             userTracks.add(track);
         }
+
+        close(resultSet, preparedStatement);
         return userTracks;
     }
 
@@ -113,9 +120,13 @@ public class TrackDAO {
 
         preparedStatement.executeQuery();
         ResultSet rs = preparedStatement.getGeneratedKeys();
+
+        Integer id = null;
         if (rs.next())
-            return rs.getInt(1);
-        return null;
+            id = rs.getInt(1);
+
+        close(preparedStatement);
+        return id;
     }
 
     /**
@@ -129,12 +140,15 @@ public class TrackDAO {
                 """);
         preparedStatement.setString(1, checksum);
         ResultSet result = preparedStatement.executeQuery();
-        if (!result.isBeforeFirst())
-            return null;
-        else {
+
+        String path = null;
+        if (result.isBeforeFirst()) {
             result.next();
-            return result.getString("song_path");
+            path = result.getString("song_path");
         }
+
+        close(result, preparedStatement);
+        return path;
     }
 
     /**
@@ -148,19 +162,21 @@ public class TrackDAO {
                 """);
         preparedStatement.setString(1, checksum);
         ResultSet result = preparedStatement.executeQuery();
-        if (!result.isBeforeFirst())
-            return null;
-        else {
+
+        String path = null;
+        if (result.isBeforeFirst()) {
             result.next();
-            return result.getString("image_path");
+            path = result.getString("image_path");
         }
+        close(result, preparedStatement);
+        return path;
     }
 
     /**
      * Checks if the requested Track actually belongs to the currently logged-in User.
      *
      * @param track_id track_id of the Track to check
-     * @param user user of which to check the ownership status
+     * @param user     user of which to check the ownership status
      * @return true if the tracks belongs to the User; false otherwise
      * @throws SQLException
      */
@@ -176,11 +192,12 @@ public class TrackDAO {
         ResultSet resultSet = preparedStatement.executeQuery();
         int userId = user.id();
 
-        if (!resultSet.isBeforeFirst()) {
-            return false;
-        } else {
+        boolean result = false;
+        if (resultSet.isBeforeFirst()) {
             resultSet.next();
-            return userId == resultSet.getInt("user_id");
+            result = userId == resultSet.getInt("user_id");
         }
+        close(resultSet, preparedStatement);
+        return result;
     }
 }
