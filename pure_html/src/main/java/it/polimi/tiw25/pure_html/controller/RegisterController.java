@@ -50,6 +50,11 @@ public class RegisterController extends HttpServlet {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
 
+        if (nickname == null || nickname.isEmpty() || password == null || password.isEmpty() || name == null || name.isEmpty() || surname == null || surname.isEmpty()) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameters");
+            return;
+        }
+
         UserDAO userDAO = new UserDAO(connection);
         User user = new User(
                 0,
