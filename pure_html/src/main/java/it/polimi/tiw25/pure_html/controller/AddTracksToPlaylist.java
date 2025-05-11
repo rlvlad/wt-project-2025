@@ -38,12 +38,7 @@ public class AddTracksToPlaylist extends HttpServlet {
         List<Integer> selectedTracksIds = new ArrayList<>();
         if (selectedTracksStringIds != null) {
             for (String id : selectedTracksStringIds) {
-                try {
                     selectedTracksIds.add(Integer.parseInt(id));
-                } catch (NumberFormatException e) {
-                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid trackId");
-                    return;
-                }
             }
         }
 
