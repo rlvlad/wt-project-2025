@@ -4,80 +4,6 @@
 
 = Sequence diagrams
 
-== Components
-
-The projects is built from the following components:
-
-+ DAOs
-  - PlaylistDAO
-  - TrackDAO
-  - UserDAO
-  - DAO interface
-
-The DAO interface is composed of the default method `close()`, which is used in nearly all DAOs -- this way we are able to follow the DRY principle (#emph[Don't Repeat Yourself]).
-
-2. Entities
-  - Playlist
-  - Track
-  - User
-
-Unlike most WT projects, these are record classes @record-classes: basically they are built-in old-school beans. We opted their use to drastically reduce boilerplate and simplify the codebase.
-
-3. Servlets
-  - Login
-  - HomePage
-  - Playlist
-  - Register
-  - Track
-  - Logout
-  - AddTracks
-  - CreatePlaylist
-
-+ Filters
-  - UserChecker
-  - InvalidUserChecker
-  - TrackChecker
-  - PlaylistChecker
-
-+ Utils
-  - ConnectionHandler
-  - TemplateEngineHandler
-
-As per the DAO interface, the same idea has been applied to `ConnectionHandler` and `TemplateEngineHandler` classes too, which hold the otherwise repeated code in `init()` methods across the project.
-
-// #colbreak()
-
-== DAOs methods
-
-PlaylistDAO methods:
-
-- getPlaylistTitle
-- deletePlaylist
-- getTrackGroup
-- addTracksToPlaylist
-- removeTracksFromPlaylist
-- checkPlaylistOwner
-- getUserPlaylists
-- getPlaylistTracksByTitle
-- createPlaylist
-- getPlaylistTracksById
-
-TrackDAO methods:
-
-- addTrack
-- isImageFileAlreadyPresent
-- checkTrackOwner
-- isTrackFileAlreadyPresent
-- getTrackById
-- getUserTracks
-
-UserDAO methods:
-
-- checkUser
-- addUser
-
-All the methods are intuitively named and don't need further explanations. Either way, they are explanined throughout this section in their respective sequence.
-
 #pagebreak()
 
 #seq_diagram(
@@ -108,8 +34,8 @@ All the methods are intuitively named and don't need further explanations. Eithe
     _seq("A", "B", enable-dst: true, comment: "doPost()")
     _seq("B", "D", enable-dst: true, comment: "checkUser()")
     _seq("D", "B", disable-src: true, comment: "return schrödingerUser")
-    _seq("B", "B", comment: "[schrödingerUser == null] ? redirect")
-    _seq("B", "E", comment: "[schrödingerUser != null] ? setAttribute(\"user\", schrödingerUser)")
+    _seq("B", "B", comment: [[schrödingerUser == null] \ ? redirect `/Login?error=true`])
+    _seq("B", "E", comment: [[schrödingerUser != null] ? setAttribute("user", schrödingerUser)])
     _seq("B", "F", disable-src: true, comment: "Redirect")
   }),
   comment: [
@@ -121,6 +47,7 @@ All the methods are intuitively named and don't need further explanations. Eithe
     If there has been some error in the process -- the credentials are incorrect, database can't be accessed... -- then the servlet will redirect to itself by setting the variable `error` to true, which then will be evaluated by thymeleaf and if true, it will print an error; otherwise it won't (this is the case for the first time the User inserts the credentials).
   ],
   label_: "login-sequence",
+  comment_next_page_: false,
 )
 
 #seq_diagram(
@@ -128,15 +55,17 @@ All the methods are intuitively named and don't need further explanations. Eithe
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "Register")
-    _par("C", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
     _par("H", display-name: "Request")
+    _par("C", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
     _par("D", display-name: "UserDAO")
     _par("F", display-name: "Login")
-    _par("G", display-name: "WebContext")
+    // _par("G", display-name: "WebContext")
     // _par("E", display-name: "Session")
 
     // get
     _seq("A", "B", enable-dst: true, comment: "doGet()")
+    _seq("B", "H", enable-dst: true, comment: [getParameter("isUserAdded")])
+    _seq("H", "B", disable-src: true, comment: [return isUserAdded])
     _seq("B", "C", enable-dst: true, comment: "process(register.html, WebContext)")
     _seq("C", "B", disable-src: true, comment: "register.html")
     _seq("B", "A", disable-src: true, comment: "register.html")
@@ -154,7 +83,7 @@ All the methods are intuitively named and don't need further explanations. Eithe
     _seq("B", "D", enable-dst: true, comment: "addUser()")
     _seq("D", "B", disable-src: true, comment: "return isUserAdded")
     _seq("B", "F", comment: "[isUserAdded] ? redirect")
-    _seq("B", "G", comment: [[!isUserAdded] ? redirect `/Registration?isUserAdded=false`])
+    _seq("B", "B", comment: [[!isUserAdded] \ ? redirect `/Registration?isUserAdded=false`])
     _seq("B", "C", enable-dst: true, comment: "process(register.html, WebContext)")
     _seq("C", "B", disable-src: true, comment: "register.html")
     _seq("B", "A", disable-src: true, comment: "register.html")
@@ -275,6 +204,7 @@ All the methods are intuitively named and don't need further explanations. Eithe
       _par("C", display-name: "TrackDAO")
       // _par("H", display-name: [`ERROR 404`], color: red.lighten(50%))
       _par("D", display-name: "WebContext")
+      // _par("H", display-name: `ERROR 500`)
       _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
       _seq("A", "B", enable-dst: true, comment: "doGet()")
@@ -296,7 +226,7 @@ All the methods are intuitively named and don't need further explanations. Eithe
   comment: [
     Once the program has lodead all the tracks associated to a playlist, it allows to play them one by one in the dedicated player page. In a similar fashion to the `getPlaylistTracks()` method, in order to retrieve all the information regarding a single track the program is given the `track_id` parameter by pressing the corresponding button.
 
-    Finally, `getTrackById()` returns the track metadata, thymeleaf processes the context and displays all the information.
+    Finally, `getTrackById()` returns the track metadata -- that is title, artist, album, path and album image -- thymeleaf then processes the context and displays all the information. If an exception is caught during this operation, the server will respond with `ERROR 500` (see @trackchecker-filter).
   ],
   label_: "track-sequence",
 )
@@ -390,6 +320,7 @@ All the methods are intuitively named and don't need further explanations. Eithe
     Note that selectedTracksIds is a list of integers obtained by converting the strings inside the array returned by getParameterValues("selectedTracks") with the Integer.parseInt method.
   ],
   label_: "createplaylist-sequence",
+  comment_next_page_: false,
 )
 
 
@@ -410,4 +341,5 @@ All the methods are intuitively named and don't need further explanations. Eithe
     From every web page except Login and Register, the User is able to logout, at any moment. It's a simple `GET` request to the Logout servlet, which checks if the `user` session attribute exists; if it does, then it invalidates the session and redirects the User to the Login page.
   ],
   label_: "logout-sequence",
+  comment_next_page_: false,
 )

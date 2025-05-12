@@ -15,6 +15,7 @@
 #include "sections/submission.typ"
 // #include "sections/pipeline.typ"
 // #include "sections/ifml.typ"
+#include "sections/components.typ"
 #include "sections/sequence_diagram.typ"
 #include "sections/filters.typ"
 #include "sections/sql.typ"

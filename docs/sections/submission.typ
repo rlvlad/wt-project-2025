@@ -75,7 +75,7 @@ When a user #user_action[clicks] on a playlist in the #page[HOME PAGE], the appl
 After adding a new track to the current playlist, the application #server_action[refreshes the page] to display the first block of the playlist (the first 5 tracks). Once a user #user_action[selects the title of a track], the #page[PLAYER PAGE] #server_action[shows] all of the #element[track data] and the #element[audio player].
 
 #figure(
-  placement: top,
+  placement: bottom,
   scope: "parent",
   image(
     width: 110%,

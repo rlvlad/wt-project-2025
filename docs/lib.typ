@@ -387,6 +387,15 @@
   body
 }
 
+#let double_col_spaces(v_space) = {
+  place(
+    top,
+    scope: "parent",
+    float: true,
+    v(v_space),
+  )
+}
+
 // DATABASE
 #let entity(string) = text(fill: red, weight: "semibold", string)
 #let attr(string) = text(fill: olive, weight: "semibold", string)
@@ -435,7 +444,7 @@
   diagram-code,
   label_: "",
   comment: "",
-  comment_next_page_: false,
+  comment_next_page_: true,
   next_page: true,
   add_comment: true,
   position: top,
@@ -515,13 +524,4 @@
   //   "Comment —",
   // )
   // comment
-}
-
-#let double_col_spaces(v_space) = {
-  place(
-    top,
-    scope: "parent",
-    float: true,
-    v(v_space),
-  )
 }

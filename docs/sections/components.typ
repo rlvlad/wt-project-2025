@@ -1,0 +1,78 @@
+= Codebase overview
+
+== Components
+
+The projects is built from the following components:
+
++ DAOs
+  - PlaylistDAO
+  - TrackDAO
+  - UserDAO
+  - DAO interface
+
+The DAO interface is composed of the default method `close()`, which is used in nearly all DAOs -- this way we are able to follow the DRY principle (#emph[Don't Repeat Yourself]).
+
+2. Entities
+  - Playlist
+  - Track
+  - User
+
+Unlike most WT projects, these are record classes @record-classes: basically they are built-in old-school beans. We opted their use to drastically reduce boilerplate and simplify the codebase.
+
+3. Servlets
+  - Login
+  - HomePage
+  - Playlist
+  - Register
+  - Track
+  - Logout
+  - AddTracks
+  - CreatePlaylist
+
++ Filters
+  - UserChecker
+  - InvalidUserChecker
+  - TrackChecker
+  - SelectedTracksChecker
+  - PlaylistChecker
+
++ Utils
+  - ConnectionHandler
+  - TemplateEngineHandler
+
+As per the DAO interface, the same idea has been applied to `ConnectionHandler` and `TemplateEngineHandler` classes too.
+
+// which hold the otherwise repeated code in `init()` methods across the project.
+
+// #colbreak()
+
+== DAOs methods
+
+PlaylistDAO methods:
+
+- getPlaylistTitle
+- deletePlaylist
+- getTrackGroup
+- addTracksToPlaylist
+- removeTracksFromPlaylist
+- checkPlaylistOwner
+- getUserPlaylists
+- getPlaylistTracksByTitle
+- createPlaylist
+- getPlaylistTracksById
+
+TrackDAO methods:
+
+- addTrack
+- isImageFileAlreadyPresent
+- checkTrackOwner
+- isTrackFileAlreadyPresent
+- getTrackById
+- getUserTracks
+
+UserDAO methods:
+
+- checkUser
+- addUser
+
+All the methods are intuitively named and don't need further explanations. Either way, they are explanined throughout this section in their respective sequence.

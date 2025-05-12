@@ -45,7 +45,7 @@ CREATE TABLE track
     image_path     varchar(1024) not null,
 
     primary key (track_id),
-    foreign key (user_id) references user (user_id)
+    foreign key (user_id) REFERENCES user (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     unique (user_id, song_checksum),
     unique (user_id, title, artist),
@@ -67,7 +67,7 @@ CREATE TABLE playlist
 
     primary key (playlist_id),
     unique (playlist_title, user_id),
-    foreign key (user_id) references user (user_id)
+    foreign key (user_id) REFERENCES user (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 ```
@@ -84,9 +84,9 @@ CREATE TABLE playlist_tracks
     custom_order integer,
 
     primary key (playlist_id, track_id),
-    foreign key (playlist_id) references playlist (playlist_id)
+    foreign key (playlist_id) REFERENCES playlist (playlist_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
-    foreign key (track_id) references track (track_id)
+    foreign key (track_id) REFERENCES track (track_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 ```<playlist-tracks-code>

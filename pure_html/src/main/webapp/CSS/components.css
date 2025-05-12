@@ -16,6 +16,8 @@ body {
     border: 2px solid var(--dark-foreground);
     font-family: "JetBrains Mono", monospace;
 }
+
+/* To fix credentials input size */
 input{
     box-sizing: border-box;
 }

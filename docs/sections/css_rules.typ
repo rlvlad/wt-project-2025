@@ -329,3 +329,11 @@ once the modal has been invoked, its visibility must be switched to `visible` an
 }
 ```
 as stated previously, the `modal-close` button is an exception to the `button` rule. It's considerably smaller than the others, the cursor is immediately `pointer`. Its position is computed on the `modal-window`, from above right.
+
+- The dropdown menus
+```css
+select:invalid {
+    color: #505050;
+}
+```
+this pseudoclass causes the color in the placeholder in dropdown menus (Year, Genres) to be gray, as a a regular placeholder should be #footnote[Otherwise it would have been black as the text, which is not aesthetically pleasant.]
