@@ -1,0 +1,10 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+.track-metadata {
+    color: var(--light-background);
+}
