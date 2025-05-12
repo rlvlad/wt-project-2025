@@ -35,9 +35,9 @@ public class SelectedTracksChecker extends HttpFilter {
 
         if (selectedTracksIds != null) {
             for (String trackId : selectedTracksIds) {
-                boolean result;
+                boolean isOwner;
                 try {
-                    result = trackDAO.checkTrackOwner(Integer.parseInt(trackId), user);
+                    isOwner = trackDAO.checkTrackOwner(Integer.parseInt(trackId), user);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     res.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -47,7 +47,7 @@ public class SelectedTracksChecker extends HttpFilter {
                     return;
                 }
 
-                if (!result) {
+                if (!isOwner) {
                     res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Track does not exist");
                     return;
                 }

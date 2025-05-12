@@ -2,7 +2,7 @@
 
 == Components
 
-The projects is built from the following components:
+The projects is composed of the following components:
 
 + DAOs
   - PlaylistDAO
@@ -10,7 +10,7 @@ The projects is built from the following components:
   - UserDAO
   - DAO interface
 
-The DAO interface is composed of the default method `close()`, which is used in nearly all DAOs -- this way we are able to follow the DRY principle (#emph[Don't Repeat Yourself]).
+The DAO interface has only the default method `close()`, which is used in nearly all DAOs -- this way we are able to follow the DRY principle (#emph[Don't Repeat Yourself]).
 
 2. Entities
   - Playlist
@@ -36,11 +36,11 @@ Unlike most WT projects, these are record classes @record-classes: basically the
   - SelectedTracksChecker
   - PlaylistChecker
 
-+ Utils
++ Utils (short-term for Utilities)
   - ConnectionHandler
   - TemplateEngineHandler
 
-As per the DAO interface, the same idea has been applied to `ConnectionHandler` and `TemplateEngineHandler` classes too.
+As per the DAO interface, the same idea has been applied to the `ConnectionHandler` and `TemplateEngineHandler` classes.
 
 // which hold the otherwise repeated code in `init()` methods across the project.
 
@@ -75,4 +75,4 @@ UserDAO methods:
 - checkUser
 - addUser
 
-All the methods are intuitively named and don't need further explanations. Either way, they are explanined throughout this section in their respective sequence.
+All the methods are intuitively named and don't need further explanations. Either way, they are explanined throughout the next section in their respective sequence.

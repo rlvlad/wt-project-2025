@@ -87,7 +87,7 @@
 )
 
 #seq_diagram(
-  "SelectedTrackChecker filter",
+  "SelectedTracksChecker filter",
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "SelectedTracksChecker")
@@ -106,9 +106,9 @@
     _seq("B", "E", disable-src: true, comment: [sendError("Track does not exist")])
   }),
   comment: [
-    Even the `SelectedTrackChecker` filter is invoked in two scenarios: during the creation of a playlist (@createplaylist-sequence) and during the UploadTrack sequence (@uploadtrack-sequence).
+    Even the `SelectedTracksChecker` filter is invoked in two scenarios: during the creation of a playlist (@createplaylist-sequence) and during the UploadTrack sequence (@uploadtrack-sequence).
 
-    `SelectedTrackChecker` applies a very similar pipeline `PlaylistChecker`: instead of checking the playlist, it does the same job but for one of more tracks when the User requests to add them to a playlist.
+    `SelectedTracksChecker` applies a very similar pipeline `PlaylistChecker`: instead of checking the playlist, it does the same job but for one of more tracks when the User requests to add them to a playlist.
 
     Again similarly to `PlaylistChecker`, tt also obtains the User attribute from the session and the needed parameters; if the User does not have access rights to the requested track(s), the response is `ERROR 403`.
   ],
