@@ -52,24 +52,26 @@ public class TrackController extends HttpServlet {
             return;
         }
 
+        // Already done via the filter: this is redundant
+
         // verify track ownership
         TrackDAO trackDAO = new TrackDAO(connection);
-        boolean isOwner = false;
-        try {
-            isOwner = trackDAO.checkTrackOwner(trackId, user);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return;
-        }
-
-        if (!isOwner) {
-            resp.sendError(
-                    HttpServletResponse.SC_NOT_FOUND,
-                    "Track does not exist"
-            );
-            return;
-        }
+//        boolean isOwner = false;
+//        try {
+//            isOwner = trackDAO.checkTrackOwner(trackId, user);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//            return;
+//        }
+//
+//        if (!isOwner) {
+//            resp.sendError(
+//                    HttpServletResponse.SC_NOT_FOUND,
+//                    "Track does not exist"
+//            );
+//            return;
+//        }
 
         Track track = null;
         try {
