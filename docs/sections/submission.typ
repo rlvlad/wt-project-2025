@@ -27,15 +27,17 @@ After the login, the user is able to #rel[create tracks] by loading their data a
   caption: [ER diagram, .],
 )<er-diagram>
 
-#figure(
-  // placement: bottom,
-  // scope: "parent",
-  image(
-    width: 100%,
-    "../img/uml_bluetto.png",
-  ),
-  caption: [UML diagram.],
-)<uml-diagram>
+// #figure(
+//   // placement: bottom,
+//   // scope: "parent",
+//   image(
+//     width: 100%,
+//     "../img/uml_bluetto.png",
+//   ),
+//   caption: [UML diagram.],
+// )<uml-diagram>
+
+For the UML diagram, see @uml-diagram.
 
 #colbreak()
 

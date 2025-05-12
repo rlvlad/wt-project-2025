@@ -17,6 +17,7 @@
 // #include "sections/ifml.typ"
 #include "sections/sequence_diagram.typ"
 #include "sections/filters.typ"
+#include "sections/sql.typ"
 #include "sections/css_rules.typ"
 
 #bibliography(

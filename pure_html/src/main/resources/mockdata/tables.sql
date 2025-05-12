@@ -40,8 +40,8 @@ CREATE TABLE track
     foreign key (user_id) references user (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     unique (user_id, song_checksum),
-    unique (user_id, title, artist)
-    #check (genre in ('Classical', 'Rock', 'Edm', 'Pop', 'Hip-hop', 'R&B', 'Country', 'Jazz', 'Blues', 'Metal', 'Folk', 'Soul', 'Funk', 'Electronic', 'Indie', 'Reggae', 'Disco'))
+    unique (user_id, title, artist),
+    check (genre in ('Classical', 'Rock', 'Edm', 'Pop', 'Hip-hop', 'R&B', 'Country', 'Jazz', 'Blues', 'Metal', 'Folk', 'Soul', 'Funk', 'Electronic', 'Indie', 'Reggae', 'Disco'))
 );
 
 CREATE TABLE playlist
