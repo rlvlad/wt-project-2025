@@ -7,7 +7,7 @@
   "classic-light.yaml",
 )
 
-// Indivudal colors from base-16
+// Individual colors from base-16
 
 #let get-default-background() = {
   rgb(theme-state.at(here()).palette.base00)
@@ -106,8 +106,8 @@
 
   set page(
     margin: (
-      rest: 1.5cm,
-      top: 2.2cm,
+      rest: 1.65cm,
+      top: 2.4cm,
     ),
     fill: color_filter(get-default-background(), colortheme.lighten(90%)),
     header: { },
@@ -278,7 +278,7 @@
   show ref: it => text(fill: get-functions(), it)
   show link: it => text(fill: blue, underline(stroke: blue, it))
 
-  // set figure(gap: 2em)
+  set figure(gap: 1.5em)
 
   body
 }
@@ -424,7 +424,7 @@
     scope: "parent",
     float: true,
     block(
-      height: height, // to fix calculation error
+      height: 1 * height, // to fix calculation error
       columns(2, content),
     ),
   )
@@ -435,10 +435,12 @@
   diagram-code,
   label_: "",
   comment: "",
+  comment_next_page_: false,
   next_page: true,
   add_comment: true,
   position: top,
 ) = context {
+  // pagebreak(to: "even")
   place(
     position,
     scope: "parent",
@@ -455,6 +457,9 @@
       diagram-code,
     )
   ]
+  if (comment_next_page_) {
+    pagebreak()
+  }
   if (add_comment) {
     place(
       position,

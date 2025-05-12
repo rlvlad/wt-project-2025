@@ -184,9 +184,41 @@ Next, the tracks and playlists containers.
   ],
 )
 
+Last but not least, the errors.
+
+#css_explanation(
+  ```css
+  .error{
+      color: var(--variables);
+      padding-top: 0.5rem;
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: space-around;
+      justify-content: center;
+      align-items: center;
+  }
+  ```,
+  [
+    When the User tries to do something forbidden -- adding duplicate tracks, creating a duplicate playlist... -- an error will appear. It's exclusively used in the modal and due to how it's spaced it requires the `flex` display.
+
+    The simpler implementation is `sql-error`:
+    #emph[
+      ```css
+      .sql-error {
+          color: var(--variables)
+      }
+      ```
+    ]
+    which is used during registration.
+  ],
+)
+
 == Modal
 
-Finally, without a doubt the most difficult CSS component in this project is the modal, which is a dialog window created entirely with CSS. As a complex element, it can be broken in multiple parts:
+Finally, undoubtedly the most difficult CSS component in this project to comprehend is the modal, which is a dialog window created entirely with CSS.
+
+A complex element, it can be broken in multiple parts:
 
 - The window
 ```css

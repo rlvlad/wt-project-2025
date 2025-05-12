@@ -32,7 +32,7 @@ After the login, the user is able to #rel[create tracks] by loading their data a
   // scope: "parent",
   image(
     width: 100%,
-    "../img/uml_nero.png",
+    "../img/uml_bluetto.png",
   ),
   caption: [UML diagram.],
 )<uml-diagram>

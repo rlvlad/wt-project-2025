@@ -12,13 +12,18 @@ The projects is built from the following components:
   - PlaylistDAO
   - TrackDAO
   - UserDAO
+  - DAO interface
 
-+ Entities
+The DAO interface is composed of the default method `close()`, which is used in nearly all DAOs -- this way we are able to follow the DRY principle (#emph[Don't Repeat Yourself]).
+
+2. Entities
   - Playlist
   - Track
   - User
 
-+ Servlets
+Unlike most WT projects, these are record classes @record-classes: basically they are built-in old-school beans. We opted their use to drastically reduce boilerplate and simplify the codebase.
+
+3. Servlets
   - Login
   - HomePage
   - Playlist
@@ -34,7 +39,13 @@ The projects is built from the following components:
   - TrackChecker
   - PlaylistChecker
 
-#colbreak()
++ Utils
+  - ConnectionHandler
+  - TemplateEngineHandler
+
+As per the DAO interface, the same idea has been applied to `ConnectionHandler` and `TemplateEngineHandler` classes too, which hold the otherwise repeated code in `init()` methods across the project.
+
+// #colbreak()
 
 == DAOs methods
 
@@ -65,6 +76,8 @@ UserDAO methods:
 - checkUser
 - addUser
 
+All the methods are intuitively named and don't need further explanations. Either way, they are explanined throughout this section in their respective sequence.
+
 #pagebreak()
 
 #seq_diagram(
@@ -73,14 +86,25 @@ UserDAO methods:
     _par("A", display-name: "Client")
     _par("B", display-name: "Login")
     _par("D", display-name: "UserDAO")
+    _par("G", display-name: "Request")
     _par("C", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
     _par("E", display-name: "Session")
     _par("F", display-name: "HomePage")
 
+    // get
     _seq("A", "B", enable-dst: true, comment: "doGet()")
+    _seq("B", "G", enable-dst: true, comment: [getParameter("error")])
+    _seq("G", "B", disable-src: true, comment: [return error])
+    _seq(
+      "B",
+      "G",
+      comment: [[error != null && error == true] \ setVariable("error", true)],
+    )
     _seq("B", "C", enable-dst: true, comment: "process(index.html, WebContext)")
     _seq("C", "B", disable-src: true, comment: "index.html")
     _seq("B", "A", disable-src: true, comment: "index.html")
+
+    // post
     _seq("A", "B", enable-dst: true, comment: "doPost()")
     _seq("B", "D", enable-dst: true, comment: "checkUser()")
     _seq("D", "B", disable-src: true, comment: "return schrödingerUser")
@@ -93,6 +117,8 @@ UserDAO methods:
     Afterwards, the User inserts their credentials.
 
     Those values are passed to the `checkUser()` function that returns `schrödingerUser` -- as the name implies, the variable might return a User; otherwise `null`. If `null`, then the credentials inserted do not match any record in the database; else the User is redirected to their HomePage and the `user` variable is set for the current session.
+
+    If there has been some error in the process -- the credentials are incorrect, database can't be accessed... -- then the servlet will redirect to itself by setting the variable `error` to true, which then will be evaluated by thymeleaf and if true, it will print an error; otherwise it won't (this is the case for the first time the User inserts the credentials).
   ],
   label_: "login-sequence",
 )
@@ -103,17 +129,28 @@ UserDAO methods:
     _par("A", display-name: "Client")
     _par("B", display-name: "Register")
     _par("C", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
+    _par("H", display-name: "Request")
     _par("D", display-name: "UserDAO")
-    _par("G", display-name: "WebContext")
-    _par("E", display-name: "Session")
     _par("F", display-name: "Login")
+    _par("G", display-name: "WebContext")
+    // _par("E", display-name: "Session")
 
+    // get
     _seq("A", "B", enable-dst: true, comment: "doGet()")
     _seq("B", "C", enable-dst: true, comment: "process(register.html, WebContext)")
     _seq("C", "B", disable-src: true, comment: "register.html")
     _seq("B", "A", disable-src: true, comment: "register.html")
 
+    // post
     _seq("A", "B", enable-dst: true, comment: "doPost()")
+    _seq("B", "H", enable-dst: true, comment: [getParameter("nickname")])
+    _seq("H", "B", disable-src: true, comment: [return nickname])
+    _seq("B", "H", enable-dst: true, comment: [getParameter("password")])
+    _seq("H", "B", disable-src: true, comment: [return password])
+    _seq("B", "H", enable-dst: true, comment: [getParameter("name")])
+    _seq("H", "B", disable-src: true, comment: [return name])
+    _seq("B", "H", enable-dst: true, comment: [getParameter("surname")])
+    _seq("H", "B", disable-src: true, comment: [return surname])
     _seq("B", "D", enable-dst: true, comment: "addUser()")
     _seq("D", "B", disable-src: true, comment: "return isUserAdded")
     _seq("B", "F", comment: "[isUserAdded] ? redirect")
@@ -122,8 +159,9 @@ UserDAO methods:
     _seq("C", "B", disable-src: true, comment: "register.html")
     _seq("B", "A", disable-src: true, comment: "register.html")
   }),
+  comment_next_page_: true,
   comment: [
-    If the User is not yet registered, they might want to create an account. If that's the case, as per the Login sequence diagram, initially thymeleaf processes the correct context, then the User inserts the credentials.
+    If the User is not yet registered, they might want to create an account. If that's the case, as per the Login sequence diagram, once all the parameters are gathered and verified (omitted for simplicity) initially thymeleaf processes the correct context, then the User inserts the credentials.
 
     Depending on the nickname inserted, the operation might fail: there can't be two Users with the same nickname. If that does not happen, then `isUserAdded` is `true`, then there will be the redirection to the Login page.
 
@@ -140,6 +178,7 @@ UserDAO methods:
     _par("B", display-name: "HomePage")
     _par("F", display-name: "Session")
     _par("C", display-name: "PlaylistDAO")
+    _par("G", display-name: "Request")
     _par("D", display-name: "WebContext")
     _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
@@ -147,14 +186,33 @@ UserDAO methods:
     _seq("B", "F", enable-dst: true, comment: [getAttribute("user")])
     _seq("F", "B", disable-src: true, comment: [return user])
     _seq("B", "C", enable-dst: true, comment: "getUserPlaylists(user)")
-    _seq("C", "B", disable-src: true, comment: "return Playlists")
+    _seq("C", "B", disable-src: true, comment: "return playlists")
+    _seq("B", "C", enable-dst: true, comment: "getUserTracks(user)")
+    _seq("C", "B", disable-src: true, comment: "return userTracks")
+    _seq("B", "G", enable-dst: true, comment: [getParameter("duplicateTrack")])
+    _seq("G", "B", disable-src: true, comment: [return duplicateTrack])
+    _seq("B", "G", enable-dst: true, comment: [getParameter("duplicatePlaylist")])
+    _seq("G", "B", disable-src: true, comment: [return duplicatePlaylist])
+    _seq("B", "D", comment: [[duplicateTrack != null && duplicateTrack == true] \ setVariable("duplicateTrack", true)])
+    _seq(
+      "B",
+      "D",
+      comment: [[duplicatePlaylist != null && duplicatePlaylist == true] \ setVariable("duplicatePlaylist", true)],
+    )
+    _seq("B", "D", comment: [setVariable("userTracks", userTracks)])
     _seq("B", "D", comment: [setVariable("playlists", Playlists)])
+    _seq("B", "D", comment: [setVariable("genres", genres)])
     _seq("B", "E", enable-dst: true, comment: "process(home_page, WebContext)")
     _seq("E", "B", disable-src: true, comment: "home_page.html")
     _seq("B", "A", disable-src: true, comment: "home_page.html")
   }),
+  comment_next_page_: true,
   comment: [
     Once the Login is complete, the User is redirected to their HomePage, which hosts all their Playlists. In order to do so, the program needs to User attribute -- which is retrieved via the session; then, it is passed to the `getUserPlaylists` function and finally thymeleaf displays all values.
+
+    From this page, the User can upload new tracks. for this reason the HomePage servlet fetches all the user tracks (which are not to be displayed). Then, as the User presses the upload button, the modal shows up allowing to fill the information for a new track (title, album, path, playlist...); the genres are predetermined: they are statically loaded from the `genres.json` file.
+
+    Once the information are completed, the servlet checks if a playlist or track is duplicate -- hence the need to fetch all the tracks -- and if so it redirectes to itself with a `duplicate-` error, the same principle applied to the precedent servlets. Otherwise, the track would have been successfully added.
   ],
   label_: "homepage-sequence",
 )
@@ -175,9 +233,18 @@ UserDAO methods:
     _seq("F", "B", disable-src: true, comment: [return user])
     _seq("B", "G", enable-dst: true, comment: [getParameter("playlist_title")])
     _seq("G", "B", disable-src: true, comment: [return playlistTitle])
+    _seq("B", "G", enable-dst: true, comment: [getParameter("gr")])
+    _seq("G", "B", disable-src: true, comment: [return trackGroupString])
     _seq("B", "C", enable-dst: true, comment: "getPlaylistTracks(playlistTitle, user)")
     _seq("C", "B", disable-src: true, comment: "return Playlists")
+    _seq("B", "C", enable-dst: true, comment: "getTrackGroup(playlistId, trackGroup)")
+    _seq("C", "B", disable-src: true, comment: "return playlistTracks")
+    _seq("B", "C", enable-dst: true, comment: "getTracksNotInPlaylist(playlistTitle, user.id())")
+    _seq("C", "B", disable-src: true, comment: "return addableTracks")
+    _seq("B", "D", comment: [setVariable("trackGroup", trackGroup)])
+    _seq("B", "D", comment: [setVariable("playlistId", playlistId)])
     _seq("B", "D", comment: [setVariable("playlistsTitle", playlistTitle)])
+    _seq("B", "D", comment: [setVariable("addableTracks", addableTracks)])
     _seq("B", "D", comment: [setVariable("playlistTracks", playlistTracks)])
     _seq("B", "E", enable-dst: true, comment: "process(playlist_page, WebContext)")
     _seq("E", "B", disable-src: true, comment: "playlist_page.html")
@@ -189,30 +256,43 @@ UserDAO methods:
     In order to do so, the program needs the User attribute -- which is retrieved via the session -- and the title of the playlists, which is given as a parameter by pressing the corresponding button in HomePage.
 
     Then those value are passed to `getPlaylistTracks()`, that returns all the tracks. Finally, thymeleaf processes the context and display all the tracks.
+
+    From this page the User is also able to add chosen tracks to a playlist. In order to do, similar to HomePage with the upload, the program fetches all tracks that _can be added_, thats is the ones that are not already in a playlist, and displays them to a User via a dropdown menu (again similar to genres in HomePage).
   ],
   label_: "playlistpage-sequence",
+  comment_next_page_: true,
 )
 
 #seq_diagram(
   [Track sequence diagram],
-  diagram({
-    _par("A", display-name: "Client")
-    _par("B", display-name: "Track")
-    _par("G", display-name: "Request")
-    _par("C", display-name: "TrackDAO")
-    _par("D", display-name: "WebContext")
-    _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
+  scale(
+    100%,
+    diagram({
+      _par("A", display-name: "Client")
+      _par("B", display-name: "Track")
+      _par("F", display-name: "Session")
+      _par("G", display-name: "Request")
+      _par("C", display-name: "TrackDAO")
+      // _par("H", display-name: [`ERROR 404`], color: red.lighten(50%))
+      _par("D", display-name: "WebContext")
+      _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
-    _seq("A", "B", enable-dst: true, comment: "doGet()")
-    _seq("B", "G", enable-dst: true, comment: [getParameter("track_id")])
-    _seq("G", "B", disable-src: true, comment: [return trackId])
-    _seq("B", "C", enable-dst: true, comment: "getTrackById(trackId)")
-    _seq("C", "B", disable-src: true, comment: "return track")
-    _seq("B", "D", comment: [setVariable("track", track)])
-    _seq("B", "E", enable-dst: true, comment: "process(player_page, WebContext)")
-    _seq("E", "B", disable-src: true, comment: "player_page.html")
-    _seq("B", "A", disable-src: true, comment: "player_page.html")
-  }),
+      _seq("A", "B", enable-dst: true, comment: "doGet()")
+      _seq("B", "F", enable-dst: true, comment: [getAttribute("user")])
+      _seq("F", "B", disable-src: true, comment: [return user])
+      _seq("B", "G", enable-dst: true, comment: [getParameter("track_id")])
+      _seq("G", "B", disable-src: true, comment: [return trackId])
+      // _seq("B", "C", enable-dst: true, comment: "checkTrackOwner(trackId, user)")
+      // _seq("C", "B", disable-src: true, comment: "return isOwner")
+      // _seq("B", "H", comment: [[isOwner == false] sendError("Track does not exist")])
+      _seq("B", "C", enable-dst: true, comment: "getTrackById(trackId)")
+      _seq("C", "B", disable-src: true, comment: "return track")
+      _seq("B", "D", comment: [setVariable("track", track)])
+      _seq("B", "E", enable-dst: true, comment: "process(player_page, WebContext)")
+      _seq("E", "B", disable-src: true, comment: "player_page.html")
+      _seq("B", "A", disable-src: true, comment: "player_page.html")
+    }),
+  ),
   comment: [
     Once the program has lodead all the tracks associated to a playlist, it allows to play them one by one in the dedicated player page. In a similar fashion to the `getPlaylistTracks()` method, in order to retrieve all the information regarding a single track the program is given the `track_id` parameter by pressing the corresponding button.
 
@@ -231,6 +311,7 @@ UserDAO methods:
     _par("F", display-name: "File")
     _par("G", display-name: "Files")
     _par("D", display-name: "HomePage")
+
     _seq("A", "B", enable-dst: true, comment: "doPost()")
     _note("right", [POST /UploadTrack \ title, artist, album, year, \ genre, musicTrack, image])
     _seq("B", "B", enable-dst: true, comment: [imagePath = processPart(image, "image")])
