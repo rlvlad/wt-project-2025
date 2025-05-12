@@ -90,15 +90,24 @@
             <input type="text" class="text-field" name="album" placeholder="Album title"
                    th:placeholder="#{home_page.albumTitle}" required>
             <br>
-            <input type="number" class="text-field" min="1901" max="2155" name="year"
-                   placeholder="Year" th:placeholder="#{home_page.year}" required>
+            <!--            <input type="number" class="text-field" min="1901" max="2155" name="year"-->
+            <!--                   placeholder="Year" th:placeholder="#{home_page.year}" required>-->
+            <!--            <br>-->
+            <select class="text-field" name="year" id="year" required>
+                <option value="" th:text="#{home_page.year}">Year</option>
+                <option th:each="year : ${#numbers.sequence(#dates.year(#dates.createNow()),1901)}"
+                        th:value="${year}" th:text="${year}">2025
+                </option>
+                <option th:remove="all">2024</option>
+                <option th:remove="all">2023</option>
+            </select>
             <br>
-            <label class="label" for="genre" th:text="#{home_page.genre} + ':'">Genre:</label>
-            <select name="genre" id="genre" th:remove="all-but-first" required>
+            <select class="text-field" name="genre" id="genre" required>
+                <option value="" th:text="#{home_page.genre}">Genre</option>
                 <option th:each="genre:${genres}" th:value="${genre}" th:text="${genre}">Genre</option>
-                <option>Genre</option>
-                <option>Genre</option>
-                <option>Genre</option>
+                <option th:remove="all">Genre</option>
+                <option th:remove="all">Genre</option>
+                <option th:remove="all">Genre</option>
             </select>
             <br>
             <label class="label" for="musicTrack" th:text="#{home_page.track} + ':'">Track:</label>

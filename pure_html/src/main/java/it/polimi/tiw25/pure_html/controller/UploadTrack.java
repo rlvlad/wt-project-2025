@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.time.Year;
 import java.util.*;
 import java.util.function.Function;
 
@@ -82,7 +83,7 @@ public class UploadTrack extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
                 return;
             }
-            if (year < 1901 || year > 2155) {
+            if (year < 1901 || year > Year.now().getValue()) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid year");
                 return;
             }

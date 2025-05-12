@@ -46,13 +46,7 @@ public class PlaylistController extends HttpServlet {
 
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
-        int playlistId;
-        try {
-            playlistId = Integer.parseInt(req.getParameter("playlistId"));
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlistId");
-            return;
-        }
+        int playlistId = Integer.parseInt(req.getParameter("playlistId"));
 
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 

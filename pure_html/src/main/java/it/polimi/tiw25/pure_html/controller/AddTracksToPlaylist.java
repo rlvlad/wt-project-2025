@@ -38,17 +38,11 @@ public class AddTracksToPlaylist extends HttpServlet {
         List<Integer> selectedTracksIds = new ArrayList<>();
         if (selectedTracksStringIds != null) {
             for (String id : selectedTracksStringIds) {
-                    selectedTracksIds.add(Integer.parseInt(id));
+                selectedTracksIds.add(Integer.parseInt(id));
             }
         }
 
-        int playlistId;
-        try {
-            playlistId = Integer.parseInt(req.getParameter("playlistId"));
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid playlistId");
-            return;
-        }
+        int playlistId = Integer.parseInt(req.getParameter("playlistId"));
 
         try {
             playlistDAO.addTracksToPlaylist(selectedTracksIds, playlistId);

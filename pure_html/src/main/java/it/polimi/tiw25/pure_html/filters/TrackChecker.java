@@ -2,17 +2,23 @@ package it.polimi.tiw25.pure_html.filters;
 
 import it.polimi.tiw25.pure_html.DAO.TrackDAO;
 import it.polimi.tiw25.pure_html.entities.User;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
+import it.polimi.tiw25.pure_html.utils.ConnectionHandler;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Filter to check if the requested playlist belongs to the currently logged-in User.
+ * Filter to check if the requested track belongs to the currently logged-in User.
  */
 public class TrackChecker extends HttpFilter {
     @Serial
@@ -21,63 +27,45 @@ public class TrackChecker extends HttpFilter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        try {
-            ServletContext context = filterConfig.getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Couldn't get db connection");
-        }
+        ServletContext context = filterConfig.getServletContext();
+        connection = ConnectionHandler.openConnection(context);
     }
 
-
     @Override
-    public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws IOException, ServletException {
-        String homepageWithError = req.getServletContext().getContextPath() + "/HomePage?trackError=true";
-
+    public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
-        String[] selectedTracksIds = req.getParameterValues("selectedTracks");
         TrackDAO trackDAO = new TrackDAO(connection);
-        if (selectedTracksIds != null) {
-            for (String trackId : selectedTracksIds) {
-                boolean result;
-                try {
-                    result = trackDAO.checkTrackOwner(Integer.parseInt(trackId), user);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    res.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
-                } catch (NumberFormatException e) {
-                    res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid trackId");
-                    return;
-                }
+        int trackId;
 
-                if (!result) {
-                    res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Track does not exist");
-                    return;
-                }
-            }
+        try {
+            trackId = Integer.parseInt(req.getParameter("track_id"));
+            if (trackId < 0)
+                throw new NumberFormatException();
+        } catch (NumberFormatException e) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND, "Invalid trackId");
+            return;
         }
-        filterChain.doFilter(req, res);
+
+        boolean isOwner = false;
+        try {
+            isOwner = trackDAO.checkTrackOwner(trackId, user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        if (!isOwner) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND, "Track does not exist");
+            return;
+        }
+
+        chain.doFilter(req, res);
     }
 
     @Override
     public void destroy() {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        ConnectionHandler.closeConnection(connection);
     }
 }

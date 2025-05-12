@@ -2,13 +2,13 @@ package it.polimi.tiw25.pure_html.filters;
 
 import it.polimi.tiw25.pure_html.DAO.PlaylistDAO;
 import it.polimi.tiw25.pure_html.entities.User;
+import it.polimi.tiw25.pure_html.utils.ConnectionHandler;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
@@ -21,26 +21,12 @@ public class PlaylistChecker extends HttpFilter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        try {
-            ServletContext context = filterConfig.getServletContext();
-            String driver = context.getInitParameter("dbDriver");
-            String url = context.getInitParameter("dbUrl");
-            String user = context.getInitParameter("dbUser");
-            String password = context.getInitParameter("dbPassword");
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Can't load database driver");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Couldn't get db connection");
-        }
+        ServletContext context = filterConfig.getServletContext();
+        connection = ConnectionHandler.openConnection(context);
     }
 
     @Override
     public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws IOException, ServletException {
-
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
@@ -72,12 +58,6 @@ public class PlaylistChecker extends HttpFilter {
 
     @Override
     public void destroy() {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        ConnectionHandler.closeConnection(connection);
     }
 }
