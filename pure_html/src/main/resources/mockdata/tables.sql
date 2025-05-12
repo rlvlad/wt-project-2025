@@ -61,7 +61,6 @@ CREATE TABLE playlist_tracks
 (
     playlist_id  integer not null,
     track_id     integer not null,
-    custom_order integer,
 
     primary key (playlist_id, track_id),
     foreign key (playlist_id) references playlist (playlist_id)

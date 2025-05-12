@@ -40,6 +40,10 @@ mariadb:
   type: web
   title: MariaDB
   url: https://mariadb.org
+sqlite:
+  type: web
+  title: SQLite
+  url: https://sqlite.org/
 intellij:
   type: repository
   title: Web Technologies IntelliJ Guide @ PoliMi
