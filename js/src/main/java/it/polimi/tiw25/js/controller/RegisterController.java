@@ -3,44 +3,29 @@ package it.polimi.tiw25.js.controller;
 import it.polimi.tiw25.js.DAO.UserDAO;
 import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
-import it.polimi.tiw25.js.utils.TemplateEngineHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
 
+@MultipartConfig
 @WebServlet("/Register")
 public class RegisterController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
-    private TemplateEngine templateEngine;
     private Connection connection = null;
 
     @Override
     public void init() throws ServletException {
         ServletContext context = getServletContext();
         connection = ConnectionHandler.openConnection(context);
-        templateEngine = TemplateEngineHandler.getTemplateEngine(context);
-    }
-
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
-        WebContext ctx = new WebContext(webApplication.buildExchange(req, res), req.getLocale());
-
-        boolean isUserAdded = req.getParameter("isUserAdded") == null || !req.getParameter("isUserAdded").equals("false");
-
-        ctx.setVariable("isUserAdded", isUserAdded);
-        templateEngine.process("register.html", ctx, res.getWriter());
     }
 
     @Override
@@ -51,7 +36,8 @@ public class RegisterController extends HttpServlet {
         String surname = req.getParameter("surname");
 
         if (nickname == null || nickname.isEmpty() || password == null || password.isEmpty() || name == null || name.isEmpty() || surname == null || surname.isEmpty()) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameters");
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            res.getWriter().println("Invalid parameters");
             return;
         }
 
@@ -67,11 +53,10 @@ public class RegisterController extends HttpServlet {
         boolean isUserAdded = userDAO.addUser(user);
 
         if (isUserAdded) {
-            res.sendRedirect(getServletContext().getContextPath() + "/Login");
+            res.setStatus(HttpServletResponse.SC_CREATED);
         } else {
-            res.sendRedirect(
-                    getServletContext().getContextPath() + "/Register?isUserAdded=" + false
-            );
+            res.setStatus(HttpServletResponse.SC_CONFLICT);
+            res.getWriter().println("Nickname already taken");
         }
 
     }

@@ -2,32 +2,34 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Login page</title>
+    <title>Register</title>
     <link rel="stylesheet" href="CSS/colors.css">
     <link rel="stylesheet" href="CSS/components.css">
     <link rel="stylesheet" href="CSS/index.css">
     <link rel="icon" type="image/x-icon" href="img/icon.ico">
     <script src="utils.js" charset="UTF-8" defer></script>
-    <script src="login.js" charset="UTF-8" defer></script>
+    <script src="register.js" charset="UTF-8" defer></script>
 </head>
 <body>
 <div class="center-panel">
-    <div class="welcome">Welcome to the Playlist Manager!</div>
+    <div class="welcome">Register</div>
     <hr>
-    <a>
-        <button id="register-button" type="button" class="button">Register</button>
-    </a>
-    <form action="Login" method="POST">
-        <hr>
+    <div id="error" class="sql-error">
+        <span></span>
+    </div>
+    <form action="Register" method="POST">
         <div class="credentials">
             <input class="text-field" type="text" id="nickname" name="nickname"
-                   placeholder="Nickname" required><br>
+                   placeholder="Nickname" required>
             <input class="text-field" type="password" id="password" name="password"
                    placeholder="Password" required>
+            <input class="text-field" type="text" id="name" name="name"
+                   placeholder="Name" required>
+            <input class="text-field" type="text" id="surname" name="surname"
+                   placeholder="Surname" required>
         </div>
-        <div id="error" class="error"></div>
         <div class="nav-bar">
-            <input id="login-button" type="button" class="button" value="Login">
+            <input id="create-account-button" type="button" class="button" value="Create Account">
         </div>
     </form>
 </div>
