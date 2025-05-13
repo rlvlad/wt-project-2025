@@ -1,0 +1,7 @@
+{
+  "files": [
+    "utils.ts",
+    "login.ts",
+    "register.ts"
+  ]
+}
