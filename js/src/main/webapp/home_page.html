@@ -17,8 +17,8 @@
     <a href="#create-playlist">
         <button class="button">Add Playlist</button>
     </a>
-    <a href="#open-modal">
-        <button class="button">Add Track</button>
+    <a href="#upload-track">
+        <button class="button">Upload Track</button>
     </a>
     <a>
         <button id="logout-button" type="submit" class="button logout">Logout</button>
@@ -63,7 +63,7 @@
         </button>
     </form>
 </div>
-<div id="open-modal" class="modal-window">
+<div id="upload-track" class="modal-window">
     <div>
         <div class="nav-bar">
             <div class="modal-title">Add Track</div>
@@ -81,7 +81,7 @@
             <input type="text" class="text-field" name="album" placeholder="Album title"
                    required>
             <br>
-            <select class="text-field" name="year" id="year" required>
+            <select class="text-field" name="year" id="year-selection" required>
                 <option value="">Year</option>
                 <option
                 >2025
@@ -90,7 +90,7 @@
                 <option>2023</option>
             </select>
             <br>
-            <select class="text-field" name="genre" id="genre" required>
+            <select class="text-field" name="genre" id="genre-selection" required>
                 <option value="">Genre</option>
                 <option>Genre</option>
                 <option>Genre</option>

@@ -1,4 +1,9 @@
 (function () {
+    window.onload = function () {
+        loadYears();
+        loadGenres();
+    }
+
     makeCall("GET", "HomePage", null,
         // callback function
         function (req: XMLHttpRequest) {
@@ -6,14 +11,14 @@
                 let message: string = req.responseText;
                 if (req.status == 200) {
                     // parse JSON for user playlists
-                    let playlists: [Playlist] = JSON.parse(message);
+                    let playlists: Playlist[] = JSON.parse(message);
 
-                    // @ts-ignore
                     if (playlists.length === 0) {
                         alert("The User has no playlists.");
                         return;
                     }
 
+                    // pass the JSON of all Playlists
                     playlistGrid(playlists);
                 } else {
                     // request failed, handle it
@@ -52,5 +57,56 @@
             cell.appendChild(button);
             container.appendChild(cell);
         })
+    }
+
+    /**
+     * Loads the musical genres for upload track modal.
+     */
+    function loadGenres() {
+        let genres: string[] = [
+            "Classical",
+            "Rock",
+            "Edm",
+            "Pop",
+            "Hip-hop",
+            "R&B",
+            "Country",
+            "Jazz",
+            "Blues",
+            "Metal",
+            "Folk",
+            "Soul",
+            "Funk",
+            "Electronic",
+            "Indie",
+            "Reggae",
+            "Disco"
+        ];
+
+        let genre_selection: HTMLElement = document.getElementById("genre-selection");
+        genre_selection.innerHTML = "";
+        let option: HTMLOptionElement;
+
+        genres.forEach(function (genre: string) {
+            option = document.createElement("option");
+            option.textContent = genre;
+            genre_selection.appendChild(option);
+        })
+    }
+
+    /**
+     * Loads year from 1900 to the current one for upload track modal.
+     */
+    function loadYears() {
+        let today: number = new Date().getFullYear();
+        let year_selection = document.getElementById("year-selection");
+        year_selection.innerHTML = "";
+        let option: HTMLOptionElement;
+
+        for (let i = 1900; i <= today; i++) {
+            option = document.createElement("option");
+            option.textContent = i.toString();
+            year_selection.appendChild(option);
+        }
     }
 })();
