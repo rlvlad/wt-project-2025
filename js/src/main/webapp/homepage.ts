@@ -1,9 +1,7 @@
 (function () {
     makeCall("GET", "HomePage", null,
         // callback function
-        function (req: {
-            readyState: number; responseText: string; status: number;
-        }) {
+        function (req: XMLHttpRequest) {
             if (req.readyState == XMLHttpRequest.DONE) { // == 4
                 let message: string = req.responseText;
                 if (req.status == 200) {
@@ -31,7 +29,7 @@
      *
      * @param playlists array of Playlists
      */
-    function playlistGrid(playlists) {
+    function playlistGrid(playlists: Playlist[]) {
         let cell: HTMLFormElement, button: HTMLButtonElement, span: HTMLSpanElement;
         let container: HTMLElement = document.getElementById("track-container");
         container.innerHTML = "";

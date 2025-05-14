@@ -31,6 +31,8 @@ public class LoginController extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String loginPage= req.getServletContext().getContextPath() + "/index.html";
+        res.sendRedirect(loginPage);
     }
 
     @Override

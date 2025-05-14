@@ -29,6 +29,12 @@ public class RegisterController extends HttpServlet {
     }
 
     @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String registerPage= req.getServletContext().getContextPath() + "/register.html";
+        res.sendRedirect(registerPage);
+    }
+
+    @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String nickname = req.getParameter("nickname");
         String password = req.getParameter("password");

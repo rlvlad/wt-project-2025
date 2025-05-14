@@ -1,5 +1,5 @@
-function makeCall(method: string, url: string, formElement: HTMLFormElement, callback: { (req: any): void; (req: any): void; (req: { readyState: number; responseText: string; status: number; }): void; (arg0: XMLHttpRequest): void; }, reset = true) {
-    let req:XMLHttpRequest = new XMLHttpRequest();
+function makeCall(method: string, url: string, formElement: HTMLFormElement, callback: (arg0: XMLHttpRequest) => void, reset = true) {
+    let req: XMLHttpRequest = new XMLHttpRequest();
     req.onreadystatechange = function () {
         callback(req);
     };
@@ -7,7 +7,7 @@ function makeCall(method: string, url: string, formElement: HTMLFormElement, cal
     if (formElement == null) {
         req.send();
     } else {
-        let formData:FormData = new FormData(formElement)
+        let formData: FormData = new FormData(formElement)
         req.send(formData);
     }
     if (formElement != null && reset === true) {

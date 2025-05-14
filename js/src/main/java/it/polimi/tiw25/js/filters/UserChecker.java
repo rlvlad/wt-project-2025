@@ -20,7 +20,7 @@ public class UserChecker implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
-        String homepage = req.getServletContext().getContextPath() + "/HomePage";
+        String homepage = req.getServletContext().getContextPath() + "/home_page.html";
 
         HttpSession s = req.getSession();
         if (s.getAttribute("user") != null) {

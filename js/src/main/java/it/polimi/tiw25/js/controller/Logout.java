@@ -19,12 +19,12 @@ public class Logout extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        String path = getServletContext().getContextPath() + "/Login";
+        String path = getServletContext().getContextPath() + "/index.html";
         resp.sendRedirect(path);
     }
 
