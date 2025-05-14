@@ -17,8 +17,8 @@
     </a>
     <!--    <button class="button" th:text="#{home_page.removePlaylist}">Remove Playlist</button>-->
     <!--    <button class="button" th:text="#{home_page.allSongs}">View All Songs</button>-->
-    <a href="#open-modal">
-        <button class="button" th:text="#{home_page.addTrack}">Add Track</button>
+    <a href="#upload-track">
+        <button class="button" th:text="#{home_page.addTrack}">Upload Track</button>
     </a>
     <a th:href="@{/Logout}">
         <button type="submit" class="button logout" th:text="#{home_page.logout}">Logout</button>
@@ -72,7 +72,7 @@
 <!--    <div class="spacer"></div>-->
 <!--        <button class="button" th:text="#{home_page.nextPlaylists}">Next Playlists</button>-->
 <!--</div>-->
-<div id="open-modal" class="modal-window">
+<div id="upload-track" class="modal-window">
     <div>
         <div class="nav-bar">
             <div class="modal-title" th:text="#{home_page.addNewTrack}">Add Track</div>
