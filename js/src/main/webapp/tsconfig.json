@@ -2,6 +2,7 @@
   "files": [
     "utils.ts",
     "login.ts",
-    "register.ts"
+    "register.ts",
+    "homepage.ts"
   ]
 }

@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="CSS/components.css">
     <link rel="stylesheet" href="CSS/home_page.css">
     <link rel="icon" type="image/x-icon" href="img/icon.ico">
+    <script src="utils.js" charset="UTF-8" defer></script>
+    <script src="homepage.js" charset="UTF-8" async></script>
 </head>
 <body>
 <div class="nav-bar">
@@ -19,10 +21,10 @@
         <button class="button">Add Track</button>
     </a>
     <a>
-        <button type="submit" class="button logout">Logout</button>
+        <button id="logout-button" type="submit" class="button logout">Logout</button>
     </a>
 </div>
-<div class="items-container">
+<div id="track-container" class="items-container">
     <!-- Redirects to corresponding playlist page name -->
     <!-- No more than 5 per row -->
     <form action="playlist_page.html" method="GET">

@@ -1,6 +1,8 @@
 package it.polimi.tiw25.js.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.tiw25.js.DAO.PlaylistDAO;
 import it.polimi.tiw25.js.DAO.TrackDAO;
 import it.polimi.tiw25.js.entities.Playlist;
@@ -86,10 +88,14 @@ public class HomepageController extends HttpServlet {
             ctx.setVariable("duplicatePlaylist", "true");
         }
 
-        ctx.setVariable("userTracks", userTracks);
-        ctx.setVariable("playlists", playlists);
-        ctx.setVariable("genres", genres);
-        templateEngine.process("home_page.html", ctx, res.getWriter());
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+//        String tracks_json = gson.toJson(userTracks);
+        String playlists_json = gson.toJson(playlists);
+//        String genres_json = gson.toJson(genres);
+
+        // write JSON data to response
+        res.getWriter().write(playlists_json);
     }
 
     @Override
