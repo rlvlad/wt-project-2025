@@ -109,4 +109,8 @@
             year_selection.appendChild(option);
         }
     }
+
+    function openSideBar() {
+        document.getElementById("side-bar").style.display = "block";
+    }
 })();

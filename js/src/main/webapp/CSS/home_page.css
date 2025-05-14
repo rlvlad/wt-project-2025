@@ -1,3 +1,71 @@
 .playlist-title {
     font-size: 1.5rem;
 }
+
+/* side navigation bar */
+.side-bar {
+    height: 100%;
+    width: 12rem;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    background-color: var(--light-background);
+    overflow: hidden; /* disable scrolling */
+    /*padding: 2rem;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* buttons vertical alignment */
+}
+
+.side-bar .close-button {
+    color: var(--lighter-background);
+    background-color: var(--variables);
+    border-radius: 5px;
+    font-family: "JetBrains Mono", monospace;
+    position: absolute;
+    top: 0.5rem;
+    right: 2rem;
+}
+
+.side-bar .close-button:hover {
+    color: var(--dark-foreground);
+    cursor: pointer;
+}
+
+.side-bar .entry {
+    padding: 1rem;
+}
+
+.side-bar .entry-button {
+    padding: 1rem;
+}
+
+.entry-button:hover {
+    cursor: pointer;
+    /*background-color: var(--light-background);*/
+}
+
+.entry .icon {
+    width: 100%;
+    background-color: transparent;
+    border-color: blue;
+    border-width: 1cm;
+}
+
+.entry .title {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.3rem;
+}
+
+/* resized old components to account for new side bar */
+
+.nav-bar {
+    width: calc(100% - 11rem);
+    padding-left: 11rem;
+}
+
+.items-container {
+    width: calc(100% - 11rem);
+    padding-left: 11rem;
+}
