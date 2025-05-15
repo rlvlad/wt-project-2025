@@ -1,5 +1,7 @@
 package it.polimi.tiw25.js.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.tiw25.js.DAO.PlaylistDAO;
 import it.polimi.tiw25.js.entities.Track;
 import it.polimi.tiw25.js.entities.User;
@@ -93,13 +95,12 @@ public class PlaylistController extends HttpServlet {
             return;
         }
 
-        ctx.setVariable("trackGroup", trackGroup);
-        ctx.setVariable("playlistId", playlistId);
-        ctx.setVariable("playlistTitle", playlistTitle);
-        ctx.setVariable("addableTracks", addableTracks);
-        ctx.setVariable("playlistTracks", playlistTracks);
-        String path = "playlist_page";
-        templateEngine.process(path, ctx, resp.getWriter());
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        String playlistTracks_json = gson.toJson(playlistTracks);
+
+        // write JSON data to response
+        resp.getWriter().write(playlistTracks_json);
     }
 
     @Override

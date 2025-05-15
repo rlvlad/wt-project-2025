@@ -16,19 +16,19 @@
 <!--        &times;-->
 <!--    </button>-->
     <form class="entry" action="#">
-        <button class="entry-button">
+        <button class="entry-button" id="homepage-button">
             <span class="title">Homepage</span>
             <img class="icon" src="img/side-bar/home.svg" alt="home button">
         </button>
     </form>
     <form class="entry" action="#">
-        <button class="entry-button">
+        <button class="entry-button" id="playlist-button">
             <span class="title">Playlist</span>
             <img class="icon" src="img/side-bar/playlist.svg" alt="playlist button">
         </button>
     </form>
     <form class="entry" action="#">
-        <button class="entry-button">
+        <button class="entry-button" id="track-button">
             <span class="title">Track</span>
             <img class="icon" src="img/side-bar/track.svg" alt="track button">
         </button>
@@ -47,49 +47,13 @@
         <button id="logout-button" type="submit" class="button logout">Logout</button>
     </a>
 </div>
-<div id="track-container" class="items-container">
-    <!-- Redirects to corresponding playlist page name -->
-    <!-- No more than 5 per row -->
-    <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId" value="1">
-            <span class="first-line"> Playlist Title</span>
-        </button>
-    </form>
-    <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId" value="1">
-            <span class="first-line"> Playlist Title</span>
-        </button>
-    </form>
-    <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId" value="1">
-            <span class="first-line"> Playlist Title</span>
-        </button>
-    </form>
-    <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId" value="1">
-            <span class="first-line"> Playlist Title</span>
-        </button>
-    </form>
-    <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId" value="1">
-            <span class="first-line"> Playlist Title</span>
-        </button>
-    </form>
-    <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId" value="1">
-            <span class="first-line"> Playlist Title</span>
-        </button>
-    </form>
-    <form action="playlist_page.html" method="GET">
-        <button class="single-item playlist-title" name="playlistId" value="1">
-            <span class="first-line"> Playlist Title</span>
-        </button>
-    </form>
+<div id="main" class="main">
+
 </div>
 <div id="upload-track" class="modal-window">
     <div>
         <div class="nav-bar">
-            <div class="modal-title">Add Track</div>
+            <div class="modal-title">Upload Track</div>
             <div class="spacer"></div>
             <a href="#" title="Close" class="modal-close">Close</a>
         </div>

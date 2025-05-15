@@ -69,3 +69,13 @@
     width: calc(100% - 11rem);
     padding-left: 11rem;
 }
+
+.tracks-container {
+    width: calc(100% - 11rem);
+    padding-left: 11rem;
+}
+
+.main {
+    width: calc(100% - 11rem);
+    padding-left: 11rem;
+}

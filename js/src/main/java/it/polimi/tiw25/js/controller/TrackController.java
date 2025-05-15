@@ -1,5 +1,7 @@
 package it.polimi.tiw25.js.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.tiw25.js.DAO.TrackDAO;
 import it.polimi.tiw25.js.entities.Track;
 import it.polimi.tiw25.js.entities.User;
@@ -54,9 +56,12 @@ public class TrackController extends HttpServlet {
             return;
         }
 
-        ctx.setVariable("track", track);
-        String path = "player_page";
-        templateEngine.process(path, ctx, resp.getWriter());
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        String track_json = gson.toJson(track);
+
+        // write JSON data to response
+        resp.getWriter().write(track_json);
     }
 
     @Override
