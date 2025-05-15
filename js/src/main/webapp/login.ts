@@ -10,11 +10,7 @@
                             window.location.href = "home_page.html";
                             break;
                         case 400:
-                            document.getElementById("error").textContent = message;
-                            break;
                         case 401:
-                            document.getElementById("error").textContent = message;
-                            break;
                         case 500:
                             document.getElementById("error").textContent = message;
                             break;

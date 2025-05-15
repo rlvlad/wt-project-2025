@@ -1,7 +1,21 @@
 (function () {
     window.onload = function () {
+        // close modals
+        location.hash = "#";
+
         // loading
         loadPlaylists();
+
+
+        document.getElementById("logout-button").addEventListener("click", () => {
+            makeCall("GET", "Logout", null, (req:XMLHttpRequest) =>{
+                if (req.readyState == XMLHttpRequest.DONE){
+                    if (req.status == 200){
+                        location.href="index.html";
+                    }
+                }
+            }, false);
+        });
 
         // add listeners on sidebar buttons
         document.getElementById("homepage-button").addEventListener("click", function () {
@@ -19,10 +33,32 @@
         })
 
         // load modal data when clicking on the modal
-        document.getElementById("upload-track-modal").addEventListener("click", function () {
+        document.getElementById("upload-track-button").addEventListener("click", function () {
             loadYears();
             loadGenres();
         })
+
+        document.getElementById("add-playlist-button").addEventListener("click", () => {
+            loadUserTracks(document.getElementById("track-selector"))
+        });
+
+        // update homepage with new playlist
+        document.getElementById("create-playlist-btn").addEventListener("click", function () {
+            let self: HTMLElement = this;
+            makeCall("POST", "CreatePlaylist", this.closest("form"), function (req: XMLHttpRequest) {
+                if (req.readyState == XMLHttpRequest.DONE) {
+                    let message: string = req.responseText;
+                    if (req.status == 201) {
+                        let newPlaylist: Playlist = JSON.parse(message);
+                        let itemsContainer: HTMLElement = document.querySelector(".items-container");
+                        itemsContainer.insertBefore(createPlaylistButton(newPlaylist), itemsContainer.firstChild);
+                        location.hash = "";
+                    } else {
+                        self.parentElement.previousElementSibling.textContent = message;
+                    }
+                }
+            });
+        });
     }
 
     // Helpers methods
@@ -34,10 +70,6 @@
     function cleanMain() {
         let main_div: HTMLElement = document.getElementById("main");
         main_div.innerHTML = "";
-        let track_container: HTMLElement = document.createElement("div");
-        track_container.setAttribute("id", "track-container");
-
-        main_div.appendChild(track_container);
     }
 
     // Main loaders
@@ -48,32 +80,14 @@
      * @param playlists array of Playlists
      */
     function playlistGrid(playlists: Playlist[]) {
-        let cell: HTMLFormElement, button: HTMLButtonElement, span: HTMLSpanElement;
-        let container: HTMLElement = document.getElementById("track-container");
-        container.innerHTML = "";
+        let button: HTMLButtonElement, span: HTMLSpanElement;
+        let main: HTMLElement = document.getElementById("main");
+        let container: HTMLElement = document.createElement("div");
+        container.setAttribute("class", "items-container");
+        main.appendChild(container);
 
         playlists.forEach(function (playlist: Playlist) {
-            cell = document.createElement("form");
-            cell.setAttribute("onclick", "loadPlaylistTracks");
-            cell.setAttribute("method", "GET");
-
-            button = document.createElement("button");
-            button.setAttribute("onclick", "test()");
-            button.setAttribute("class", "single-item playlist-title");
-            button.setAttribute("name", "playlistId");
-            button.setAttribute("value", playlist.id.toString());
-
-            span = document.createElement("span");
-            span.setAttribute("class", "first-line");
-            span.textContent = playlist.title;
-
-            button.addEventListener("click", (e) => {
-                loadPlaylistTracks(e);
-            });
-
-            button.appendChild(span);
-            cell.appendChild(button);
-            container.appendChild(cell);
+            container.appendChild(createPlaylistButton(playlist));
         })
     }
 
@@ -83,28 +97,28 @@
      * @param tracks array of Tracks
      */
     function trackGrid(tracks: Track[]) {
-        let cell: HTMLFormElement, button: HTMLButtonElement, span_1: HTMLSpanElement, span_2: HTMLSpanElement,
-            image: HTMLImageElement;
-        let container: HTMLElement = document.getElementById("track-container");
-        container.innerHTML = "";
+        let button: HTMLButtonElement, text: HTMLSpanElement, span_1: HTMLSpanElement,
+            span_2: HTMLSpanElement, image: HTMLImageElement;
+        let main: HTMLElement = document.getElementById("main");
+        let container: HTMLElement = document.createElement("div");
+        container.setAttribute("class", "items-container");
+        main.appendChild(container);
 
         tracks.forEach(function (track: Track) {
-            cell = document.createElement("form");
-            cell.setAttribute("action", "Track"); // TODO fix the action
-            cell.setAttribute("method", "GET");
-
             button = document.createElement("button");
             button.setAttribute("class", "single-item song-button");
             button.setAttribute("name", "playlistId");
-            button.setAttribute("value", track.id.toString());
+
+            text = document.createElement("span");
+            text.setAttribute("class", "text-container")
 
             span_1 = document.createElement("span");
             span_1.setAttribute("class", "first-line");
             span_1.textContent = track.title;
 
-            span_1 = document.createElement("span");
-            span_1.setAttribute("class", "second-line");
-            span_1.textContent = track.album_title;
+            span_2 = document.createElement("span");
+            span_2.setAttribute("class", "second-line");
+            span_2.textContent = track.album_title;
 
             image = document.createElement("img");
             image.setAttribute("class", "album-image");
@@ -113,13 +127,16 @@
             image.setAttribute("width", "100");
             image.setAttribute("height", "100");
 
-            button.addEventListener("click", loadSingleTrack);
+            button.addEventListener("click", () => {
+                loadSingleTrack(track.id.toString())
+            });
 
-            button.appendChild(span_1);
-            button.appendChild(span_2);
+            button.appendChild(text);
+            text.appendChild(span_1);
+            text.appendChild(document.createElement("br"));
+            text.appendChild(span_2);
             button.appendChild(image);
-            cell.appendChild(button);
-            container.appendChild(cell);
+            container.appendChild(button);
         })
     }
 
@@ -132,7 +149,11 @@
     function trackPlayer(container: HTMLElement, track: Track) {
         container.innerHTML = "";
 
+        let centerPanelContainer: HTMLDivElement = document.createElement("div");
+        centerPanelContainer.setAttribute("class", "center-panel-container");
+
         let center_panel: HTMLElement = document.createElement("div");
+        center_panel.setAttribute("class", "center-panel")
 
         let track_metadata: HTMLElement;
 
@@ -159,7 +180,7 @@
         image.setAttribute("height", "100");
 
         let audio_ctrl: HTMLAudioElement = document.createElement("audio");
-        audio_ctrl.setAttribute("controls", ""); // TODO rivedere
+        audio_ctrl.controls = true;
 
         let audio_src: HTMLSourceElement = document.createElement("source");
         audio_src.setAttribute("src", track.song_path);
@@ -170,13 +191,15 @@
         center_panel.appendChild(createTrack(track.album_title));
         center_panel.appendChild(createTrack(track.year.toString()));
         center_panel.appendChild(createTrack(track.genre));
-        center_panel.appendChild(document.createElement("<hr>"));
+        center_panel.appendChild(document.createElement("hr"));
         center_panel.appendChild(image);
-        center_panel.appendChild(document.createElement("<hr>"));
+        center_panel.appendChild(document.createElement("hr"));
         audio_ctrl.appendChild(audio_src);
-        center_panel.appendChild(audio_src);
+        center_panel.appendChild(audio_ctrl);
 
-        container.appendChild(center_panel);
+        centerPanelContainer.appendChild(center_panel);
+        container.appendChild(centerPanelContainer);
+
     }
 
     // Modal data loaders
@@ -207,7 +230,10 @@
 
         let genre_selection: HTMLElement = document.getElementById("genre-selection");
         genre_selection.innerHTML = "";
-        let option: HTMLOptionElement;
+        let option: HTMLOptionElement = document.createElement("option");
+        option.setAttribute("value", "");
+        option.textContent = "Genre";
+        genre_selection.appendChild(option);
 
         genres.forEach(function (genre: string) {
             option = document.createElement("option");
@@ -223,9 +249,13 @@
         let today: number = new Date().getFullYear();
         let year_selection = document.getElementById("year-selection");
         year_selection.innerHTML = "";
-        let option: HTMLOptionElement;
 
-        for (let i = 1900; i <= today; i++) {
+        let option: HTMLOptionElement = document.createElement("option");
+        option.setAttribute("value", "");
+        option.textContent = "Year";
+        year_selection.appendChild(option);
+
+        for (let i = today; i >= 1901; i--) {
             option = document.createElement("option");
             option.textContent = i.toString();
             year_selection.appendChild(option);
@@ -268,13 +298,11 @@
     /**
      * Load all the Tracks associated to a Playlist.
      */
-    function loadPlaylistTracks(e: MouseEvent) {
+    function loadPlaylistTracks(playlistId: string) {
         cleanMain()
 
-        let form:HTMLFormElement = (e.target as HTMLElement).closest("form");
-
-        makeCall("GET", "Playlist",
-            form,
+        makeCall("GET", "Playlist?playlistId=" + playlistId,
+            null,
             // callback function
             function (req: XMLHttpRequest) {
                 if (req.readyState == XMLHttpRequest.DONE) { // == 4
@@ -302,12 +330,12 @@
     /**
      * Load a single Track from a Playlist.
      */
-    function loadSingleTrack() {
+    function loadSingleTrack(trackId: string) {
         // clean main div
         let main_div: HTMLElement = document.getElementById("main");
         main_div.innerHTML = "";
 
-        makeCall("GET", "Track", null,
+        makeCall("GET", "Track?track_id=" + trackId, null,
             // callback function
             function (req: XMLHttpRequest) {
                 if (req.readyState == XMLHttpRequest.DONE) { // == 4
@@ -330,5 +358,63 @@
                     }
                 }
             });
+    }
+
+    /**
+     * Get user tracks and add them to the track selector parameter
+     * @param trackSelector
+     */
+    function loadUserTracks(trackSelector: HTMLElement) {
+        trackSelector.innerHTML = "";
+
+        makeCall("GET", "GetUserTracks", null, function (req: XMLHttpRequest) {
+            if (req.readyState == XMLHttpRequest.DONE) {
+                let message: string = req.responseText;
+                if (req.status == 200) {
+                    let tracks: Track[] = JSON.parse(message);
+                    if (tracks.length === 0) {
+                        let parent: HTMLElement = trackSelector.parentElement;
+                        let span: HTMLSpanElement = document.createElement("span");
+
+                        span.textContent = "There are no available tracks to be added."
+                        parent.insertBefore(span, trackSelector);
+
+                        parent.removeChild(trackSelector);
+                        parent.removeChild(parent.getElementsByClassName("label").item(0));
+
+                        return;
+                    }
+                    tracks.forEach(function (track: Track) {
+                        let option: HTMLOptionElement = document.createElement("option");
+                        option.value = track.id.toString();
+                        option.textContent = track.artist + " - " + track.title + " ( " + track.year + " )"
+                        trackSelector.appendChild(option);
+                    });
+                } else {
+                    alert("Cannot recover data. Maybe the User has been logged out."); //for demo purposes
+                }
+            }
+        });
+    }
+
+    /**
+     * Creates and returns a button based on the playlist parameter
+     * @param playlist
+     */
+    function createPlaylistButton(playlist: Playlist): HTMLButtonElement {
+        let button = document.createElement("button");
+        button.setAttribute("class", "single-item playlist-title");
+        button.setAttribute("name", "playlistId");
+
+        let span = document.createElement("span");
+        span.setAttribute("class", "first-line");
+        span.textContent = playlist.title;
+
+        button.addEventListener("click", () => {
+            loadPlaylistTracks(playlist.id.toString());
+        });
+
+        button.appendChild(span);
+        return button;
     }
 })();

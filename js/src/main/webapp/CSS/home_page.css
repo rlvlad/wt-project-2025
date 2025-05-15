@@ -5,7 +5,7 @@
 /* side navigation bar */
 .side-bar {
     height: 100%;
-    width: 12rem;
+    width: 8rem;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -15,7 +15,7 @@
     /*padding: 2rem;*/
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* buttons vertical alignment */
+    justify-content: start; /* buttons vertical alignment */
 }
 
 .side-bar .close-button {
@@ -46,36 +46,42 @@
     /*background-color: var(--light-background);*/
 }
 
-.entry .icon {
+.entry-button .icon {
     width: 100%;
     background-color: transparent;
     border-color: blue;
     border-width: 1cm;
 }
 
-.entry .title {
+.entry-button .title {
     font-family: "JetBrains Mono", monospace;
-    font-size: 1.3rem;
+    font-size: 100%;
+}
+
+.center-panel-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* resized old components to account for new side bar */
 
-.nav-bar {
-    width: calc(100% - 11rem);
-    padding-left: 11rem;
+body > .nav-bar {
+    width: calc(100% - 8rem);
+    padding-left: 8rem;
 }
 
-.items-container {
-    width: calc(100% - 11rem);
-    padding-left: 11rem;
-}
+/*.items-container {*/
+/*    width: calc(100% - 11rem);*/
+/*    padding-left: 11rem;*/
+/*}*/
 
-.tracks-container {
-    width: calc(100% - 11rem);
-    padding-left: 11rem;
-}
+/*.tracks-container {*/
+/*    width: calc(100% - 11rem);*/
+/*    padding-left: 11rem;*/
+/*}*/
 
 .main {
-    width: calc(100% - 11rem);
-    padding-left: 11rem;
+    width: calc(100% - 8rem);
+    padding-left: 8rem;
 }

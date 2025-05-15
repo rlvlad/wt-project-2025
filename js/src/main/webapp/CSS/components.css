@@ -6,7 +6,7 @@ body {
     line-height: 1.6;
     word-spacing: 1px;
     text-overflow: ellipsis;
-    overflow-y: hidden; /* don't allow to scroll vertically */
+    /*overflow-y: hidden; !* don't allow to scroll vertically *!*/
 }
 
 /* ELEMENTS */

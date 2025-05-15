@@ -10,13 +10,7 @@
                             window.location.href = "index.html";
                             break;
                         case 400:
-                            document.getElementById("error").firstChild.textContent = message;
-                            document.getElementById("error").appendChild(document.createElement("hr"));
-                            break;
                         case 409:
-                            document.getElementById("error").firstChild.textContent = message;
-                            document.getElementById("error").appendChild(document.createElement("hr"));
-                            break;
                         case 500:
                             document.getElementById("error").firstChild.textContent = message;
                             document.getElementById("error").appendChild(document.createElement("hr"));

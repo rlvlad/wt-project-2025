@@ -6,76 +6,57 @@ import it.polimi.tiw25.js.DAO.TrackDAO;
 import it.polimi.tiw25.js.entities.Track;
 import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
-import it.polimi.tiw25.js.utils.TemplateEngineHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
-@WebServlet("/Track")
-@MultipartConfig
-public class TrackController extends HttpServlet {
+@WebServlet("/GetUserTracks")
+public class GetUserTracks extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
-    private TemplateEngine templateEngine;
     private Connection connection = null;
 
     @Override
     public void init() throws ServletException {
         ServletContext context = getServletContext();
         connection = ConnectionHandler.openConnection(context);
-        templateEngine = TemplateEngineHandler.getTemplateEngine(context);
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
-        WebContext ctx = new WebContext(webApplication.buildExchange(req, resp), req.getLocale());
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
-        int trackId = Integer.parseInt(req.getParameter("track_id"));
 
         TrackDAO trackDAO = new TrackDAO(connection);
-        Track track = null;
+        List<Track> userTracks;
         try {
-            track = trackDAO.getTrackById(trackId);
+            userTracks = trackDAO.getUserTracks(user);
         } catch (SQLException e) {
-            e.printStackTrace();
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
             return;
         }
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-        String track_json = gson.toJson(track);
-
+        String json = gson.toJson(userTracks);
         resp.setContentType("application/json");
         resp.setStatus(HttpServletResponse.SC_OK);
-        // write JSON data to response
-        resp.getWriter().write(track_json);
+        resp.getWriter().write(json);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-    }
-
-
-    @Override
-    public void destroy() {
-        ConnectionHandler.closeConnection(connection);
+        doGet(req, resp);
     }
 }

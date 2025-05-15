@@ -1,11 +1,14 @@
 package it.polimi.tiw25.js.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.tiw25.js.DAO.PlaylistDAO;
 import it.polimi.tiw25.js.entities.Playlist;
 import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/CreatePlaylist")
+@MultipartConfig
 public class CreatePlaylist extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -56,15 +60,18 @@ public class CreatePlaylist extends HttpServlet {
             playlistId = playlistDAO.createPlaylist(playlist);
             if (!selectedTracksIds.isEmpty())
                 playlistDAO.addTracksToPlaylist(selectedTracksIds, playlistId);
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            String json = gson.toJson(new Playlist(playlistId, playlist.title(), null, null));
+            resp.setContentType("application/json");
+            resp.getWriter().write(json);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (SQLIntegrityConstraintViolationException e) {
-            resp.sendRedirect(getServletContext().getContextPath() + "/HomePage?duplicatePlaylist=true#create-playlist");
-            return;
+            resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            resp.getWriter().write("Error: duplicate playlist");
         } catch (SQLException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating playlist");
             e.printStackTrace();
-            return;
         }
-        resp.sendRedirect(getServletContext().getContextPath() + "/HomePage");
     }
 
     @Override

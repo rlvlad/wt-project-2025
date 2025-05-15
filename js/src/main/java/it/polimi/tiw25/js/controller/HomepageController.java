@@ -9,7 +9,6 @@ import it.polimi.tiw25.js.entities.Playlist;
 import it.polimi.tiw25.js.entities.Track;
 import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
-import it.polimi.tiw25.js.utils.TemplateEngineHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
@@ -18,9 +17,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -32,7 +28,6 @@ import java.util.List;
 public class HomepageController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
-    private TemplateEngine templateEngine;
     private Connection connection = null;
     private List<String> genres;
 
@@ -40,7 +35,6 @@ public class HomepageController extends HttpServlet {
     public void init() throws ServletException {
         ServletContext context = getServletContext();
         connection = ConnectionHandler.openConnection(context);
-        templateEngine = TemplateEngineHandler.getTemplateEngine(context);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             genres = List.of(objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream("genres.json"), String[].class));
@@ -52,15 +46,12 @@ public class HomepageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
-        WebContext ctx = new WebContext(webApplication.buildExchange(req, res), req.getLocale());
-
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
 
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 
-        List<Playlist> playlists = null;
+        List<Playlist> playlists;
         try {
             playlists = playlistDAO.getUserPlaylists(user);
         } catch (SQLException e) {
@@ -69,31 +60,14 @@ public class HomepageController extends HttpServlet {
             return;
         }
 
-        TrackDAO trackDAO = new TrackDAO(connection);
-        List<Track> userTracks = null;
-        try {
-            userTracks = trackDAO.getUserTracks(user);
-        } catch (SQLException e) {
-            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            e.printStackTrace();
-            return;
-        }
-
-        String duplicateTrack = req.getParameter("duplicateTrack");
-        if (duplicateTrack != null && duplicateTrack.equals("true")) {
-            ctx.setVariable("duplicateTrack", "true");
-        }
-        String duplicatePlaylist = req.getParameter("duplicatePlaylist");
-        if (duplicatePlaylist != null && duplicatePlaylist.equals("true")) {
-            ctx.setVariable("duplicatePlaylist", "true");
-        }
-
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
 //        String tracks_json = gson.toJson(userTracks);
         String playlists_json = gson.toJson(playlists);
 //        String genres_json = gson.toJson(genres);
 
+        res.setContentType("application/json");
+        res.setStatus(HttpServletResponse.SC_OK);
         // write JSON data to response
         res.getWriter().write(playlists_json);
     }
