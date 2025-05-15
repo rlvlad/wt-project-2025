@@ -1,4 +1,4 @@
-= SQL database schema
+= SQL database schema<sql-database-schema>
 
 == Overview
 

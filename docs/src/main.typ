@@ -17,6 +17,9 @@
 #include "sections/filters.typ"
 #include "sections/css_rules.typ"
 
+#show: appendix.with()
+#include "sections/cut_content.typ"
+
 #bibliography(
   "bibliography.yml",
   style: "ieee",

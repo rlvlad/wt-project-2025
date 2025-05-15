@@ -63,3 +63,27 @@ record-classes:
   type: web
   title: Record Classes
   url: https://docs.oracle.com/en/java/javase/17/language/records.html
+sql-js:
+  type: repository
+  title: sql.js
+  url: https://github.com/sql-js/sql.js/
+hikaricp:
+  type: repository
+  title: HikariCP
+  url: https://github.com/brettwooldridge/HikariCP
+spring-boot:
+  type: web
+  title: Spring Boot
+  url: https://spring.io/
+hibernate:
+  type: web
+  title: Hibernate
+  url: https://hibernate.org/
+password4j:
+  type: repository
+  title: Password4J
+  url: https://github.com/Password4j/password4j
+bulma:
+  type: web
+  title: Bulma
+  url: https://bulma.io/
