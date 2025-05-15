@@ -37,7 +37,7 @@ After the login, the user is able to #rel[create tracks] by loading their data a
 //   caption: [UML diagram.],
 // )<uml-diagram>
 
-For the UML diagram, see @uml-diagram.
+For the UML diagram, see @sql-database-schema.
 
 #colbreak()
 

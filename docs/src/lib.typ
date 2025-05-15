@@ -112,6 +112,7 @@
     fill: color_filter(get-default-background(), colortheme.lighten(90%)),
     header: { },
     footer: { },
+    numbering: "1"
   )
 
   set text(
@@ -347,7 +348,30 @@
     set page(header: { })
     pagebreak(to: "even", weak: true)
     set page(header: { }, columns: 1)
-    let number = if it.numbering != none { counter(heading.where(level: 1)).display().first() }
+    let number = if it.numbering != none { counter(heading.where(level: 1)).display() }
+    set text(size: 1.75em, font: "JetBrains Mono", hyphenate: false)
+    v(30%)
+    align(
+      center,
+      block(
+        width: page.width * 0.61,
+        smallcaps(number + v(0.7em) + it.body),
+      ),
+    )
+  }
+
+  body
+}
+
+#let appendix(body) = {
+  set heading(numbering: "A.1")
+  counter(heading).update(0)
+
+  show heading.where(level: 1): it => context {
+    set page(header: { })
+    pagebreak(to: "even", weak: true)
+    set page(header: { }, columns: 1)
+    let number = if it.numbering != none { counter(heading).display() }
     set text(size: 1.75em, font: "JetBrains Mono", hyphenate: false)
     v(30%)
     align(
@@ -524,4 +548,51 @@
   //   "Comment —",
   // )
   // comment
+}
+
+// Logos and such
+
+// https://gist.github.com/felsenhower/a975c137732e20273f47a117e0da3fd1
+#let LaTeX = {
+  set text(font: "New Computer Modern")
+  let A = (
+    offset: (
+      x: -0.33em,
+      y: -0.3em,
+    ),
+    size: 0.7em,
+  )
+  let T = (
+    x_offset: -0.12em
+  )
+  let E = (
+    x_offset: -0.2em,
+    y_offset: 0.23em,
+    size: 1em
+  )
+  let X = (
+    x_offset: -0.1em
+  )
+  [L#h(A.offset.x)#text(size: A.size, baseline: A.offset.y)[A]#h(T.x_offset)T#h(E.x_offset)#text(size: E.size, baseline: E.y_offset)[E]#h(X.x_offset)X]
+}
+
+#let TeX = {
+  set text(font: "New Computer Modern")
+  let T = (
+    x_offset: -0.12em
+  )
+  let E = (
+    x_offset: -0.2em,
+    y_offset: 0.23em,
+    size: 1em
+  )
+  let X = (
+    x_offset: -0.1em
+  )
+  [#h(T.x_offset)T#h(E.x_offset)#text(size: E.size, baseline: E.y_offset)[E]#h(X.x_offset)X]
+}
+
+#let sqlite(string: "SQLite") = {
+ set text(fill: gradient.linear(rgb("#0F80CC"), rgb("#81CCF2")), weight: "bold")
+  box(string)
 }

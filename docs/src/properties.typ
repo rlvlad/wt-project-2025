@@ -1,7 +1,7 @@
 #let properties = (
   title: "Web Technologies Project @ PoliMi, 2025",
   subtitle: [
-    Creating a Playlist Manager with Thymeleaf & JS
+    Creating a Playlist Manager with Thymeleaf & TS
   ],
   authors: (
     (
