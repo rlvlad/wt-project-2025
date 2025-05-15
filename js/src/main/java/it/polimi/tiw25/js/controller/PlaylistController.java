@@ -9,6 +9,7 @@ import it.polimi.tiw25.js.utils.ConnectionHandler;
 import it.polimi.tiw25.js.utils.TemplateEngineHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import java.util.List;
  * Generates the tracks associated to a Playlist.
  */
 @WebServlet("/Playlist")
+@MultipartConfig
 public class PlaylistController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;

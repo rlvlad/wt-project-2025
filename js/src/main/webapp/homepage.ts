@@ -2,8 +2,6 @@
     window.onload = function () {
         // loading
         loadPlaylists();
-        loadYears();
-        loadGenres();
 
         // add listeners on sidebar buttons
         document.getElementById("homepage-button").addEventListener("click", function () {
@@ -19,7 +17,15 @@
             // loadSingleTrack();
             alert("Verrà caricata l'ultima traccia selezionata.")
         })
+
+        // load modal data when clicking on the modal
+        document.getElementById("upload-track-modal").addEventListener("click", function () {
+            loadYears();
+            loadGenres();
+        })
     }
+
+    // Helpers methods
 
     /**
      * Delete everything from main div and appends to it the track container, used to hold both the Playlists
@@ -33,6 +39,8 @@
 
         main_div.appendChild(track_container);
     }
+
+    // Main loaders
 
     /**
      * Load the Playlists.
@@ -50,6 +58,7 @@
             cell.setAttribute("method", "GET");
 
             button = document.createElement("button");
+            button.setAttribute("onclick", "test()");
             button.setAttribute("class", "single-item playlist-title");
             button.setAttribute("name", "playlistId");
             button.setAttribute("value", playlist.id.toString());
@@ -57,6 +66,10 @@
             span = document.createElement("span");
             span.setAttribute("class", "first-line");
             span.textContent = playlist.title;
+
+            button.addEventListener("click", (e) => {
+                loadPlaylistTracks(e);
+            });
 
             button.appendChild(span);
             cell.appendChild(button);
@@ -99,6 +112,8 @@
             image.setAttribute("alt", "Track player");
             image.setAttribute("width", "100");
             image.setAttribute("height", "100");
+
+            button.addEventListener("click", loadSingleTrack);
 
             button.appendChild(span_1);
             button.appendChild(span_2);
@@ -160,9 +175,11 @@
         center_panel.appendChild(document.createElement("<hr>"));
         audio_ctrl.appendChild(audio_src);
         center_panel.appendChild(audio_src);
+
+        container.appendChild(center_panel);
     }
 
-    // Modal loaders
+    // Modal data loaders
 
     /**
      * Loads the musical genres for upload track modal.
@@ -215,11 +232,7 @@
         }
     }
 
-    function openSideBar() {
-        document.getElementById("side-bar").style.display = "block";
-    }
-
-    // Single parts of the webapp
+    // Single screens of the webapp
 
     /**
      * Loads the HomePage, that is all the Playlists.
@@ -255,10 +268,13 @@
     /**
      * Load all the Tracks associated to a Playlist.
      */
-    function loadPlaylistTracks() {
+    function loadPlaylistTracks(e: MouseEvent) {
         cleanMain()
 
-        makeCall("GET", "Playlist", null,
+        let form:HTMLFormElement = (e.target as HTMLElement).closest("form");
+
+        makeCall("GET", "Playlist",
+            form,
             // callback function
             function (req: XMLHttpRequest) {
                 if (req.readyState == XMLHttpRequest.DONE) { // == 4
