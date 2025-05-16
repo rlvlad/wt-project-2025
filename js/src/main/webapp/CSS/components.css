@@ -147,6 +147,30 @@ select:invalid {
     color: var(--comments);
 }
 
+.playlist-button {
+    width: 1fr;
+    background-color: transparent;
+    color: var(--lighter-background);
+    font-family: "JetBrains Mono", monospace;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-wrap: nowrap;
+    border: none;
+}
+
+.playlist-button:hover {
+    cursor: pointer;
+}
+
+.reorder-button {
+    background-color: transparent;
+    color: var(--lighter-background);
+}
+
+.reorder-button:hover {
+    cursor: pointer;
+}
+
 /* LINE AND SPACERS */
 
 hr {

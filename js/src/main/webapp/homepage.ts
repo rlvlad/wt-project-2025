@@ -6,12 +6,11 @@
         // loading
         loadPlaylists();
 
-
         document.getElementById("logout-button").addEventListener("click", () => {
-            makeCall("GET", "Logout", null, (req:XMLHttpRequest) =>{
-                if (req.readyState == XMLHttpRequest.DONE){
-                    if (req.status == 200){
-                        location.href="index.html";
+            makeCall("GET", "Logout", null, (req: XMLHttpRequest) => {
+                if (req.readyState == XMLHttpRequest.DONE) {
+                    if (req.status == 200) {
+                        location.href = "index.html";
                     }
                 }
             }, false);
@@ -51,7 +50,7 @@
                     if (req.status == 201) {
                         let newPlaylist: Playlist = JSON.parse(message);
                         let itemsContainer: HTMLElement = document.querySelector(".items-container");
-                        itemsContainer.insertBefore(createPlaylistButton(newPlaylist), itemsContainer.firstChild);
+                        itemsContainer.insertBefore(createPlaylistContainer(newPlaylist), itemsContainer.firstChild);
                         location.hash = "";
                     } else {
                         self.parentElement.previousElementSibling.textContent = message;
@@ -80,14 +79,13 @@
      * @param playlists array of Playlists
      */
     function playlistGrid(playlists: Playlist[]) {
-        let button: HTMLButtonElement, span: HTMLSpanElement;
         let main: HTMLElement = document.getElementById("main");
         let container: HTMLElement = document.createElement("div");
         container.setAttribute("class", "items-container");
         main.appendChild(container);
 
         playlists.forEach(function (playlist: Playlist) {
-            container.appendChild(createPlaylistButton(playlist));
+            container.appendChild(createPlaylistContainer(playlist));
         })
     }
 
@@ -95,8 +93,9 @@
      * Load the Tracks of a Playlist.
      *
      * @param tracks array of Tracks
+     * @param reorder whether to let this track be draggable or not
      */
-    function trackGrid(tracks: Track[]) {
+    function trackGrid(tracks: Track[], reorder: boolean) {
         let button: HTMLButtonElement, text: HTMLSpanElement, span_1: HTMLSpanElement,
             span_2: HTMLSpanElement, image: HTMLImageElement;
         let main: HTMLElement = document.getElementById("main");
@@ -108,6 +107,9 @@
             button = document.createElement("button");
             button.setAttribute("class", "single-item song-button");
             button.setAttribute("name", "playlistId");
+            // if (reorder === true) {
+            //     button.setAttribute("class", "draggable");
+            // }
 
             text = document.createElement("span");
             text.setAttribute("class", "text-container")
@@ -298,7 +300,7 @@
     /**
      * Load all the Tracks associated to a Playlist.
      */
-    function loadPlaylistTracks(playlistId: string) {
+    function loadPlaylistTracks(playlistId: string, reorder = false) {
         cleanMain()
 
         makeCall("GET", "Playlist?playlistId=" + playlistId,
@@ -317,7 +319,7 @@
                         }
 
                         // pass the JSON of all Tracks
-                        trackGrid(tracks);
+                        trackGrid(tracks, reorder);
                     } else {
                         // request failed, handle it
                         // self.listcontainer.style.visibility = "hidden";
@@ -325,6 +327,23 @@
                     }
                 }
             });
+
+        /**
+         * If reorder is true, then add the various drag events listeners.
+         */
+        if (reorder === true) {
+            const draggable_elements = Array(document.getElementsByClassName("draggable"));
+
+            draggable_elements
+                .map(e => e as unknown as HTMLButtonElement)
+                .forEach(button => {
+                    button.draggable = true;
+                    button.addEventListener("dragstart", dragStart);
+                    button.addEventListener("dragover", dragOver);
+                    button.addEventListener("dragleave", dragLeave);
+                    button.addEventListener("drop", drop);
+                })
+        }
     }
 
     /**
@@ -361,7 +380,8 @@
     }
 
     /**
-     * Get user tracks and add them to the track selector parameter
+     * Get user tracks and add them to the track selector parameter.
+     *
      * @param trackSelector
      */
     function loadUserTracks(trackSelector: HTMLElement) {
@@ -398,23 +418,76 @@
     }
 
     /**
-     * Creates and returns a button based on the playlist parameter
+     * Creates and returns a button based on the playlist parameter.
+     *
      * @param playlist
      */
-    function createPlaylistButton(playlist: Playlist): HTMLButtonElement {
-        let button = document.createElement("button");
-        button.setAttribute("class", "single-item playlist-title");
-        button.setAttribute("name", "playlistId");
+    function createPlaylistContainer(playlist: Playlist): HTMLDivElement {
+        let div: HTMLDivElement = document.createElement("div");
+        div.setAttribute("class", "single-item");
 
-        let span = document.createElement("span");
-        span.setAttribute("class", "first-line");
+        let playlist_button: HTMLButtonElement = document.createElement("button");
+        playlist_button.setAttribute("name", "playlistId");
+        playlist_button.setAttribute("class", "playlist-button");
+
+        let span: HTMLSpanElement = document.createElement("span");
+        // span.setAttribute("class", "playlist-title");
         span.textContent = playlist.title;
 
-        button.addEventListener("click", () => {
+        // the listener should be placed on the div, however by doing so the once the User clicks on the playlist reorder
+        // button, that click event is registered BOTH on the div AND the button: this results in a duplicate call of
+        // the loadPlaylistTracks function
+        playlist_button.addEventListener("click", () => {
             loadPlaylistTracks(playlist.id.toString());
         });
 
-        button.appendChild(span);
-        return button;
+        playlist_button.appendChild(span);
+
+        let playlist_reorder = document.createElement("button");
+        playlist_reorder.setAttribute("name", "playlistId");
+
+        let playlist_reorder_icon: HTMLImageElement = document.createElement("img");
+        playlist_reorder_icon.setAttribute("class", "reorder-button");
+        playlist_reorder_icon.setAttribute("src", "img/reorder/reorder.svg");
+        playlist_reorder_icon.setAttribute("width", "40");
+        playlist_reorder_icon.setAttribute("height", "40");
+
+        playlist_reorder.appendChild(playlist_reorder_icon);
+
+        playlist_reorder.addEventListener("click", () => {
+            loadPlaylistTracks(playlist.id.toString(), true);
+        })
+
+        div.appendChild(playlist_button);
+        div.appendChild(playlist_reorder);
+
+        return div;
+    }
+
+    // Drag events
+
+    function dragStart(event: Event) {
+        let button: HTMLButtonElement = (event as unknown as HTMLElement).closest("button");
+        button.style.cursor = "pointer"; // or convert to a proper class
+    }
+
+
+    function dragOver(event: Event) {
+        event.preventDefault()
+        let button: HTMLButtonElement = (event as unknown as HTMLElement).closest("button");
+        button.style.cursor = "grab";
+    }
+
+
+    function dragLeave(event: Event) {
+        let button: HTMLButtonElement = (event as unknown as HTMLElement).closest("button");
+        button.style.cursor = "pointer";
+    }
+
+
+    function drop(event: Event) {
+        alert("Dropped the track");
+
+        // update the new position by making a POST call to the database
     }
 })();
