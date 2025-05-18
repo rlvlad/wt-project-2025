@@ -317,4 +317,68 @@ public class PlaylistDAO implements DAO {
         close(resultSet, preparedStatement);
         return result;
     }
+
+    /**
+     * Retrieves the Tracks of a Playlist accounting for the custom orderr chosen by the User.
+     *
+     * @param playlist_id playlist_id of the Playlist of which to retrieve tracks
+     * @return list of Playlist Tracks
+     * @throws SQLException
+     */
+    public List<Track> getOrderderedTracks(int playlist_id) throws SQLException {
+        List<Track> tracks = new ArrayList<>();
+
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                        SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path, custom_order
+                        FROM track NATURAL JOIN playlist_tracks
+                        WHERE playlist_id = ?
+                """);
+
+        preparedStatement.setInt(1, playlist_id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            Track track = new Track(
+                    resultSet.getInt("track_id"),
+                    resultSet.getString("title"),
+                    resultSet.getString("artist"),
+                    resultSet.getInt("year"),
+                    resultSet.getString("album_title"),
+                    resultSet.getString("genre"),
+                    resultSet.getString("image_path"),
+                    resultSet.getString("song_path"),
+                    resultSet.getString("song_checksum"),
+                    resultSet.getString("image_checksum"),
+                    resultSet.getInt("custom_order")
+            );
+            tracks.add(track);
+        }
+
+        close(resultSet, preparedStatement);
+        return tracks;
+    }
+
+    /**
+     * Update Track custom order within given Playlist.
+     *
+     * @param track_id track_id of the Track to update
+     * @param newOrder new custom order (within Playlist)
+     * @param playlist_id playlist_id of the Playlist in which change the custom ordering
+     * @throws SQLException
+     */
+    public void updateTrackOrder(int track_id, int newOrder, int playlist_id) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                UPDATE playlist_tracks
+                SET custom_order = ?
+                WHERE playlist_id = ? AND track_id = ?
+                """);
+
+        preparedStatement.setInt(1, newOrder);
+        preparedStatement.setInt(2, track_id);
+        preparedStatement.setInt(3, playlist_id);
+
+        preparedStatement.executeUpdate();
+
+        close(preparedStatement);
+    }
 }
