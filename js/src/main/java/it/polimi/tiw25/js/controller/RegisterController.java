@@ -30,8 +30,7 @@ public class RegisterController extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String registerPage= req.getServletContext().getContextPath() + "/register.html";
-        res.sendRedirect(registerPage);
+        doPost(req, res);
     }
 
     @Override
@@ -42,8 +41,7 @@ public class RegisterController extends HttpServlet {
         String surname = req.getParameter("surname");
 
         if (nickname == null || nickname.isEmpty() || password == null || password.isEmpty() || name == null || name.isEmpty() || surname == null || surname.isEmpty()) {
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            res.getWriter().println("Invalid parameters");
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameters");
             return;
         }
 
@@ -62,6 +60,7 @@ public class RegisterController extends HttpServlet {
             res.setStatus(HttpServletResponse.SC_CREATED);
         } else {
             res.setStatus(HttpServletResponse.SC_CONFLICT);
+            res.setContentType("text/plain");
             res.getWriter().println("Nickname already taken");
         }
 

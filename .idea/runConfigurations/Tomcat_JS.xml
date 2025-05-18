@@ -98,8 +98,8 @@
       </SHUTDOWN>
     </ConfigurationWrapper>
     <method v="2">
-      <option name="Make" enabled="true" />
       <option name="TypeScript.Before.Run" enabled="true" FAIL_ON_ERROR="true" CONFIG_PATH="$PROJECT_DIR$/js/src/main/webapp/tsconfig.json" />
+      <option name="Make" enabled="true" />
       <option name="BuildArtifacts" enabled="true">
         <artifact name="js:war exploded" />
       </option>

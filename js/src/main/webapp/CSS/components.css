@@ -5,7 +5,6 @@ body {
     font-family: "JetBrains Mono", monospace;
     line-height: 1.6;
     word-spacing: 1px;
-    text-overflow: ellipsis;
     /*overflow-y: hidden; !* don't allow to scroll vertically *!*/
 }
 
@@ -83,6 +82,17 @@ select:invalid {
 
 .error {
     color: var(--variables);
+    padding-top: 0.5rem;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;
+}
+
+.success{
+    color: var(--string);
     padding-top: 0.5rem;
     width: 100%;
     display: flex;

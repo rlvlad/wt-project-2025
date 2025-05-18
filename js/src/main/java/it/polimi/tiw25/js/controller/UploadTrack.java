@@ -1,6 +1,8 @@
 package it.polimi.tiw25.js.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.tiw25.js.DAO.TrackDAO;
 import it.polimi.tiw25.js.entities.Track;
 import it.polimi.tiw25.js.entities.User;
@@ -64,6 +66,11 @@ public class UploadTrack extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         user = (User) req.getSession().getAttribute("user");
 
@@ -123,17 +130,25 @@ public class UploadTrack extends HttpServlet {
         // Add track
         TrackDAO trackDAO = new TrackDAO(connection);
         try {
-            trackDAO.addTrack(track, user);
-            resp.sendRedirect(getServletContext().getContextPath() + "/HomePage");
+            Integer trackId = trackDAO.addTrack(track, user);
+
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+            resp.setContentType("application/json");
+            resp.getWriter().println(gson.toJson(
+                    new Track(trackId, track.title(), track.artist(), track.year(), track.album_title(), track.genre(), track.image_path(),
+                            track.song_path(), track.song_checksum(), track.image_checksum())));
         } catch (SQLIntegrityConstraintViolationException e) {
             if (e.getMessage().contains("Duplicate")) {
-                resp.sendRedirect(getServletContext().getContextPath() + "/HomePage?duplicateTrack=true#open-modal");
+                resp.setStatus(HttpServletResponse.SC_CONFLICT);
+                resp.setContentType("text/plain");
+                resp.getWriter().println("Duplicate track");
             }
             // Delete newly created files if addTrack fails
-            newFiles.forEach(file -> file.delete());
+            newFiles.forEach(File::delete);
         } catch (SQLException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            newFiles.forEach(file -> file.delete());
+            newFiles.forEach(File::delete);
             e.printStackTrace();
         } finally {
             newFiles.clear();

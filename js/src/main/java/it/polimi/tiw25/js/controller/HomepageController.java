@@ -62,9 +62,7 @@ public class HomepageController extends HttpServlet {
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-//        String tracks_json = gson.toJson(userTracks);
         String playlists_json = gson.toJson(playlists);
-//        String genres_json = gson.toJson(genres);
 
         res.setContentType("application/json");
         res.setStatus(HttpServletResponse.SC_OK);
@@ -74,7 +72,7 @@ public class HomepageController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        super.doPost(req, res);
+        doGet(req, res);
     }
 
     @Override

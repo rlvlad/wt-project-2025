@@ -33,12 +33,12 @@
     cursor: pointer;
 }
 
-.side-bar .entry {
-    padding: 1rem;
-}
-
 .side-bar .entry-button {
+    margin: 1rem;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .entry-button:hover {

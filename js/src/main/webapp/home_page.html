@@ -15,33 +15,27 @@
     <!--    <button href="javascript:void(0)" class="close-button">-->
     <!--        &times;-->
     <!--    </button>-->
-    <form class="entry" action="#">
-        <button class="entry-button" id="homepage-button">
-            <span class="title">Homepage</span>
-            <img class="icon" src="img/side-bar/home.svg" alt="home button">
-        </button>
-    </form>
-    <form class="entry" action="#">
-        <button class="entry-button" id="playlist-button">
-            <span class="title">Playlist</span>
-            <img class="icon" src="img/side-bar/playlist.svg" alt="playlist button">
-        </button>
-    </form>
-    <form class="entry" action="#">
-        <button class="entry-button" id="track-button">
-            <span class="title">Track</span>
-            <img class="icon" src="img/side-bar/track.svg" alt="track button">
-        </button>
-    </form>
+    <button class="entry-button" id="homepage-button">
+        <span class="title">Homepage</span>
+        <img class="icon" src="img/side-bar/home.svg" alt="home button">
+    </button>
+    <button class="entry-button" id="playlist-button">
+        <span class="title">Playlist</span>
+        <img class="icon" src="img/side-bar/playlist.svg" alt="playlist button">
+    </button>
+    <button class="entry-button" id="track-button">
+        <span class="title">Track</span>
+        <img class="icon" src="img/side-bar/track.svg" alt="track button">
+    </button>
 </div>
 <div class="nav-bar">
     <div class="main-label">All Playlists</div>
     <div class="spacer"></div>
     <a href="#create-playlist">
-        <button id="add-playlist-button" class="button">Add Playlist</button>
+        <button id="add-playlist-modal-button" class="button">Add Playlist</button>
     </a>
     <a href="#upload-track">
-        <button id="upload-track-button" class="button">Upload Track</button>
+        <button id="upload-track-modal-button" class="button">Upload Track</button>
     </a>
     <a>
         <button id="logout-button" type="submit" class="button logout">Logout</button>
@@ -57,16 +51,12 @@
             <div class="spacer"></div>
             <a href="#" title="Close" class="modal-close">Close</a>
         </div>
-        <form action="home_page.html" method="post" enctype="multipart/form-data"
-              name="songAttributes">
-            <input type="text" class="text-field" name="title" placeholder="Title"
-                   required>
+        <form>
+            <input type="text" class="text-field" name="title" placeholder="Title" required>
             <br>
-            <input type="text" class="text-field" name="artist" placeholder="Artist"
-                   required>
+            <input type="text" class="text-field" name="artist" placeholder="Artist" required>
             <br>
-            <input type="text" class="text-field" name="album" placeholder="Album title"
-                   required>
+            <input type="text" class="text-field" name="album" placeholder="Album title" required>
             <br>
             <select class="text-field" name="year" id="year-selection" required>
                 <option value="">Year</option>
@@ -92,10 +82,9 @@
             <label class="label" for="image">Album image:</label>
             <input type="file" name="image" id="image" placeholder="Image"
                    required>
-            <div class="error">
-            </div>
+            <div class="error"></div>
             <div class="nav-bar">
-                <input type="submit" class="button" value="Add Track"/>
+                <input id="upload-track-btn" type="button" class="button" value="Add Track"/>
             </div>
         </form>
     </div>
@@ -107,11 +96,9 @@
             <div class="spacer"></div>
             <a href="#" title="Close" class="modal-close">Close</a>
         </div>
-        </form>
-        <form action="CreatePlaylist" method="post">
-            <input type="text" class="text-field" name="playlistTitle" placeholder="Title"
-                   required>
-            <br> <br>
+        <form>
+            <input type="text" class="text-field" name="playlistTitle" placeholder="Title" required>
+            <br><br>
             <label class="label" for="track-selector">Select songs to add:</label>
             <br>
             <select class="text-field" id="track-selector" name="selectedTracks" multiple size="10">
@@ -120,11 +107,11 @@
                 <option value="Track2">Artist - Title (Year)</option>
                 <option value="Track3">Artist - Title (Year)</option>
             </select>
-            <div class="error">
-                <span></span>
-            </div>
+            <div class="error"></div>
             <div class="nav-bar">
-                <button id="create-playlist-btn" class="button" value="Create playlist">Create playlist</button>
+                <button id="create-playlist-btn" type="button" class="button" value="Create playlist">
+                    Create playlist
+                </button>
             </div>
         </form>
     </div>

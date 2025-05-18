@@ -1,4 +1,6 @@
 (function () {
+    let lastPlaylist: Playlist = null, lastTrack: Track = null;
+    const HOMEPAGE_LABEL: string = "All Playlists";
     window.onload = function () {
         // close modals
         location.hash = "#";
@@ -8,64 +10,113 @@
 
 
         document.getElementById("logout-button").addEventListener("click", () => {
-            makeCall("GET", "Logout", null, (req:XMLHttpRequest) =>{
-                if (req.readyState == XMLHttpRequest.DONE){
-                    if (req.status == 200){
-                        location.href="index.html";
+            makeCall("GET", "Logout", null, (req: XMLHttpRequest) => {
+                if (req.readyState == XMLHttpRequest.DONE) {
+                    if (req.status == 200) {
+                        location.href = "index.html";
                     }
                 }
-            }, false);
+            });
         });
 
         // add listeners on sidebar buttons
         document.getElementById("homepage-button").addEventListener("click", function () {
             loadPlaylists();
-        })
+        });
 
         document.getElementById("playlist-button").addEventListener("click", function () {
-            // loadPlaylistTracks();
-            alert("Verrà caricata l'ultima playlist selezionata.")
-        })
+            if (lastPlaylist != null) {
+                loadPlaylistTracks(lastPlaylist);
+            }
+        });
 
         document.getElementById("track-button").addEventListener("click", function () {
-            // loadSingleTrack();
-            alert("Verrà caricata l'ultima traccia selezionata.")
-        })
+            if (lastTrack != null) {
+                loadSingleTrack(lastTrack);
+            }
+        });
 
         // load modal data when clicking on the modal
-        document.getElementById("upload-track-button").addEventListener("click", function () {
+        document.getElementById("upload-track-modal-button").addEventListener("click", function () {
             loadYears();
             loadGenres();
-        })
+        });
 
-        document.getElementById("add-playlist-button").addEventListener("click", () => {
+        document.getElementById("add-playlist-modal-button").addEventListener("click", () => {
             loadUserTracks(document.getElementById("track-selector"))
+        });
+
+        // Even if no submit button is present, forms with a single implicit submission blocking field still submit when the Enter key is pressed
+        // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission
+        document.getElementById("create-playlist").getElementsByTagName("form").item(0).addEventListener("submit", (e) => {
+            e.preventDefault();
         });
 
         // update homepage with new playlist
         document.getElementById("create-playlist-btn").addEventListener("click", function () {
             let self: HTMLElement = this;
-            makeCall("POST", "CreatePlaylist", this.closest("form"), function (req: XMLHttpRequest) {
-                if (req.readyState == XMLHttpRequest.DONE) {
-                    let message: string = req.responseText;
-                    if (req.status == 201) {
-                        let newPlaylist: Playlist = JSON.parse(message);
-                        let itemsContainer: HTMLElement = document.querySelector(".items-container");
-                        itemsContainer.insertBefore(createPlaylistButton(newPlaylist), itemsContainer.firstChild);
-                        location.hash = "";
-                    } else {
-                        self.parentElement.previousElementSibling.textContent = message;
+            let form: HTMLFormElement = this.closest("form");
+
+            if (form.checkValidity()) {
+                makeCall("POST", "CreatePlaylist", form, function (req: XMLHttpRequest) {
+                    if (req.readyState == XMLHttpRequest.DONE) {
+                        let message: string = req.responseText;
+                        switch (req.status) {
+                            case 201:
+                                let newPlaylist: Playlist = JSON.parse(message);
+                                let itemsContainer: HTMLElement = document.querySelector(".items-container");
+                                if (document.getElementsByClassName("main-label").item(0).textContent == HOMEPAGE_LABEL)
+                                    itemsContainer.insertBefore(createPlaylistButton(newPlaylist), itemsContainer.firstChild);
+
+                                self.parentElement.previousElementSibling.setAttribute("class", "success");
+                                self.parentElement.previousElementSibling.textContent = "Playlist created successfully";
+                                form.reset();
+                                break;
+                            case 409:
+                                self.parentElement.previousElementSibling.setAttribute("class", "error");
+                                self.parentElement.previousElementSibling.textContent = message;
+                                break;
+                        }
                     }
-                }
-            });
+                }, false);
+            } else {
+                form.reportValidity();
+            }
         });
+
+        document.getElementById("upload-track-btn").addEventListener("click", function () {
+            let self: HTMLElement = this;
+            let form: HTMLFormElement = this.closest("form");
+
+            if (form.checkValidity()) {
+                makeCall("POST", "UploadTrack", this.closest("form"), function (req: XMLHttpRequest) {
+                    let message: string = req.responseText;
+
+                    if (req.readyState == XMLHttpRequest.DONE) {
+                        switch (req.status) {
+                            case 201:
+                                self.parentElement.previousElementSibling.setAttribute("class", "success");
+                                self.parentElement.previousElementSibling.textContent = "Track uploaded successfully";
+                                form.getElementsByTagName("input").item(0).value = "";
+                                (document.getElementById("musicTrack") as HTMLInputElement).value = "";
+                                break;
+                            case 409:
+                                self.parentElement.previousElementSibling.setAttribute("class", "error");
+                                self.parentElement.previousElementSibling.textContent = message;
+                        }
+
+                    }
+                }, false);
+            } else {
+                form.reportValidity();
+            }
+        })
     }
 
     // Helpers methods
 
     /**
-     * Delete everything from main div and appends to it the track container, used to hold both the Playlists
-     * and the Tracks.
+     * Delete everything from main div.
      */
     function cleanMain() {
         let main_div: HTMLElement = document.getElementById("main");
@@ -80,7 +131,6 @@
      * @param playlists array of Playlists
      */
     function playlistGrid(playlists: Playlist[]) {
-        let button: HTMLButtonElement, span: HTMLSpanElement;
         let main: HTMLElement = document.getElementById("main");
         let container: HTMLElement = document.createElement("div");
         container.setAttribute("class", "items-container");
@@ -123,12 +173,12 @@
             image = document.createElement("img");
             image.setAttribute("class", "album-image");
             image.setAttribute("src", track.image_path)
-            image.setAttribute("alt", "Track player");
+            // image.setAttribute("alt", "Track player");
             image.setAttribute("width", "100");
             image.setAttribute("height", "100");
 
             button.addEventListener("click", () => {
-                loadSingleTrack(track.id.toString())
+                loadSingleTrack(track);
             });
 
             button.appendChild(text);
@@ -175,9 +225,9 @@
 
         let image: HTMLImageElement = document.createElement("img");
         image.setAttribute("src", track.image_path);
-        image.setAttribute("alt", "Track player");
+        // image.setAttribute("alt", "Track player");
         image.setAttribute("width", "200");
-        image.setAttribute("height", "100");
+        image.setAttribute("height", "200");
 
         let audio_ctrl: HTMLAudioElement = document.createElement("audio");
         audio_ctrl.controls = true;
@@ -269,6 +319,7 @@
      */
     function loadPlaylists() {
         cleanMain();
+        document.getElementsByClassName("main-label").item(0).textContent = HOMEPAGE_LABEL;
 
         makeCall("GET", "HomePage", null,
             // callback function
@@ -278,11 +329,6 @@
                     if (req.status == 200) {
                         // parse JSON for user playlists
                         let playlists: Playlist[] = JSON.parse(message);
-
-                        if (playlists.length === 0) {
-                            alert("The User has no playlists.");
-                            return;
-                        }
 
                         // pass the JSON of all Playlists
                         playlistGrid(playlists);
@@ -298,10 +344,13 @@
     /**
      * Load all the Tracks associated to a Playlist.
      */
-    function loadPlaylistTracks(playlistId: string) {
+    function loadPlaylistTracks(playlist: Playlist) {
         cleanMain()
+        document.getElementsByClassName("main-label").item(0).textContent = playlist.title;
 
-        makeCall("GET", "Playlist?playlistId=" + playlistId,
+        lastPlaylist = playlist;
+
+        makeCall("GET", "Playlist?playlistId=" + playlist.id.toString(),
             null,
             // callback function
             function (req: XMLHttpRequest) {
@@ -330,12 +379,14 @@
     /**
      * Load a single Track from a Playlist.
      */
-    function loadSingleTrack(trackId: string) {
+    function loadSingleTrack(track: Track) {
         // clean main div
-        let main_div: HTMLElement = document.getElementById("main");
-        main_div.innerHTML = "";
+        cleanMain();
+        document.getElementsByClassName("main-label").item(0).textContent = track.title;
 
-        makeCall("GET", "Track?track_id=" + trackId, null,
+        lastTrack = track;
+
+        makeCall("GET", "Track?track_id=" + track.id.toString(), null,
             // callback function
             function (req: XMLHttpRequest) {
                 if (req.readyState == XMLHttpRequest.DONE) { // == 4
@@ -350,7 +401,7 @@
                         }
 
                         // pass the JSON of all Tracks
-                        trackPlayer(main_div, track);
+                        trackPlayer(document.getElementById("main"), track);
                     } else {
                         // request failed, handle it
                         // self.listcontainer.style.visibility = "hidden";
@@ -363,8 +414,9 @@
     /**
      * Get user tracks and add them to the track selector parameter
      * @param trackSelector
+     * @param playlist optional parameter used for loading only tracks not present in the specified playlist
      */
-    function loadUserTracks(trackSelector: HTMLElement) {
+    function loadUserTracks(trackSelector: HTMLElement, playlist: Playlist = null) {
         trackSelector.innerHTML = "";
 
         makeCall("GET", "GetUserTracks", null, function (req: XMLHttpRequest) {
@@ -373,21 +425,19 @@
                 if (req.status == 200) {
                     let tracks: Track[] = JSON.parse(message);
                     if (tracks.length === 0) {
-                        let parent: HTMLElement = trackSelector.parentElement;
-                        let span: HTMLSpanElement = document.createElement("span");
-
-                        span.textContent = "There are no available tracks to be added."
-                        parent.insertBefore(span, trackSelector);
-
-                        parent.removeChild(trackSelector);
-                        parent.removeChild(parent.getElementsByClassName("label").item(0));
-
+                        let option: HTMLOptionElement = document.createElement("option");
+                        option.value = "";
+                        option.textContent = "There are no available tracks to be added."
+                        trackSelector.setAttribute("size", "1");
+                        trackSelector.appendChild(option);
                         return;
+                    } else if (tracks.length < 10) {
+                        trackSelector.setAttribute("size", tracks.length.toString());
                     }
                     tracks.forEach(function (track: Track) {
                         let option: HTMLOptionElement = document.createElement("option");
                         option.value = track.id.toString();
-                        option.textContent = track.artist + " - " + track.title + " ( " + track.year + " )"
+                        option.textContent = track.artist + " - " + track.title + " (" + track.year + ")"
                         trackSelector.appendChild(option);
                     });
                 } else {
@@ -411,7 +461,7 @@
         span.textContent = playlist.title;
 
         button.addEventListener("click", () => {
-            loadPlaylistTracks(playlist.id.toString());
+            loadPlaylistTracks(playlist);
         });
 
         button.appendChild(span);
