@@ -26,9 +26,15 @@ public class CreatePlaylist extends HttpServlet {
     private Connection connection = null;
     User user;
 
+    @Override
     public void init() throws ServletException {
         ServletContext context = getServletContext();
         connection = ConnectionHandler.openConnection(context);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
     }
 
     @Override

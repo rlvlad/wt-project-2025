@@ -43,6 +43,7 @@ public class UploadTrack extends HttpServlet {
     private ServletContext context;
     private List<String> genres;
 
+    @Override
     public void init() throws ServletException {
         context = getServletContext();
         connection = ConnectionHandler.openConnection(context);
@@ -56,6 +57,11 @@ public class UploadTrack extends HttpServlet {
             e.printStackTrace();
             throw new UnavailableException("Couldn't load genres");
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
     }
 
     @Override

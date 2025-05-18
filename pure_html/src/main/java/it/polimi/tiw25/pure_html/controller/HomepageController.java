@@ -94,7 +94,7 @@ public class HomepageController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        super.doPost(req, res);
+        doGet(req, res);
     }
 
     @Override
