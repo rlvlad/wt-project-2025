@@ -331,19 +331,19 @@
         /**
          * If reorder is true, then add the various drag events listeners.
          */
-        if (reorder === true) {
-            const draggable_elements = Array(document.getElementsByClassName("draggable"));
-
-            draggable_elements
-                .map(e => e as unknown as HTMLButtonElement)
-                .forEach(button => {
-                    button.draggable = true;
-                    button.addEventListener("dragstart", dragStart);
-                    button.addEventListener("dragover", dragOver);
-                    button.addEventListener("dragleave", dragLeave);
-                    button.addEventListener("drop", drop);
-                })
-        }
+        // if (reorder === true) {
+        //     const draggable_elements = Array(document.getElementsByClassName("draggable"));
+        //
+        //     draggable_elements
+        //         .map(e => e as unknown as HTMLButtonElement)
+        //         .forEach(button => {
+        //             button.draggable = true;
+        //             button.addEventListener("dragstart", dragStart);
+        //             button.addEventListener("dragover", dragOver);
+        //             button.addEventListener("dragleave", dragLeave);
+        //             button.addEventListener("drop", drop);
+        //         })
+        // }
     }
 
     /**
@@ -417,6 +417,51 @@
         });
     }
 
+    // TODO unify the previous and following method
+
+    /**
+     * Get user Tracks and creates list items.
+     *
+     * @param trackSelector
+     */
+    function loadUserTracksOl(trackSelector: HTMLOListElement) {
+        trackSelector.innerHTML = "";
+
+        makeCall("GET", "GetUserTracks", null, function (req: XMLHttpRequest) {
+            if (req.readyState == XMLHttpRequest.DONE) {
+                let message: string = req.responseText;
+                if (req.status == 200) {
+                    let tracks: Track[] = JSON.parse(message);
+                    if (tracks.length === 0) {
+                        let parent: HTMLElement = trackSelector.parentElement;
+                        let span: HTMLSpanElement = document.createElement("span");
+
+                        span.textContent = "There are no available tracks to be added."
+                        parent.insertBefore(span, trackSelector);
+
+                        parent.removeChild(trackSelector);
+                        parent.removeChild(parent.getElementsByClassName("label").item(0));
+
+                        return;
+                    }
+                    tracks.forEach(function (track: Track) {
+                        let list_item: HTMLLIElement = document.createElement("li");
+                        list_item.draggable = true;
+                        list_item.addEventListener("dragstart", dragStart);
+                        list_item.addEventListener("dragover", dragOver);
+                        list_item.addEventListener("dragleave", dragLeave);
+                        list_item.addEventListener("drop", drop);
+                        list_item.value = track.id;
+                        list_item.textContent = track.artist + " - " + track.title + " ( " + track.year + " )"
+                        trackSelector.appendChild(list_item);
+                    });
+                } else {
+                    alert("Cannot recover data. Maybe the User has been logged out."); //for demo purposes
+                }
+            }
+        });
+    }
+
     /**
      * Creates and returns a button based on the playlist parameter.
      *
@@ -434,9 +479,6 @@
         // span.setAttribute("class", "playlist-title");
         span.textContent = playlist.title;
 
-        // the listener should be placed on the div, however by doing so the once the User clicks on the playlist reorder
-        // button, that click event is registered BOTH on the div AND the button: this results in a duplicate call of
-        // the loadPlaylistTracks function
         div.addEventListener("click", () => {
             loadPlaylistTracks(playlist.id.toString());
         }, false);
@@ -467,27 +509,70 @@
 
     // Drag events
 
+    let startElement: HTMLLIElement
+
+    /**
+     * As soon as the User drags an Element.
+     *
+     * @param event the drag event
+     */
     function dragStart(event: Event) {
-        let button: HTMLButtonElement = (event as unknown as HTMLElement).closest("button");
-        button.style.cursor = "pointer"; // or convert to a proper class
+        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        list_item.style.cursor = "pointer"; // or convert to a proper class
+        startElement = event.target as HTMLLIElement;
     }
 
 
+    /**
+     * The User is dragging the Element around.
+     *
+     * @param event during the drag event
+     */
     function dragOver(event: Event) {
         event.preventDefault()
-        let button: HTMLButtonElement = (event as unknown as HTMLElement).closest("button");
-        button.style.cursor = "grab";
+        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        list_item.style.cursor = "grab";
     }
 
 
+    /**
+     * The User has started dragging the Element.
+     *
+     * @param event after the drag event
+     */
     function dragLeave(event: Event) {
-        let button: HTMLButtonElement = (event as unknown as HTMLElement).closest("button");
-        button.style.cursor = "pointer";
+        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        list_item.style.cursor = "pointer";
     }
 
-
+    /**
+     * The User has dropped the Track in the desired location.
+     *
+     * @param event the drop event
+     */
     function drop(event: Event) {
-        alert("Dropped the track");
+        // HTML output
+        let finalDest: HTMLLIElement = (event as unknown as HTMLLIElement).closest("li");
+
+        let completeList: HTMLUListElement = finalDest.closest("ol");
+        let songsArray: HTMLLIElement[] = Array(completeList.querySelectorAll("li"))
+            // I really love TypeScript, this is VERY MUCH NECESSARY
+            .map(e => e as unknown as HTMLLIElement);
+
+        let indexDest: number = songsArray.indexOf(finalDest);
+
+        if (songsArray.indexOf(startElement) < indexDest) {
+            startElement.parentElement.insertBefore(
+                startElement,
+                songsArray[indexDest + 1],
+            );
+        } else {
+            startElement.parentElement.insertBefore(
+                startElement,
+                songsArray[indexDest],
+            );
+        }
+        startElement.value = indexDest;
 
         // update the new position by making a POST call to the database
     }
@@ -554,13 +639,12 @@
         label.setAttribute("for", "track-reorder");
         label.textContent = "Drag the track to reorder:";
 
-        let select: HTMLSelectElement = document.createElement("select");
-        select.setAttribute("name", "reorderingTracks");
-        select.setAttribute("id", "track-reorder");
-        select.setAttribute("class", "text-field");
-        // select.setAttribute("multiple size", "10");
+        let ordered_list: HTMLOListElement = document.createElement("ol");
+        ordered_list.setAttribute("name", "reorderingTracks");
+        ordered_list.setAttribute("id", "track-reorder");
+        ordered_list.setAttribute("class", "text-field");
 
-        loadUserTracks(select);
+        loadUserTracksOl(ordered_list);
 
         let bottom_div: HTMLDivElement = document.createElement("div");
         bottom_div.setAttribute("class", "nav-bar");
@@ -576,7 +660,7 @@
         main_form.appendChild(label);
         main_form.appendChild(document.createElement("br"));
         main_form.appendChild(document.createElement("br"));
-        main_form.appendChild(select);
+        main_form.appendChild(ordered_list);
         main_form.appendChild(bottom_div);
 
         // Combine all into modal div
