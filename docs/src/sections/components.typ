@@ -28,6 +28,7 @@ Unlike most WT projects, these are record classes @record-classes: basically the
   - Logout
   - AddTracks
   - CreatePlaylist
+  - [RIA] TrackReordering
 
 + Filters
   - UserChecker
@@ -52,7 +53,7 @@ PlaylistDAO methods:
 
 - getPlaylistTitle
 - deletePlaylist
-- getTrackGroup
+- getTrackGroup#footnote[Modified in the RIA version to account for custom track order.]
 - addTracksToPlaylist
 - removeTracksFromPlaylist
 - checkPlaylistOwner
@@ -60,6 +61,7 @@ PlaylistDAO methods:
 - getPlaylistTracksByTitle
 - createPlaylist
 - getPlaylistTracksById
+- [RIA] updateTrackOrder
 
 TrackDAO methods:
 
@@ -75,4 +77,4 @@ UserDAO methods:
 - checkUser
 - addUser
 
-All the methods are intuitively named and don't need further explanations. Either way, they are explanined throughout the next section in their respective sequence.
+All the methods are intuitively named and don't need further explanations. Either way, they are explained throughout the next section in their respective sequence.

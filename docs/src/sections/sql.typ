@@ -80,8 +80,8 @@ CREATE TABLE playlist_tracks
 (
     playlist_id  integer not null,
     track_id     integer not null,
-    -- present ONLY in the JS project
-    custom_order integer,
+    -- present ONLY in the RIA project
+    custom_order integer default 0,
 
     primary key (playlist_id, track_id),
     foreign key (playlist_id) REFERENCES playlist (playlist_id)

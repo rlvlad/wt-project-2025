@@ -6,7 +6,7 @@
 
 / Overview: This project hosts the source code -- which can be found #link("https://github.com/VictuarVi/tiw-project-2025")[on Github] -- for a web server that handles a playlist management system. A user is able to register, login and then upload tracks. The tracks are strictly associated to one user, similar to how a cloud service works. The user will be able to create playlists, sourcing from their tracks, and listem to them.
 
-It should be noted there are two versions: a *HTML version*, which is structured as a series of separate webpages; and a *RIA version* (@ria-specifics), which is structured as a single-page webapp. The functionalities are quite the same, the code changes mostly at a frontend level. For more information about the requirements for each version see @original-submission, @project-breakdown.
+It should be noted there are two versions: a *HTML version*, which is structured as a series of separate webpages; and a *RIA version*, which is structured as a single-page webapp. The functionalities are quite the same, the code changes mostly at a frontend level. For more information about the requirements for each version see @project-breakdown.
 
 Both of the them feature the same CSS code (see @css-styling).
 
