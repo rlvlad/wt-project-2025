@@ -85,3 +85,17 @@ After adding a new track to the current playlist, the application #server_action
   ),
   caption: "IFML diagram.",
 )
+
+#colbreak()
+
+== JavaScript version
+
+Create a client-server web application that modifies the previous specification as follows:
+
+- After the #page[Login], the entire application is built as a single webapp#comment("RIA")
+
+- Every user interaction is managed without completely refreshing the page, but instead it #server_action[asynchrounosly] invokes the server and the content displayed is potentially updated
+
+- The visualization event of the previous/next blocks is managed client-side without making a request to the server
+
+/ Track reordering : The application must allow the user to reorder the tracks in a playlist with a personalized order, different from the default one. From the #page[HOME PAGE] with an associated link to each playlist, the user is able to #user_action[access] a modal window #element[REORDER] which shows the full list of tracks ordered with the current criteria (custom or default).\ The user can #user_action[drag] the title of a track and #user_action[drop] it in a different position to achieve the desidered order, without invoking the server.\ Once finished, the user can click on a #element[button to save the order] and #server_action[store] the sequence on the server. In subsequent accesses, the personalized track order is #server_action[loaded] instead of the default one. A newly added track in a custom-ordered playlist is inserted at the end.
