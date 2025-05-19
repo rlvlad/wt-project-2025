@@ -456,7 +456,7 @@
 
         playlist_reorder.addEventListener("click", (e) => {
             e.stopPropagation();
-            loadPlaylistTracks(playlist.id.toString(), true);
+            loadReorderModal(playlist.title.toString())
         })
 
         div.appendChild(playlist_button);
@@ -495,32 +495,59 @@
     /**
      * Generates the modal to reorder the Tracks.
      */
-    function loadReorderModal() {
+    function loadReorderModal(playlistTitle: string) {
+        /**
+         * Make the reorder track modal visible.
+         */
+        function openReorderTracksModal() {
+            let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
+            modal_div.style.visibility = "visible";
+            modal_div.style.opacity = "1";
+            modal_div.style.pointerEvents = "auto";
+        }
+
+        // if the modal has already been generated, make it visible
+        if (document.querySelector("#reorder-tracks-modal")) {
+            openReorderTracksModal();
+            return;
+        }
+
+        let body: HTMLElement = document.body;
         let modal_div: HTMLDivElement = document.createElement("div");
         modal_div.setAttribute("id", "reorder-tracks-modal");
         modal_div.setAttribute("class", "modal-window");
 
+        let inner_div: HTMLDivElement = document.createElement("div");
+
         // Top nav bar
-        let top_div: HTMLDivElement = document.createElement("div");
-        let spacer: HTMLDivElement = document.createElement("div");
-        spacer.setAttribute("class", "spacer");
+        let top_nav_bar: HTMLDivElement = document.createElement("div");
+        top_nav_bar.setAttribute("class", "nav-bar");
 
         let title_div: HTMLDivElement = document.createElement("div");
         title_div.setAttribute("class", "modal-title");
-        title_div.textContent = "Reorder Tracks in this Playlist"
+        title_div.textContent = "Reorder Tracks in " + playlistTitle;
+
+        let spacer: HTMLDivElement = document.createElement("div");
+        spacer.setAttribute("class", "spacer");
 
         let modal_close: HTMLAnchorElement = document.createElement("a");
         modal_close.setAttribute("href", "#");
         modal_close.setAttribute("title", "Close");
-        modal_close.setAttribute("class", "modal-title");
+        modal_close.setAttribute("class", "modal-close");
+        modal_close.textContent = "Close";
 
-        top_div.appendChild(title_div);
-        top_div.appendChild(spacer);
-        top_div.appendChild(modal_close);
+        modal_close.addEventListener("click", () => {
+            closeReorderModal();
+        })
+
+        top_nav_bar.appendChild(title_div);
+        top_nav_bar.appendChild(spacer);
+        top_nav_bar.appendChild(modal_close);
 
         // Main form
         let main_form: HTMLFormElement = document.createElement("form");
         main_form.setAttribute("method", "POST");
+        main_form.setAttribute("action", "#");
 
         let label: HTMLLabelElement = document.createElement("label");
         label.setAttribute("class", "label");
@@ -531,6 +558,7 @@
         select.setAttribute("name", "reorderingTracks");
         select.setAttribute("id", "track-reorder");
         select.setAttribute("class", "text-field");
+        // select.setAttribute("multiple size", "10");
 
         loadUserTracks(select);
 
@@ -552,7 +580,25 @@
         main_form.appendChild(bottom_div);
 
         // Combine all into modal div
-        modal_div.appendChild(top_div);
-        modal_div.appendChild(main_form);
+        inner_div.appendChild(top_nav_bar);
+        inner_div.appendChild(main_form);
+        modal_div.appendChild(inner_div);
+
+        body.appendChild(modal_div);
+
+        // Make it visible
+        openReorderTracksModal();
+    }
+
+    /**
+     * Closes the reorder tracks modal.
+     */
+    function closeReorderModal() {
+        let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
+
+        // Make it not visible
+        modal_div.style.visibility = "hidden";
+        modal_div.style.opacity = "0";
+        modal_div.style.pointerEvents = "none";
     }
 })();

@@ -1,3 +1,13 @@
+/**
+ * Make an asynchronous call to the server by specifying method, URL, form to send,
+ * the function to execute and whether to reset the given form.
+ *
+ * @param method method of the request (usually GET, POST)
+ * @param url URL to call
+ * @param formElement form
+ * @param callback function to execute upon received data
+ * @param reset whether to reset the given form
+ */
 function makeCall(method: string, url: string, formElement: HTMLFormElement, callback: (arg0: XMLHttpRequest) => void, reset = true) {
     let req: XMLHttpRequest = new XMLHttpRequest();
     req.onreadystatechange = function () {
@@ -14,15 +24,6 @@ function makeCall(method: string, url: string, formElement: HTMLFormElement, cal
         formElement.reset();
     }
 }
-
-// Logout sequence
-// (function (){
-//     document.getElementById("logout-button").addEventListener("click", logout);
-// }());
-//
-// function logout() {
-//     makeCall("GET", "Logout", null, null, false);
-// }
 
 // Entities
 
@@ -52,4 +53,5 @@ interface Track {
     song_path: string;
     song_checksum: string;
     image_checksum: string;
+    custom_order: number;
 }
