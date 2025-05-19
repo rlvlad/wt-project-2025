@@ -437,9 +437,9 @@
         // the listener should be placed on the div, however by doing so the once the User clicks on the playlist reorder
         // button, that click event is registered BOTH on the div AND the button: this results in a duplicate call of
         // the loadPlaylistTracks function
-        playlist_button.addEventListener("click", () => {
+        div.addEventListener("click", () => {
             loadPlaylistTracks(playlist.id.toString());
-        });
+        }, false);
 
         playlist_button.appendChild(span);
 
@@ -454,7 +454,8 @@
 
         playlist_reorder.appendChild(playlist_reorder_icon);
 
-        playlist_reorder.addEventListener("click", () => {
+        playlist_reorder.addEventListener("click", (e) => {
+            e.stopPropagation();
             loadPlaylistTracks(playlist.id.toString(), true);
         })
 
@@ -489,5 +490,69 @@
         alert("Dropped the track");
 
         // update the new position by making a POST call to the database
+    }
+
+    /**
+     * Generates the modal to reorder the Tracks.
+     */
+    function loadReorderModal() {
+        let modal_div: HTMLDivElement = document.createElement("div");
+        modal_div.setAttribute("id", "reorder-tracks-modal");
+        modal_div.setAttribute("class", "modal-window");
+
+        // Top nav bar
+        let top_div: HTMLDivElement = document.createElement("div");
+        let spacer: HTMLDivElement = document.createElement("div");
+        spacer.setAttribute("class", "spacer");
+
+        let title_div: HTMLDivElement = document.createElement("div");
+        title_div.setAttribute("class", "modal-title");
+        title_div.textContent = "Reorder Tracks in this Playlist"
+
+        let modal_close: HTMLAnchorElement = document.createElement("a");
+        modal_close.setAttribute("href", "#");
+        modal_close.setAttribute("title", "Close");
+        modal_close.setAttribute("class", "modal-title");
+
+        top_div.appendChild(title_div);
+        top_div.appendChild(spacer);
+        top_div.appendChild(modal_close);
+
+        // Main form
+        let main_form: HTMLFormElement = document.createElement("form");
+        main_form.setAttribute("method", "POST");
+
+        let label: HTMLLabelElement = document.createElement("label");
+        label.setAttribute("class", "label");
+        label.setAttribute("for", "track-reorder");
+        label.textContent = "Drag the track to reorder:";
+
+        let select: HTMLSelectElement = document.createElement("select");
+        select.setAttribute("name", "reorderingTracks");
+        select.setAttribute("id", "track-reorder");
+        select.setAttribute("class", "text-field");
+
+        loadUserTracks(select);
+
+        let bottom_div: HTMLDivElement = document.createElement("div");
+        bottom_div.setAttribute("class", "nav-bar");
+
+        let reorder_track_btn: HTMLButtonElement = document.createElement("button");
+        reorder_track_btn.setAttribute("id", "track-reorder-btn");
+        reorder_track_btn.setAttribute("class", "button");
+        reorder_track_btn.setAttribute("value", "Reorder Tracks");
+        reorder_track_btn.textContent = "Reorder Tracks";
+
+        bottom_div.appendChild(reorder_track_btn);
+
+        main_form.appendChild(label);
+        main_form.appendChild(document.createElement("br"));
+        main_form.appendChild(document.createElement("br"));
+        main_form.appendChild(select);
+        main_form.appendChild(bottom_div);
+
+        // Combine all into modal div
+        modal_div.appendChild(top_div);
+        modal_div.appendChild(main_form);
     }
 })();
