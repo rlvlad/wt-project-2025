@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.tiw25.js.DAO.PlaylistDAO;
-import it.polimi.tiw25.js.DAO.TrackDAO;
 import it.polimi.tiw25.js.entities.Playlist;
-import it.polimi.tiw25.js.entities.Track;
 import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
 import jakarta.servlet.ServletContext;
@@ -29,19 +27,11 @@ public class HomepageController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
-    private List<String> genres;
 
     @Override
     public void init() throws ServletException {
         ServletContext context = getServletContext();
         connection = ConnectionHandler.openConnection(context);
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            genres = List.of(objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream("genres.json"), String[].class));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new UnavailableException("Couldn't load genres");
-        }
     }
 
     @Override

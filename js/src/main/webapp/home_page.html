@@ -31,90 +31,11 @@
 <div class="nav-bar">
     <div class="main-label">All Playlists</div>
     <div class="spacer"></div>
-    <a href="#create-playlist">
-        <button id="add-playlist-modal-button" class="button">Add Playlist</button>
-    </a>
-    <a href="#upload-track">
-        <button id="upload-track-modal-button" class="button">Upload Track</button>
-    </a>
-    <a>
-        <button id="logout-button" type="submit" class="button logout">Logout</button>
-    </a>
+    <button id="upload-track-modal-button" class="button">Upload Track</button>
+    <button id="track-selector-modal-button" class="button">Add Playlist</button>
+    <button id="logout-button" type="submit" class="button logout">Logout</button>
 </div>
-<div id="main" class="main">
-
-</div>
-<div id="upload-track" class="modal-window">
-    <div>
-        <div class="nav-bar">
-            <div class="modal-title">Upload Track</div>
-            <div class="spacer"></div>
-            <a href="#" title="Close" class="modal-close">Close</a>
-        </div>
-        <form>
-            <input type="text" class="text-field" name="title" placeholder="Title" required>
-            <br>
-            <input type="text" class="text-field" name="artist" placeholder="Artist" required>
-            <br>
-            <input type="text" class="text-field" name="album" placeholder="Album title" required>
-            <br>
-            <select class="text-field" name="year" id="year-selection" required>
-                <option value="">Year</option>
-                <option
-                >2025
-                </option>
-                <option>2024</option>
-                <option>2023</option>
-            </select>
-            <br>
-            <select class="text-field" name="genre" id="genre-selection" required>
-                <option value="">Genre</option>
-                <option>Genre</option>
-                <option>Genre</option>
-                <option>Genre</option>
-                <option>Genre</option>
-            </select>
-            <br>
-            <label class="label" for="musicTrack">Track:</label>
-            <input type="file" name="musicTrack" id="musicTrack" placeholder="Track"
-                   required>
-            <br>
-            <label class="label" for="image">Album image:</label>
-            <input type="file" name="image" id="image" placeholder="Image"
-                   required>
-            <div class="error"></div>
-            <div class="nav-bar">
-                <input id="upload-track-btn" type="button" class="button" value="Add Track"/>
-            </div>
-        </form>
-    </div>
-</div>
-<div id="create-playlist" class="modal-window">
-    <div>
-        <div class="nav-bar">
-            <div class="modal-title">Create new playlist</div>
-            <div class="spacer"></div>
-            <a href="#" title="Close" class="modal-close">Close</a>
-        </div>
-        <form>
-            <input type="text" class="text-field" name="playlistTitle" placeholder="Title" required>
-            <br><br>
-            <label class="label" for="track-selector">Select songs to add:</label>
-            <br>
-            <select class="text-field" id="track-selector" name="selectedTracks" multiple size="10">
-                <option value="Track">Artist - Title (Year)</option>
-                <option value="Track1">Artist - Title (Year)</option>
-                <option value="Track2">Artist - Title (Year)</option>
-                <option value="Track3">Artist - Title (Year)</option>
-            </select>
-            <div class="error"></div>
-            <div class="nav-bar">
-                <button id="create-playlist-btn" type="button" class="button" value="Create playlist">
-                    Create playlist
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+<div id="main" class="main"></div>
+<div id="modals"></div>
 </body>
 </html>

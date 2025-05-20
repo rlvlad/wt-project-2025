@@ -1,3 +1,12 @@
+// Helper methods
+/**
+ * Send requests to server.
+ * @param method
+ * @param url
+ * @param formElement
+ * @param callback
+ * @param reset
+ */
 function makeCall(method: string, url: string, formElement: HTMLFormElement, callback: (arg0: XMLHttpRequest) => void, reset = true) {
     let req: XMLHttpRequest = new XMLHttpRequest();
     req.onreadystatechange = function () {
@@ -15,17 +24,92 @@ function makeCall(method: string, url: string, formElement: HTMLFormElement, cal
     }
 }
 
-// Logout sequence
-// (function (){
-//     document.getElementById("logout-button").addEventListener("click", logout);
-// }());
-//
-// function logout() {
-//     makeCall("GET", "Logout", null, null, false);
-// }
+/**
+ * Delete everything from main div.
+ */
+function cleanMain() {
+    let main_div: HTMLElement = document.getElementById("main");
+    main_div.innerHTML = "";
+}
+
+/**
+ * Delete everything from modals div.
+ */
+function clearModals(): void {
+    document.getElementById("modals").innerHTML = "";
+}
+
+/**
+ * Create basic modal element; used as a building block for creating modals.
+ * @param id
+ * @param titleText
+ * @param buttonId
+ * @param buttonText
+ */
+function createModal(id: string, titleText: string, buttonId: string, buttonText: string): HTMLElement {
+    let modal: HTMLElement = document.createElement("div");
+    modal.id = id;
+    modal.className = "modal-window";
+
+    let container: HTMLElement = document.createElement("div"), topNavbar: HTMLElement = document.createElement("div");
+    topNavbar.className = "nav-bar";
+
+    let title: HTMLElement = document.createElement("div");
+    title.className = "modal-title";
+    title.textContent = titleText;
+
+    let spacer: HTMLElement = document.createElement("div");
+    spacer.className = "spacer";
+
+    let close: HTMLElement = document.createElement("div");
+    close.className = "modal-close";
+    close.textContent = "Close";
+    close.addEventListener("click", () => {
+        modal.style.visibility = "hidden"
+        modal.style.pointerEvents = "none"
+    });
+
+    let form: HTMLFormElement = document.createElement("form");
+    topNavbar.appendChild(title);
+    topNavbar.appendChild(spacer);
+    topNavbar.appendChild(close);
+    container.appendChild(topNavbar);
+    container.appendChild(form);
+    modal.appendChild(container);
+
+    let bottomNavbar: HTMLDivElement = document.createElement("div"),
+        button: HTMLButtonElement = document.createElement("button");
+
+    bottomNavbar.className = "nav-bar";
+    button.id = buttonId;
+    button.type = "button";
+    button.className = "button";
+    button.textContent = buttonText;
+    bottomNavbar.appendChild(button);
+    form.appendChild(bottomNavbar);
+
+    return modal;
+}
+
+/**
+ * Make the modal visible.
+ * @param modal
+ */
+function showModal(modal: HTMLElement): void {
+    modal.style.visibility = "visible"
+    modal.style.pointerEvents = "auto"
+}
+
+/**
+ * Delete the bottom navbar if present.
+ */
+function clearBottonNavbar(): void {
+    let navbar: HTMLElement = document.getElementById("bottom-nav-bar");
+    if (navbar != null)
+        navbar.remove();
+}
 
 // Entities
-
 interface User {
     id: number;
     nickname: string;

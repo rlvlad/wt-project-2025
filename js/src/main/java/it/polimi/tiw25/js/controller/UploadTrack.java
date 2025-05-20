@@ -58,7 +58,7 @@ public class UploadTrack extends HttpServlet {
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            genres = List.of(objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream("genres.json"), String[].class));
+            genres = List.of(objectMapper.readValue(new File(context.getRealPath("genres.json")), String[].class));
         } catch (IOException e) {
             e.printStackTrace();
             throw new UnavailableException("Couldn't load genres");

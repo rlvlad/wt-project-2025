@@ -5,6 +5,7 @@ import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/AddTracks")
+@MultipartConfig
 public class AddTracksToPlaylist extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -55,12 +57,12 @@ public class AddTracksToPlaylist extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "One or more tracks were already added: operation aborted");
             return;
         } catch (SQLException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while adding tracks");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
             return;
         }
 
-        resp.sendRedirect(getServletContext().getContextPath() + "/Playlist?playlistId=" + playlistId);
+        resp.setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Override

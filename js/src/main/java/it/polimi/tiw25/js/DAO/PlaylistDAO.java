@@ -91,6 +91,7 @@ public class PlaylistDAO implements DAO {
                  SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path
                  FROM track a NATURAL JOIN playlist_tracks b
                  WHERE b.playlist_id = ?
+                 ORDER BY artist ASC, YEAR ASC, title ASC
                 """);
 
         preparedStatement.setInt(1, playlistID);

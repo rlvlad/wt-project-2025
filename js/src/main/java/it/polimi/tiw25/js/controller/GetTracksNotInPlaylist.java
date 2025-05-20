@@ -3,7 +3,6 @@ package it.polimi.tiw25.js.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import it.polimi.tiw25.js.DAO.PlaylistDAO;
-import it.polimi.tiw25.js.DAO.TrackDAO;
 import it.polimi.tiw25.js.entities.Track;
 import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
@@ -21,8 +20,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet("/GetUserTracks")
-public class GetUserTracks extends HttpServlet {
+@WebServlet("/GetTracksNotInPlaylist")
+public class GetTracksNotInPlaylist extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
@@ -37,11 +36,16 @@ public class GetUserTracks extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
+        String playlistTitle = req.getParameter("playlistTitle");
 
-        TrackDAO trackDAO = new TrackDAO(connection);
+        if (playlistTitle == null || playlistTitle.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+
+        PlaylistDAO playlistDAO = new PlaylistDAO(connection);
         List<Track> userTracks;
         try {
-            userTracks = trackDAO.getUserTracks(user);
+            userTracks = playlistDAO.getTracksNotInPlaylist(playlistTitle, user.id());
         } catch (SQLException e) {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
