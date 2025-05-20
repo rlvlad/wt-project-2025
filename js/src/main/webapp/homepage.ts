@@ -181,7 +181,7 @@
             main.appendChild(container);
 
             playlists.forEach(function (playlist: Playlist) {
-                container.appendChild(createPlaylistButton(playlist));
+                container.appendChild(createPlaylistContainer(playlist));
             })
         }
 
@@ -660,7 +660,8 @@
     }
 
     /**
-     * Get user tracks and add them to the track selector parameter
+     * Get user tracks and add them to the track selector parameter.
+     *
      * @param trackSelector
      * @param playlist optional parameter used for just loading tracks not present in the specified playlist
      */
@@ -702,6 +703,8 @@
             }
         });
     }
+
+    // TODO unify the previous and following method
 
     /**
      * Loads the musical genres for upload track modal.
@@ -751,6 +754,299 @@
             option = document.createElement("option");
             option.textContent = i.toString();
             year_selection.appendChild(option);
+        }
+    }
+
+    /**
+     * Get user Tracks and creates list items.
+     *
+     * @param trackSelector
+     */
+    function loadUserTracksOl(trackSelector: HTMLOListElement) {
+        trackSelector.innerHTML = "";
+
+        makeCall("GET", "GetUserTracks", null, function (req: XMLHttpRequest) {
+            if (req.readyState == XMLHttpRequest.DONE) {
+                let message: string = req.responseText;
+                if (req.status == 200) {
+                    let tracks: Track[] = JSON.parse(message);
+                    if (tracks.length === 0) {
+                        let parent: HTMLElement = trackSelector.parentElement;
+                        let span: HTMLSpanElement = document.createElement("span");
+
+                        span.textContent = "There are no available tracks to be added."
+                        parent.insertBefore(span, trackSelector);
+
+                        parent.removeChild(trackSelector);
+                        parent.removeChild(parent.getElementsByClassName("label").item(0));
+
+                        return;
+                    }
+                    tracks.forEach(function (track: Track) {
+                        let list_item: HTMLLIElement = document.createElement("li");
+                        list_item.draggable = true;
+                        list_item.addEventListener("dragstart", dragStart);
+                        list_item.addEventListener("dragover", dragOver);
+                        list_item.addEventListener("dragleave", dragLeave);
+                        list_item.addEventListener("drop", drop);
+                        list_item.value = track.id;
+                        list_item.textContent = track.artist + " - " + track.title + " ( " + track.year + " )"
+                        trackSelector.appendChild(list_item);
+                    });
+                } else {
+                    alert("Cannot recover data. Maybe the User has been logged out."); //for demo purposes
+                }
+            }
+        });
+    }
+
+    /**
+     * Creates and returns a button based on the playlist parameter.
+     *
+     * @param playlist
+     */
+    function createPlaylistContainer(playlist: Playlist): HTMLDivElement {
+        let div: HTMLDivElement = document.createElement("div");
+        div.setAttribute("class", "single-item");
+
+        let playlist_button: HTMLButtonElement = document.createElement("button");
+        playlist_button.setAttribute("name", "playlistId");
+        playlist_button.setAttribute("class", "playlist-button");
+
+        let span: HTMLSpanElement = document.createElement("span");
+        // span.setAttribute("class", "playlist-title");
+        span.textContent = playlist.title;
+
+        div.addEventListener("click", () => {
+            loadPlaylistTracks(playlist.id.toString());
+        }, false);
+
+        playlist_button.appendChild(span);
+
+        let playlist_reorder = document.createElement("button");
+        playlist_reorder.setAttribute("name", "playlistId");
+
+        let playlist_reorder_icon: HTMLImageElement = document.createElement("img");
+        playlist_reorder_icon.setAttribute("class", "reorder-button");
+        playlist_reorder_icon.setAttribute("src", "img/reorder/reorder.svg");
+        playlist_reorder_icon.setAttribute("width", "40");
+        playlist_reorder_icon.setAttribute("height", "40");
+
+        playlist_reorder.appendChild(playlist_reorder_icon);
+
+        playlist_reorder.addEventListener("click", (e) => {
+            e.stopPropagation();
+            loadReorderModal(playlist);
+        })
+
+        div.appendChild(playlist_button);
+        div.appendChild(playlist_reorder);
+
+        return div;
+    }
+
+    // Drag events
+
+    let startElement: HTMLLIElement
+
+    /**
+     * As soon as the User drags an Element.
+     *
+     * @param event the drag event
+     */
+    function dragStart(event: Event) {
+        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        list_item.style.cursor = "pointer"; // or convert to a proper class
+        startElement = event.target as HTMLLIElement;
+    }
+
+
+    /**
+     * The User is dragging the Element around.
+     *
+     * @param event during the drag event
+     */
+    function dragOver(event: Event) {
+        event.preventDefault()
+        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        list_item.style.cursor = "grab";
+    }
+
+
+    /**
+     * The User has started dragging the Element.
+     *
+     * @param event after the drag event
+     */
+    function dragLeave(event: Event) {
+        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        list_item.style.cursor = "pointer";
+    }
+
+    /**
+     * The User has dropped the Track in the desired location.
+     *
+     * @param event the drop event
+     */
+    function drop(event: Event) {
+        // HTML output
+        let finalDest: HTMLLIElement = (event as unknown as HTMLLIElement).closest("li");
+
+        let completeList: HTMLUListElement = finalDest.closest("ol");
+        let songsArray: HTMLLIElement[] = Array(completeList.querySelectorAll("li"))
+            // I really love TypeScript, this is VERY MUCH NECESSARY
+            .map(e => e as unknown as HTMLLIElement);
+
+        let indexDest: number = songsArray.indexOf(finalDest);
+
+        if (songsArray.indexOf(startElement) < indexDest) {
+            startElement.parentElement.insertBefore(
+                startElement,
+                songsArray[indexDest + 1],
+            );
+        } else {
+            startElement.parentElement.insertBefore(
+                startElement,
+                songsArray[indexDest],
+            );
+        }
+        startElement.value = indexDest;
+
+        // update the new position by making a POST call to the database
+    }
+
+    /**
+     * Generates the modal to reorder the Tracks.
+     *
+     * @param playlist Playlist from which recover the tracks
+     */
+    function loadReorderModal(playlist: Playlist) {
+        /**
+         * Make the reorder track modal visible.
+         */
+        function openReorderTracksModal() {
+            let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
+            modal_div.style.visibility = "visible";
+            modal_div.style.opacity = "1";
+            modal_div.style.pointerEvents = "auto";
+        }
+
+        // if the modal has already been generated, make it visible
+        if (document.querySelector("#reorder-tracks-modal")) {
+            openReorderTracksModal();
+            return;
+        }
+
+        let body: HTMLElement = document.body;
+        let modal_div: HTMLDivElement = document.createElement("div");
+        modal_div.setAttribute("id", "reorder-tracks-modal");
+        modal_div.setAttribute("class", "modal-window");
+
+        let inner_div: HTMLDivElement = document.createElement("div");
+
+        // Top nav bar
+        let top_nav_bar: HTMLDivElement = document.createElement("div");
+        top_nav_bar.setAttribute("class", "nav-bar");
+
+        let title_div: HTMLDivElement = document.createElement("div");
+        title_div.setAttribute("class", "modal-title");
+        title_div.textContent = "Reorder Tracks in " + playlist.title.toString();
+
+        let spacer: HTMLDivElement = document.createElement("div");
+        spacer.setAttribute("class", "spacer");
+
+        let modal_close: HTMLAnchorElement = document.createElement("a");
+        modal_close.setAttribute("href", "#");
+        modal_close.setAttribute("title", "Close");
+        modal_close.setAttribute("class", "modal-close");
+        modal_close.textContent = "Close";
+
+        modal_close.addEventListener("click", () => {
+            closeReorderModal();
+        })
+
+        top_nav_bar.appendChild(title_div);
+        top_nav_bar.appendChild(spacer);
+        top_nav_bar.appendChild(modal_close);
+
+        // Main form
+        let main_form: HTMLFormElement = document.createElement("form");
+        main_form.setAttribute("method", "POST");
+        main_form.setAttribute("action", "#");
+
+        let label: HTMLLabelElement = document.createElement("label");
+        label.setAttribute("class", "label");
+        label.setAttribute("for", "track-reorder");
+        label.textContent = "Drag the track to reorder:";
+
+        let ordered_list: HTMLOListElement = document.createElement("ol");
+        ordered_list.setAttribute("name", "reorderingTracks");
+        ordered_list.setAttribute("id", "track-reorder");
+        ordered_list.setAttribute("class", "text-field");
+
+        loadUserTracksOl(ordered_list);
+
+        let bottom_div: HTMLDivElement = document.createElement("div");
+        bottom_div.setAttribute("class", "nav-bar");
+
+        let reorder_track_btn: HTMLButtonElement = document.createElement("button");
+        reorder_track_btn.setAttribute("id", "track-reorder-btn");
+        reorder_track_btn.setAttribute("class", "button");
+        reorder_track_btn.setAttribute("value", "Reorder Tracks");
+        reorder_track_btn.textContent = "Reorder Tracks";
+
+        reorder_track_btn.addEventListener("click", (e: MouseEvent) => {
+            saveOrder(e, playlist.id.toString());
+        });
+
+        bottom_div.appendChild(reorder_track_btn);
+
+        main_form.appendChild(label);
+        main_form.appendChild(document.createElement("br"));
+        main_form.appendChild(document.createElement("br"));
+        main_form.appendChild(ordered_list);
+        main_form.appendChild(bottom_div);
+
+        // Combine all into modal div
+        inner_div.appendChild(top_nav_bar);
+        inner_div.appendChild(main_form);
+        modal_div.appendChild(inner_div);
+
+        body.appendChild(modal_div);
+
+        // Make it visible
+        openReorderTracksModal();
+    }
+
+    /**
+     * Closes the reorder tracks modal.
+     */
+    function closeReorderModal() {
+        let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
+
+        // Make it not visible
+        modal_div.style.visibility = "hidden";
+        modal_div.style.opacity = "0";
+        modal_div.style.pointerEvents = "none";
+    }
+
+    /**
+     * Save new Tracks custom order.
+     */
+    function saveOrder(e: MouseEvent, playlistId: string) {
+        let songsContainer: HTMLUListElement = (e as unknown as HTMLElement).closest("ul");
+        let trackIds: number[] = Array(songsContainer.querySelectorAll("li"))
+            .map(e => e as unknown as HTMLLIElement)
+            .map(e => e.value);
+
+        for (let i = 0; i < trackIds.length; i++) {
+            let params: string[] = []
+
+            params.push("playlistId=" + playlistId);
+            params.push("trackId=" + trackIds[i]);
+            params.push("newOrder=" + i);
+
+            makeCall("POST", "TrackReordering?" + params.join("&"), null, null);
         }
     }
 })();

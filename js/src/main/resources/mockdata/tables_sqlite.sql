@@ -7,18 +7,16 @@ DROP TABLE IF EXISTS playlist_tracks;
 
 CREATE TABLE user
 (
-    user_id  integer auto_increment,
+    user_id  integer primary key autoincrement,
     nickname varchar(32) not null unique,
     password varchar(64) not null,
     name     varchar(32) not null,
-    surname  varchar(32) not null,
-
-    primary key (user_id)
+    surname  varchar(32) not null
 );
 
 CREATE TABLE track
 (
-    track_id       integer auto_increment,
+    track_id       integer primary key autoincrement,
     user_id        integer       not null,
     title          varchar(128)  not null,
     album_title    varchar(128)  not null,
@@ -30,7 +28,6 @@ CREATE TABLE track
     song_path      varchar(1024) not null,
     image_path     varchar(1024) not null,
 
-    primary key (track_id),
     foreign key (user_id) references user (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     unique (user_id, song_checksum),
@@ -42,12 +39,11 @@ CREATE TABLE track
 
 CREATE TABLE playlist
 (
-    playlist_id    integer auto_increment,
+    playlist_id    integer     primary key autoincrement,
     playlist_title varchar(32) not null,
     creation_date  date        not null default CURRENT_DATE,
     user_id        integer     not null,
 
-    primary key (playlist_title),
     unique (playlist_title, user_id),
     foreign key (user_id) references user (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE
@@ -57,7 +53,7 @@ CREATE TABLE playlist_tracks
 (
     playlist_id  integer not null,
     track_id     integer not null,
-    custom_order integer default 0 comment "Custom within-playlist ordering",
+    custom_order integer,
 
     primary key (playlist_id, track_id),
     foreign key (playlist_id) references playlist (playlist_id)

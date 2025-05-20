@@ -161,6 +161,14 @@ public class PlaylistDAO implements DAO {
         return userTracks;
     }
 
+    /**
+     * Gets 6 Tracks from a given Playlist.
+     *
+     * @param playlistId ID of the playlist
+     * @param groupId group (starting from 1)
+     * @return list of Tracks
+     * @throws SQLException
+     */
     public List<Track> getTrackGroup(int playlistId, int groupId) throws SQLException {
         List<Track> tracks = new ArrayList<>();
 
@@ -168,7 +176,7 @@ public class PlaylistDAO implements DAO {
                  SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path
                  FROM track a NATURAL JOIN playlist_tracks b
                  WHERE b.playlist_id = ?
-                 ORDER BY artist ASC, YEAR ASC, title ASC
+                 ORDER BY custom_order, artist ASC, YEAR ASC, title ASC
                  OFFSET ? ROWS
                  FETCH NEXT 6 ROWS ONLY
                 """);
@@ -197,6 +205,13 @@ public class PlaylistDAO implements DAO {
         return tracks;
     }
 
+    /**
+     * Retrieves the Playlist title of a given Playlist.
+     *
+     * @param playlistID ID of the Playlist
+     * @return playlist title
+     * @throws SQLException
+     */
     public String getPlaylistTitle(int playlistID) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("""
                         SELECT playlist_title
@@ -216,7 +231,7 @@ public class PlaylistDAO implements DAO {
     }
 
     /**
-     * Create a new Playlist for a given User.
+     * Creates a new Playlist for a given User.
      *
      * @param playlist Playlist to create
      * @throws SQLException
@@ -317,5 +332,70 @@ public class PlaylistDAO implements DAO {
 
         close(resultSet, preparedStatement);
         return result;
+    }
+
+    /**
+     * Retrieves the Tracks of a Playlist accounting for the custom order chosen by the User.
+     *
+     * @param playlist_id playlist_id of the Playlist of which to retrieve tracks
+     * @return list of Playlist Tracks
+     * @throws SQLException
+     */
+    public List<Track> getOrderderedTracks(User user, int playlist_id) throws SQLException {
+        List<Track> tracks = new ArrayList<>();
+
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                        SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path, custom_order
+                        FROM user NATURAL JOIN track NATURAL JOIN playlist_tracks
+                        WHERE nickname = ? AND playlist_id = ?
+                """);
+
+        preparedStatement.setInt(1, user.id());
+        preparedStatement.setInt(2, playlist_id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            Track track = new Track(
+                    resultSet.getInt("track_id"),
+                    resultSet.getString("title"),
+                    resultSet.getString("artist"),
+                    resultSet.getInt("year"),
+                    resultSet.getString("album_title"),
+                    resultSet.getString("genre"),
+                    resultSet.getString("image_path"),
+                    resultSet.getString("song_path"),
+                    resultSet.getString("song_checksum"),
+                    resultSet.getString("image_checksum"),
+                    resultSet.getInt("custom_order")
+            );
+            tracks.add(track);
+        }
+
+        close(resultSet, preparedStatement);
+        return tracks;
+    }
+
+    /**
+     * Update Track custom order within given Playlist.
+     *
+     * @param track_id track_id of the Track to update
+     * @param newOrder new custom order (within Playlist)
+     * @param playlist_id playlist_id of the Playlist in which change the custom ordering
+     * @throws SQLException
+     */
+    public void updateTrackOrder(int track_id, int newOrder, int playlist_id) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("""
+                UPDATE playlist_tracks
+                SET custom_order = ?
+                WHERE playlist_id = ? AND track_id = ?
+                """);
+
+        preparedStatement.setInt(1, newOrder);
+        preparedStatement.setInt(2, track_id);
+        preparedStatement.setInt(3, playlist_id);
+
+        preparedStatement.executeUpdate();
+
+        close(preparedStatement);
     }
 }
