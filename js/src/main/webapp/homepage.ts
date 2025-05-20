@@ -181,12 +181,13 @@
             main.appendChild(container);
 
             playlists.forEach(function (playlist: Playlist) {
-                container.appendChild(createPlaylistContainer(playlist));
+                container.appendChild(createPlaylistButton(playlist));
             })
         }
 
         /**
-         * Creates and returns a button based on the playlist parameter
+         * Creates and returns a button based on the playlist parameter.
+         *
          * @param playlist
          */
         function createPlaylistButton(playlist: Playlist): HTMLButtonElement {
@@ -200,12 +201,28 @@
 
             button.addEventListener("click", () => {
                 playlistPage.show(playlist);
-            });
+            }, false);
+
+            let playlist_reorder_btn: HTMLButtonElement = document.createElement("button");
+            playlist_reorder_btn.setAttribute("name", "playlistId");
+
+            let playlist_reorder_btn_icon: HTMLImageElement = document.createElement("img");
+            playlist_reorder_btn_icon.setAttribute("class", "reorder-button");
+            playlist_reorder_btn_icon.setAttribute("src", "img/reorder/reorder.svg");
+            playlist_reorder_btn_icon.setAttribute("width", "40");
+            playlist_reorder_btn_icon.setAttribute("height", "40");
+
+            playlist_reorder_btn.appendChild(playlist_reorder_btn_icon);
+
+            playlist_reorder_btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                loadReorderModal(playlist);
+            })
 
             button.appendChild(span);
+            button.appendChild(playlist_reorder_btn);
             return button;
         }
-
 
         /**
          * Loads the modal for creating playlists to the modal container.
@@ -798,51 +815,6 @@
                 }
             }
         });
-    }
-
-    /**
-     * Creates and returns a button based on the playlist parameter.
-     *
-     * @param playlist
-     */
-    function createPlaylistContainer(playlist: Playlist): HTMLDivElement {
-        let div: HTMLDivElement = document.createElement("div");
-        div.setAttribute("class", "single-item");
-
-        let playlist_button: HTMLButtonElement = document.createElement("button");
-        playlist_button.setAttribute("name", "playlistId");
-        playlist_button.setAttribute("class", "playlist-button");
-
-        let span: HTMLSpanElement = document.createElement("span");
-        // span.setAttribute("class", "playlist-title");
-        span.textContent = playlist.title;
-
-        div.addEventListener("click", () => {
-            loadPlaylistTracks(playlist.id.toString());
-        }, false);
-
-        playlist_button.appendChild(span);
-
-        let playlist_reorder = document.createElement("button");
-        playlist_reorder.setAttribute("name", "playlistId");
-
-        let playlist_reorder_icon: HTMLImageElement = document.createElement("img");
-        playlist_reorder_icon.setAttribute("class", "reorder-button");
-        playlist_reorder_icon.setAttribute("src", "img/reorder/reorder.svg");
-        playlist_reorder_icon.setAttribute("width", "40");
-        playlist_reorder_icon.setAttribute("height", "40");
-
-        playlist_reorder.appendChild(playlist_reorder_icon);
-
-        playlist_reorder.addEventListener("click", (e) => {
-            e.stopPropagation();
-            loadReorderModal(playlist);
-        })
-
-        div.appendChild(playlist_button);
-        div.appendChild(playlist_reorder);
-
-        return div;
     }
 
     // Drag events
