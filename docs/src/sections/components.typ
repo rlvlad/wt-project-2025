@@ -61,6 +61,7 @@ PlaylistDAO methods:
 - getPlaylistTracksByTitle
 - createPlaylist
 - getPlaylistTracksById
+- [RIA] getTracksNotInPlaylist
 - [RIA] updateTrackOrder
 
 TrackDAO methods:

@@ -6,7 +6,7 @@ This project started from the HTML and thymeleaf, where we developed most of the
 
 For this very reason, most of the features were ported to the latter subproject: there is no need to go through the components and logic all over again. Still, the RIA subproject -- the "JavaScript version" -- requires more features and some changes to how the overwall server works.
 
-Furthermore, by using JavaScript, some features can be upgraded -- this mainly applies to the modal @css-modal. In brief, the main changes are as follows:
+Furthermore, by using JavaScript, some features can be upgraded -- this mainly applies to the modal @css-modal. Briefly, the main changes are as follows:
 
 - Thymeleaf has been completely removed, since everything it did can be done via Javascript
 

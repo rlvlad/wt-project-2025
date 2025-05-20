@@ -323,7 +323,6 @@
   comment_next_page_: false,
 )
 
-
 #seq_diagram(
   [Logout sequence diagram],
   diagram({
@@ -342,4 +341,92 @@
   ],
   label_: "logout-sequence",
   comment_next_page_: false,
+  next_page: false
+)
+
+#seq_diagram(
+  [AddTracks sequence diagram],
+  diagram({
+    _par("A", display-name: "Client")
+    _par("B", display-name: "addTracksToPlaylist")
+    _par("C", display-name: "Session")
+    _par("D", display-name: "Request")
+    _par("E", display-name: "PlaylistDAO")
+
+    _seq("A", "B", enable-dst: true, comment: "doPost()")
+    _seq("B", "C", enable-dst: true, comment: [getAttribute("user")])
+    _seq("C", "B", disable-src: true, comment: [return user])
+    _seq("B", "D", enable-dst: true, comment: [getParameterValues("selectedTracks")])
+    _seq("D", "B", disable-src: true, comment: [return selectedTracksIds])
+    _seq("B", "D", enable-dst: true, comment: [getParameter("playlistId")])
+    _seq("D", "B", disable-src: true, comment: [return playlistId])
+    _seq("B", "E", disable-src: true, comment: [addTracksToPlaylist(selectedTracksIds, playlistId)])
+    // _seq("D", "A", comment: [scCreated])
+  }),
+  comment: [
+    From the modal, once the User has completed the selection of the Tracks to add in the current Playlist, the form calls the `AddTracks` servlet via a POST method.
+
+    Afterwards, by making sure there are no `nulls` in the `selectedTracksIds`, the `addTracksToPlaylist` method is called: it performs an insertion in the `playlist_tracks` table. Finally, the User is redirected to the newly created Playlist.
+
+    In the RIA subproject, the servlet response with a `201` code instead of redirecting.
+  ],
+  label_: "add-tracks-sequence",
+  comment_next_page_: false,
+  next_page: false
+)
+
+#seq_diagram(
+  [GetTracksNotInPlaylist sequence diagram],
+  diagram({
+    _par("A", display-name: "Client")
+    _par("B", display-name: "GetTracksNotInPlaylist")
+    _par("C", display-name: "Session")
+    _par("D", display-name: "Request")
+    _par("E", display-name: "PlaylistDAO")
+
+    _seq("A", "B", enable-dst:true, comment: "doGet()")
+    _seq("B", "C", enable-dst:true, comment: [getAttribute("user")])
+    _seq("C", "B", disable-src:true, comment: [return user])
+    _seq("B", "D", enable-dst:true, comment: [getParameter("playlistTitle")])
+    _seq("D", "B", disable-src:true, comment: [return playlistTitle)])
+    _seq("B", "E", enable-dst:true, comment: [getTracksNotInPlaylist(playlistTitle,user.id())])
+    _seq("E", "B", disable-src:true, comment: [return userTracks])
+    _seq("B", "A", disable-src:true, comment: [toJson(userTracks)])
+  }),
+  comment:[
+    // #emph[This method is present *only* in the RIA subproject]. As the name suggests, it obtains the tracks are _not_ in the given Playlist, in order to display them when the User wants to add a new track to a Playlist -- this happens when the User clicks on the corresponding button.
+
+    // From the session, the User attribute is returned and the same applies for the title of the playlist, which instead comes from the request. Finally, the tracks-not-in-playlist are retrieved by the method of the same name: it returns a list which is then converted to a JSON object for JavaScript to parse.
+
+    #emph[This method is present *only* in the RIA subproject]. Once the needed parameters are obtained, the `getTracksNotInPlaylist` method returns the track, which are converted to a JSON.
+  ],
+  label_ : "get-tracks-not-in-playlist-sequence",
+  comment_next_page_: false,
+  next_page: false
+)
+
+#seq_diagram(
+  [TrackReordering sequence diagram],
+  diagram({
+    _par("A", display-name: "Client")
+    _par("B", display-name: "TrackReordering")
+    _par("C", display-name: "Request")
+    _par("D", display-name: "PlaylistDAO")
+
+    _seq("A", "B", enable-dst:true, comment: "doGet()")
+    _seq("B", "C", enable-dst:true, comment: [getParameter("playlistId")])
+    _seq("C", "B", disable-src:true, comment: [return playlistId)])
+    _seq("B", "C", enable-dst:true, comment: [getParameter("trackId")])
+    _seq("C", "B", disable-src:true, comment: [return trackId)])
+    _seq("B", "C", enable-dst:true, comment: [getParameter("newOrder")])
+    _seq("C", "B", disable-src:true, comment: [return newOrder)])
+    _seq("B", "D", disable-src:true, comment: [updateTrackOrder(trackId,newOrder,playlistId)])
+  }),
+  comment:[
+    // This method is present *only* in the RIA subproject. It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
+
+    #emph[This method is present *only* in the RIA subproject]. Once the needed parameters are obtained, the `updateTrackOrder()` method update the `playlist_tracks` table.
+  ],
+  label_ : "track-reordering-sequence",
+  comment_next_page_: false
 )
