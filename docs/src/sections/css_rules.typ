@@ -214,7 +214,11 @@ Last but not least, the errors.
   ],
 )
 
-== Modal
+// #colbreak()
+
+== Modal<css-modal>
+
+/ RIA version : The modals in the RIA project are dynamically generated via JavaScript only when needed and removed when the screen is changed. This section has been written with the HTML version in mind.
 
 Finally, undoubtedly the most difficult CSS component in this project to comprehend is the modal, which is a dialog window created entirely with CSS.
 
@@ -336,4 +340,88 @@ select:invalid {
     color: #505050;
 }
 ```
-this pseudoclass causes the color in the placeholder in dropdown menus (Year, Genres) to be gray, as a a regular placeholder should be #footnote[Otherwise it would have been black as the text, which is not aesthetically pleasant.]
+this pseudoclass causes the color in the placeholder in dropdown menus (Year, Genres) to be gray, as a a regular placeholder should be #footnote[Otherwise it would have been black as the text, which is not aesthetically pleasant.].
+
+== Sidebar<ria-css-sidebar>
+
+This components exists on in the RIA project, where we implemented a lateral bar that contains three menus: Homepage, Playlist and Track. It effectively acts as an upgraded version of the bottom navigation bar of the HTML project.
+
+#css_explanation(
+  ```css
+  .side-bar {
+      height: 100%;
+      width: 8rem;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      background-color: var(--light-background);
+      overflow: hidden; /* disable scrolling */
+      display: flex;
+      flex-direction: column;
+      justify-content: start; /* buttons vertical alignment */
+  }
+  ```,
+  [
+    It always sits in the left side, with a 100% height. Its position can't be changed and neither its content. The background acts as contrast with the playlist tracks buttons.
+  ]
+)
+
+Then the styling the menus.
+
+#css_explanation(
+  ```css
+  .side-bar .entry-button {
+      margin: 1rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .entry-button:hover {
+      cursor: pointer;
+  }
+
+  .entry-button .icon {
+      width: 100%;
+      background-color: transparent;
+      border-color: blue;
+      border-width: 1cm;
+  }
+
+  .entry-button .title {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 100%;
+  }
+  ```,
+  [
+    The menus are of `entry-button` class, which can exists _only_ in a `side-bar` container (as seen in the first line of the previous source code extract). They are horizontally centered.
+
+    The class `icon`, `.title` can exist only inside the `entry-button` -- thus they can exist only inside the `side-bar` class.
+  ]
+)
+
+And lastly, legacy code.
+
+#css_explanation(
+  ```css
+  .side-bar .close-button {
+      color: var(--lighter-background);
+      background-color: var(--variables);
+      border-radius: 5px;
+      font-family: "JetBrains Mono", monospace;
+      position: absolute;
+      top: 0.5rem;
+      right: 2rem;
+  }
+
+  .side-bar .close-button:hover {
+      color: var(--dark-foreground);
+      cursor: pointer;
+  }
+  ```,
+  [
+    Originally the side bar was supposed to open and close, like a lateral menu as can be seen in many mobile apps -- that's why we needed a close button. For the current implementation, it's not used.
+  ]
+)

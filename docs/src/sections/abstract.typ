@@ -6,11 +6,11 @@
 
 / Overview: This project hosts the source code -- which can be found #link("https://github.com/VictuarVi/tiw-project-2025")[on Github] -- for a web server that handles a playlist management system. A user is able to register, login and then upload tracks. The tracks are strictly associated to one user, similar to how a cloud service works. The user will be able to create playlists, sourcing from their tracks, and listem to them.
 
-It should be noted there are two versions: a *only-HTML version*, which is structured as a series of separate webpages; and a *JS version*, which is structured as a single-page webapp. The functionalities are mostly the same, the code changes at a frontend level. For more information see @original-submission.
+It should be noted there are two versions: a *HTML version*, which is structured as a series of separate webpages; and a *RIA version*, which is structured as a single-page webapp. The functionalities are quite the same, the code changes mostly at a frontend level. For more information about the requirements for each version see @project-breakdown.
 
 Both of the them feature the same CSS code (see @css-styling).
 
-/ Tools: To create the project, our professor decided to adopt the following technologies: #text(fill: rgb("#5283A2"), weight: "bold", "Java"), for the backend server with servlets leveraging Jakarta's API capabilities; #text(fill: rgb("#005F0F"), weight: "bold", "Thymeleaf"), a template engine; and #text(fill: rgb("#ae8e26"), weight: "bold", "Apache Tomcat"), to run the server.
+/ Tools: To create the project, our professor decided to adopt the following technologies: #text(fill: rgb("#5283A2"), weight: "bold", "Java"), for the backend server with servlets leveraging Jakarta's API capabilities; #text(fill: rgb("#ae8e26"), weight: "bold", "Apache Tomcat"), to run the server; for the HTML version, #text(fill: rgb("#005F0F"), weight: "bold", "Thymeleaf"), a template engine; whereas for the RIA one #text(fill: rgb("#3178C6"), weight: "bold")[Typescript].
 
 _Some liberties were taken_ in regards to the DMBS: we decided to use #text(fill: rgb("#192C5F"), weight: "bold")[MariaDB] instead of MySQL, since the former is a open source fork of MySQL, one of the most widely used DBMS.
 

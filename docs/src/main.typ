@@ -11,6 +11,7 @@
 #show: mainmatter.with()
 #include "sections/original_submission.typ"
 #include "sections/submission.typ"
+#include "sections/ria_specifics.typ"
 #include "sections/sql.typ"
 #include "sections/components.typ"
 #include "sections/sequence_diagram.typ"
