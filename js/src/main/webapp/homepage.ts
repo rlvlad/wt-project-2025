@@ -498,7 +498,7 @@
 
         playlist_reorder.addEventListener("click", (e) => {
             e.stopPropagation();
-            loadReorderModal(playlist.title.toString())
+            loadReorderModal(playlist);
         })
 
         div.appendChild(playlist_button);
@@ -579,8 +579,10 @@
 
     /**
      * Generates the modal to reorder the Tracks.
+     *
+     * @param playlist Playlist from which recover the tracks
      */
-    function loadReorderModal(playlistTitle: string) {
+    function loadReorderModal(playlist: Playlist) {
         /**
          * Make the reorder track modal visible.
          */
@@ -610,7 +612,7 @@
 
         let title_div: HTMLDivElement = document.createElement("div");
         title_div.setAttribute("class", "modal-title");
-        title_div.textContent = "Reorder Tracks in " + playlistTitle;
+        title_div.textContent = "Reorder Tracks in " + playlist.title.toString();
 
         let spacer: HTMLDivElement = document.createElement("div");
         spacer.setAttribute("class", "spacer");
@@ -655,6 +657,10 @@
         reorder_track_btn.setAttribute("value", "Reorder Tracks");
         reorder_track_btn.textContent = "Reorder Tracks";
 
+        reorder_track_btn.addEventListener("click", (e: MouseEvent) => {
+            saveOrder(e, playlist.id.toString());
+        });
+
         bottom_div.appendChild(reorder_track_btn);
 
         main_form.appendChild(label);
@@ -684,5 +690,25 @@
         modal_div.style.visibility = "hidden";
         modal_div.style.opacity = "0";
         modal_div.style.pointerEvents = "none";
+    }
+
+    /**
+     * Save new Tracks custom order.
+     */
+    function saveOrder(e: MouseEvent, playlistId: string) {
+        let songsContainer: HTMLUListElement = (e as unknown as HTMLElement).closest("ul");
+        let trackIds: number[] = Array(songsContainer.querySelectorAll("li"))
+            .map(e => e as unknown as HTMLLIElement)
+            .map(e => e.value);
+
+        for (let i = 0; i < trackIds.length; i++) {
+            let params: string[] = []
+
+            params.push("playlistId=" + playlistId);
+            params.push("trackId=" + trackIds[i]);
+            params.push("newOrder=" + i);
+
+            makeCall("POST", "TrackReordering?" + params.join("&"), null, null);
+        }
     }
 })();
