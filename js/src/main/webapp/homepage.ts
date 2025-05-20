@@ -217,6 +217,7 @@
             playlist_reorder_btn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 loadReorderModal(playlist);
+                showModal(document.getElementById("reorder-tracks-modal"));
             })
 
             button.appendChild(span);
@@ -779,26 +780,14 @@
      *
      * @param trackSelector
      */
-    function loadUserTracksOl(trackSelector: HTMLOListElement) {
+    function loadUserTracksOl(trackSelector: HTMLOListElement, playlist: Playlist) {
         trackSelector.innerHTML = "";
 
-        makeCall("GET", "GetUserTracks", null, function (req: XMLHttpRequest) {
+        makeCall("GET", "Playlist?playlistId=" + playlist.id, null, function (req: XMLHttpRequest) {
             if (req.readyState == XMLHttpRequest.DONE) {
                 let message: string = req.responseText;
                 if (req.status == 200) {
                     let tracks: Track[] = JSON.parse(message);
-                    if (tracks.length === 0) {
-                        let parent: HTMLElement = trackSelector.parentElement;
-                        let span: HTMLSpanElement = document.createElement("span");
-
-                        span.textContent = "There are no available tracks to be added."
-                        parent.insertBefore(span, trackSelector);
-
-                        parent.removeChild(trackSelector);
-                        parent.removeChild(parent.getElementsByClassName("label").item(0));
-
-                        return;
-                    }
                     tracks.forEach(function (track: Track) {
                         let list_item: HTMLLIElement = document.createElement("li");
                         list_item.draggable = true;
@@ -807,7 +796,7 @@
                         list_item.addEventListener("dragleave", dragLeave);
                         list_item.addEventListener("drop", drop);
                         list_item.value = track.id;
-                        list_item.textContent = track.artist + " - " + track.title + " ( " + track.year + " )"
+                        list_item.textContent = track.artist + " - " + track.title + " (" + track.year + ")"
                         trackSelector.appendChild(list_item);
                     });
                 } else {
@@ -819,7 +808,7 @@
 
     // Drag events
 
-    let startElement: HTMLLIElement
+    let startElement: HTMLLIElement;
 
     /**
      * As soon as the User drags an Element.
@@ -827,9 +816,9 @@
      * @param event the drag event
      */
     function dragStart(event: Event) {
-        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        let list_item: HTMLLIElement = event.target as HTMLLIElement;
         list_item.style.cursor = "pointer"; // or convert to a proper class
-        startElement = event.target as HTMLLIElement;
+        startElement = list_item;
     }
 
 
@@ -840,7 +829,7 @@
      */
     function dragOver(event: Event) {
         event.preventDefault()
-        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        let list_item: HTMLLIElement = event.target as HTMLLIElement;
         list_item.style.cursor = "grab";
     }
 
@@ -851,7 +840,7 @@
      * @param event after the drag event
      */
     function dragLeave(event: Event) {
-        let list_item: HTMLLIElement = (event as unknown as HTMLElement).closest("li");
+        let list_item: HTMLLIElement = event.target as HTMLLIElement;
         list_item.style.cursor = "pointer";
     }
 
@@ -862,12 +851,10 @@
      */
     function drop(event: Event) {
         // HTML output
-        let finalDest: HTMLLIElement = (event as unknown as HTMLLIElement).closest("li");
+        let finalDest: HTMLLIElement = event.target as HTMLLIElement;
 
         let completeList: HTMLUListElement = finalDest.closest("ol");
-        let songsArray: HTMLLIElement[] = Array(completeList.querySelectorAll("li"))
-            // I really love TypeScript, this is VERY MUCH NECESSARY
-            .map(e => e as unknown as HTMLLIElement);
+        let songsArray: HTMLLIElement[] = Array.from(completeList.querySelectorAll("li"));
 
         let indexDest: number = songsArray.indexOf(finalDest);
 
@@ -882,8 +869,6 @@
                 songsArray[indexDest],
             );
         }
-        startElement.value = indexDest;
-
         // update the new position by making a POST call to the database
     }
 
@@ -893,23 +878,7 @@
      * @param playlist Playlist from which recover the tracks
      */
     function loadReorderModal(playlist: Playlist) {
-        /**
-         * Make the reorder track modal visible.
-         */
-        function openReorderTracksModal() {
-            let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
-            modal_div.style.visibility = "visible";
-            modal_div.style.opacity = "1";
-            modal_div.style.pointerEvents = "auto";
-        }
-
-        // if the modal has already been generated, make it visible
-        if (document.querySelector("#reorder-tracks-modal")) {
-            openReorderTracksModal();
-            return;
-        }
-
-        let body: HTMLElement = document.body;
+        let modalContainer: HTMLElement = document.getElementById("modals");
         let modal_div: HTMLDivElement = document.createElement("div");
         modal_div.setAttribute("id", "reorder-tracks-modal");
         modal_div.setAttribute("class", "modal-window");
@@ -928,7 +897,6 @@
         spacer.setAttribute("class", "spacer");
 
         let modal_close: HTMLAnchorElement = document.createElement("a");
-        modal_close.setAttribute("href", "#");
         modal_close.setAttribute("title", "Close");
         modal_close.setAttribute("class", "modal-close");
         modal_close.textContent = "Close";
@@ -943,8 +911,6 @@
 
         // Main form
         let main_form: HTMLFormElement = document.createElement("form");
-        main_form.setAttribute("method", "POST");
-        main_form.setAttribute("action", "#");
 
         let label: HTMLLabelElement = document.createElement("label");
         label.setAttribute("class", "label");
@@ -956,7 +922,7 @@
         ordered_list.setAttribute("id", "track-reorder");
         ordered_list.setAttribute("class", "text-field");
 
-        loadUserTracksOl(ordered_list);
+        loadUserTracksOl(ordered_list, playlist);
 
         let bottom_div: HTMLDivElement = document.createElement("div");
         bottom_div.setAttribute("class", "nav-bar");
@@ -964,7 +930,7 @@
         let reorder_track_btn: HTMLButtonElement = document.createElement("button");
         reorder_track_btn.setAttribute("id", "track-reorder-btn");
         reorder_track_btn.setAttribute("class", "button");
-        reorder_track_btn.setAttribute("value", "Reorder Tracks");
+        reorder_track_btn.type = "button";
         reorder_track_btn.textContent = "Reorder Tracks";
 
         reorder_track_btn.addEventListener("click", (e: MouseEvent) => {
@@ -975,7 +941,6 @@
 
         main_form.appendChild(label);
         main_form.appendChild(document.createElement("br"));
-        main_form.appendChild(document.createElement("br"));
         main_form.appendChild(ordered_list);
         main_form.appendChild(bottom_div);
 
@@ -984,10 +949,7 @@
         inner_div.appendChild(main_form);
         modal_div.appendChild(inner_div);
 
-        body.appendChild(modal_div);
-
-        // Make it visible
-        openReorderTracksModal();
+        modalContainer.appendChild(modal_div);
     }
 
     /**
@@ -995,30 +957,34 @@
      */
     function closeReorderModal() {
         let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
+        modal_div.remove();
 
         // Make it not visible
-        modal_div.style.visibility = "hidden";
-        modal_div.style.opacity = "0";
-        modal_div.style.pointerEvents = "none";
+        // modal_div.style.visibility = "hidden";
+        // modal_div.style.opacity = "0";
+        // modal_div.style.pointerEvents = "none";
     }
 
     /**
      * Save new Tracks custom order.
      */
-    function saveOrder(e: MouseEvent, playlistId: string) {
-        let songsContainer: HTMLUListElement = (e as unknown as HTMLElement).closest("ul");
-        let trackIds: number[] = Array(songsContainer.querySelectorAll("li"))
-            .map(e => e as unknown as HTMLLIElement)
+    function saveOrder(e: MouseEvent, _playlistId: string) {
+        let songsContainer: HTMLElement = document.getElementById("track-reorder");
+        let _trackIds: number[] = Array.from(songsContainer.querySelectorAll("li"))
             .map(e => e.value);
 
-        for (let i = 0; i < trackIds.length; i++) {
-            let params: string[] = []
+        let req: XMLHttpRequest = new XMLHttpRequest();
 
-            params.push("playlistId=" + playlistId);
-            params.push("trackId=" + trackIds[i]);
-            params.push("newOrder=" + i);
-
-            makeCall("POST", "TrackReordering?" + params.join("&"), null, null);
+        req.onreadystatechange = function () {
+            // TODO: Handle req
         }
+
+        let requestData = {
+            trackIds: _trackIds,
+            playlistId: _playlistId
+        }
+
+        req.open("POST", "TrackReordering");
+        req.send(JSON.stringify(requestData));
     }
 })();

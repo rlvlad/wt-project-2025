@@ -6,7 +6,6 @@ import it.polimi.tiw25.js.DAO.TrackDAO;
 import it.polimi.tiw25.js.entities.Track;
 import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
-import it.polimi.tiw25.js.utils.TemplateEngineHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -15,9 +14,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -29,21 +25,16 @@ import java.sql.SQLException;
 public class TrackController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
-    private TemplateEngine templateEngine;
     private Connection connection = null;
 
     @Override
     public void init() throws ServletException {
         ServletContext context = getServletContext();
         connection = ConnectionHandler.openConnection(context);
-        templateEngine = TemplateEngineHandler.getTemplateEngine(context);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        JakartaServletWebApplication webApplication = JakartaServletWebApplication.buildApplication(getServletContext());
-        WebContext ctx = new WebContext(webApplication.buildExchange(req, resp), req.getLocale());
-
         HttpSession s = req.getSession();
         User user = (User) s.getAttribute("user");
         int trackId = Integer.parseInt(req.getParameter("track_id"));

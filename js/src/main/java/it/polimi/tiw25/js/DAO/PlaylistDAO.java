@@ -165,7 +165,7 @@ public class PlaylistDAO implements DAO {
      * Gets 6 Tracks from a given Playlist.
      *
      * @param playlistId ID of the playlist
-     * @param groupId group (starting from 1)
+     * @param groupId    group (starting from 1)
      * @return list of Tracks
      * @throws SQLException
      */
@@ -378,23 +378,23 @@ public class PlaylistDAO implements DAO {
     /**
      * Update Track custom order within given Playlist.
      *
-     * @param track_id track_id of the Track to update
-     * @param newOrder new custom order (within Playlist)
+     * @param trackIds ordered list of track ids to update
      * @param playlist_id playlist_id of the Playlist in which change the custom ordering
      * @throws SQLException
      */
-    public void updateTrackOrder(int track_id, int newOrder, int playlist_id) throws SQLException {
+    public void updateTrackOrder(List<Integer> trackIds, int playlist_id) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("""
                 UPDATE playlist_tracks
                 SET custom_order = ?
                 WHERE playlist_id = ? AND track_id = ?
                 """);
 
-        preparedStatement.setInt(1, newOrder);
-        preparedStatement.setInt(2, track_id);
-        preparedStatement.setInt(3, playlist_id);
-
-        preparedStatement.executeUpdate();
+        preparedStatement.setInt(2, playlist_id);
+        for (int i = 0; i < trackIds.size(); i++) {
+            preparedStatement.setInt(1, i+1);
+            preparedStatement.setInt(3, trackIds.get(i));
+            preparedStatement.executeUpdate();
+        }
 
         close(preparedStatement);
     }

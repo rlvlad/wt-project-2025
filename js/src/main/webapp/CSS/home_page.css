@@ -64,6 +64,11 @@
     align-items: center;
 }
 
+ol{
+    list-style-type: none;
+    padding: 0;
+}
+
 /* resized old components to account for new side bar */
 
 body > .nav-bar {
