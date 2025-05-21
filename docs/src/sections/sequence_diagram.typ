@@ -13,6 +13,7 @@
     _par("B", display-name: "Login")
     _par("D", display-name: "UserDAO")
     _par("G", display-name: "Request")
+    _par("H", display-name: "ctx")
     _par("C", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
     _par("E", display-name: "Session")
     _par("F", display-name: "HomePage")
@@ -23,10 +24,10 @@
     _seq("G", "B", disable-src: true, comment: [return error])
     _seq(
       "B",
-      "G",
+      "H",
       comment: [[error != null && error == true] \ setVariable("error", true)],
     )
-    _seq("B", "C", enable-dst: true, comment: "process(index.html, WebContext)")
+    _seq("B", "C", enable-dst: true, comment: "process(index.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("C", "B", disable-src: true, comment: "index.html")
     _seq("B", "A", disable-src: true, comment: "index.html")
 
@@ -59,14 +60,14 @@
     _par("C", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
     _par("D", display-name: "UserDAO")
     _par("F", display-name: "Login")
-    // _par("G", display-name: "WebContext")
+    // _par("G", display-name: "ctx")
     // _par("E", display-name: "Session")
 
     // get
     _seq("A", "B", enable-dst: true, comment: "doGet()")
     _seq("B", "H", enable-dst: true, comment: [getParameter("isUserAdded")])
     _seq("H", "B", disable-src: true, comment: [return isUserAdded])
-    _seq("B", "C", enable-dst: true, comment: "process(register.html, WebContext)")
+    _seq("B", "C", enable-dst: true, comment: "process(register.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("C", "B", disable-src: true, comment: "register.html")
     _seq("B", "A", disable-src: true, comment: "register.html")
 
@@ -84,7 +85,7 @@
     _seq("D", "B", disable-src: true, comment: "return isUserAdded")
     _seq("B", "F", comment: "[isUserAdded] ? redirect")
     _seq("B", "B", comment: [[!isUserAdded] \ ? redirect `/Registration?isUserAdded=false`])
-    _seq("B", "C", enable-dst: true, comment: "process(register.html, WebContext)")
+    _seq("B", "C", enable-dst: true, comment: "process(register.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("C", "B", disable-src: true, comment: "register.html")
     _seq("B", "A", disable-src: true, comment: "register.html")
   }),
@@ -108,7 +109,7 @@
     _par("F", display-name: "Session")
     _par("C", display-name: "PlaylistDAO")
     _par("G", display-name: "Request")
-    _par("D", display-name: "WebContext")
+    _par("D", display-name: "ctx")
     _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
     _seq("A", "B", enable-dst: true, comment: "doGet()")
@@ -131,7 +132,7 @@
     _seq("B", "D", comment: [setVariable("userTracks", userTracks)])
     _seq("B", "D", comment: [setVariable("playlists", Playlists)])
     _seq("B", "D", comment: [setVariable("genres", genres)])
-    _seq("B", "E", enable-dst: true, comment: "process(home_page, WebContext)")
+    _seq("B", "E", enable-dst: true, comment: "process(home_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("E", "B", disable-src: true, comment: "home_page.html")
     _seq("B", "A", disable-src: true, comment: "home_page.html")
   }),
@@ -154,7 +155,7 @@
     _par("F", display-name: "Session")
     _par("G", display-name: "Request")
     _par("C", display-name: "PlaylistDAO")
-    _par("D", display-name: "WebContext")
+    _par("D", display-name: "ctx")
     _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
     _seq("A", "B", enable-dst: true, comment: "doGet()")
@@ -175,7 +176,7 @@
     _seq("B", "D", comment: [setVariable("playlistsTitle", playlistTitle)])
     _seq("B", "D", comment: [setVariable("addableTracks", addableTracks)])
     _seq("B", "D", comment: [setVariable("playlistTracks", playlistTracks)])
-    _seq("B", "E", enable-dst: true, comment: "process(playlist_page, WebContext)")
+    _seq("B", "E", enable-dst: true, comment: "process(playlist_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("E", "B", disable-src: true, comment: "playlist_page.html")
     _seq("B", "A", disable-src: true, comment: "playlist_page.html")
   }),
@@ -203,7 +204,7 @@
       _par("G", display-name: "Request")
       _par("C", display-name: "TrackDAO")
       // _par("H", display-name: [`ERROR 404`], color: red.lighten(50%))
-      _par("D", display-name: "WebContext")
+      _par("D", display-name: "ctx")
       // _par("H", display-name: `ERROR 500`)
       _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
@@ -218,7 +219,7 @@
       _seq("B", "C", enable-dst: true, comment: "getTrackById(trackId)")
       _seq("C", "B", disable-src: true, comment: "return track")
       _seq("B", "D", comment: [setVariable("track", track)])
-      _seq("B", "E", enable-dst: true, comment: "process(player_page, WebContext)")
+      _seq("B", "E", enable-dst: true, comment: "process(player_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
       _seq("E", "B", disable-src: true, comment: "player_page.html")
       _seq("B", "A", disable-src: true, comment: "player_page.html")
     }),
@@ -368,7 +369,7 @@
 
     Afterwards, by making sure there are no `nulls` in the `selectedTracksIds`, the `addTracksToPlaylist` method is called: it performs an insertion in the `playlist_tracks` table. Finally, the User is redirected to the newly created Playlist.
 
-    In the RIA subproject, the servlet response with a `201` code instead of redirecting.
+    #ria() In the RIA subproject, the servlet response with a `201` code instead of redirecting.
   ],
   label_: "add-tracks-sequence",
   comment_next_page_: false,
@@ -383,6 +384,7 @@
     _par("C", display-name: "Session")
     _par("D", display-name: "Request")
     _par("E", display-name: "PlaylistDAO")
+    _par("F", display-name: "Gson")
 
     _seq("A", "B", enable-dst:true, comment: "doGet()")
     _seq("B", "C", enable-dst:true, comment: [getAttribute("user")])
@@ -391,41 +393,51 @@
     _seq("D", "B", disable-src:true, comment: [return playlistTitle)])
     _seq("B", "E", enable-dst:true, comment: [getTracksNotInPlaylist(playlistTitle,user.id())])
     _seq("E", "B", disable-src:true, comment: [return userTracks])
-    _seq("B", "A", disable-src:true, comment: [toJson(userTracks)])
+    _seq("B", "F", enable-dst:true, comment: [gson.toJson(userTracks)])
+    _seq("F", "B", disable-src: true, comment: [return userTracks])
+    _seq("B", "A", disable-src:true, comment: [userTracks])
   }),
   comment:[
-    // #emph[This method is present *only* in the RIA subproject]. As the name suggests, it obtains the tracks are _not_ in the given Playlist, in order to display them when the User wants to add a new track to a Playlist -- this happens when the User clicks on the corresponding button.
+    As the name suggests, it obtains the tracks are _not_ in the given Playlist, in order to display them when the User wants to add a new track to a Playlist -- this happens when the User clicks on the corresponding button.
 
-    // From the session, the User attribute is returned and the same applies for the title of the playlist, which instead comes from the request. Finally, the tracks-not-in-playlist are retrieved by the method of the same name: it returns a list which is then converted to a JSON object for JavaScript to parse.
+    From the session, the User attribute is returned and the same applies for the title of the playlist, which instead comes from the request.
 
-    Once the needed parameters are obtained, the `getTracksNotInPlaylist` method returns the track, which are converted to a JSON.
+    Finally, the tracks-not-in-playlist are retrieved by the method of the same name: it returns a list which is then converted to a JSON object for JavaScript to parse.
+
+    // Once the needed parameters are obtained, the `getTracksNotInPlaylist` method returns the track, which are converted to a JSON.
   ],
   label_ : "get-tracks-not-in-playlist-sequence",
   comment_next_page_: false,
-  next_page: false
 )
 
 #seq_diagram(
   [#ria() TrackReorder sequence diagram],
   diagram({
     _par("A", display-name: "Client")
-    _par("B", display-name: "TrackReordering")
+    _par("B", display-name: "TrackReorder")
     _par("C", display-name: "Request")
+    _par("E", display-name: "Gson")
     _par("D", display-name: "PlaylistDAO")
 
     _seq("A", "B", enable-dst:true, comment: "doGet()")
-    _seq("B", "C", enable-dst:true, comment: [getParameter("playlistId")])
-    _seq("C", "B", disable-src:true, comment: [return playlistId)])
-    _seq("B", "C", enable-dst:true, comment: [getParameter("trackId")])
-    _seq("C", "B", disable-src:true, comment: [return trackId)])
-    _seq("B", "C", enable-dst:true, comment: [getParameter("newOrder")])
-    _seq("C", "B", disable-src:true, comment: [return newOrder)])
-    _seq("B", "D", disable-src:true, comment: [updateTrackOrder(trackId,newOrder,playlistId)])
+    // _seq("B", "C", enable-dst:true, comment: [getParameter("playlistId")])
+    // _seq("C", "B", disable-src:true, comment: [return playlistId)])
+    // _seq("B", "C", enable-dst:true, comment: [getParameter("trackId")])
+    // _seq("C", "B", disable-src:true, comment: [return trackId)])
+    // _seq("B", "C", enable-dst:true, comment: [getParameter("newOrder")])
+    // _seq("C", "B", disable-src:true, comment: [return newOrder)])
+    _seq("B", "C", enable-dst:true, comment: [getReader])
+    _seq("C", "B", disable-src:true, comment: [return reader])
+    _seq("B", "E", enable-dst:true, comment: [gson.fromJson(reader)])
+    _seq("E", "B", disable-src:true, comment: [return requestData])
+    _seq("B", "D", disable-src:true, comment: [
+      updateTrackOrder(requestData.trackIds(),\ requestData.playlistId())
+    ])
   }),
   comment:[
-    // This method is present *only* in the RIA subproject. It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
+    It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
 
-    Once the needed parameters are obtained, the `updateTrackOrder()` method updates the `playlist_tracks` table.
+    // Once the needed parameters are obtained, the `updateTrackOrder()` method updates the `playlist_tracks` table.
   ],
   label_ : "track-reordering-sequence",
   comment_next_page_: false
