@@ -6,7 +6,6 @@
     let homepage = new HomePage(), playlistPage = new PlaylistPage(), playerPage = new PlayerPage();
 
     window.onload = function () {
-        // loading
         homepage.show();
 
         document.getElementById("logout-button").addEventListener("click", () => {
@@ -349,6 +348,7 @@
          * Get user Tracks and creates list items.
          *
          * @param trackSelector
+         * @param playlist
          */
         function loadUserTracksOl(trackSelector: HTMLOListElement, playlist: Playlist) {
             trackSelector.innerHTML = "";

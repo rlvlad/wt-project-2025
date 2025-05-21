@@ -2,6 +2,7 @@ package it.polimi.tiw25.js.controller;
 
 import com.google.gson.Gson;
 import it.polimi.tiw25.js.DAO.PlaylistDAO;
+import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -38,6 +39,7 @@ public class TrackReorder extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) req.getSession().getAttribute("user");
         Gson gson = new Gson();
         RequestData requestData = null;
         try {
@@ -48,11 +50,10 @@ public class TrackReorder extends HttpServlet {
             return;
         }
 
-        System.out.println("sussy");
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 
         try {
-            playlistDAO.updateTrackOrder(requestData.trackIds(), requestData.playlistId());
+            playlistDAO.updateTrackOrder(requestData.trackIds(), requestData.playlistId(), user);
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.setContentType("plain/text");

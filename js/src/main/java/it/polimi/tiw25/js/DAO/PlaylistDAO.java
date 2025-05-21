@@ -384,24 +384,35 @@ public class PlaylistDAO implements DAO {
     /**
      * Update Track custom order within given Playlist.
      *
-     * @param trackIds ordered list of track ids to update
+     * @param trackIds    ordered list of track ids to update
      * @param playlist_id playlist_id of the Playlist in which change the custom ordering
      * @throws SQLException
      */
-    public void updateTrackOrder(List<Integer> trackIds, int playlist_id) throws SQLException {
+    public void updateTrackOrder(List<Integer> trackIds, int playlist_id, User user) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                UPDATE playlist_tracks
+                UPDATE playlist_tracks p1
                 SET custom_order = ?
-                WHERE playlist_id = ? AND track_id = ?
+                WHERE playlist_id = ? AND track_id = ? AND playlist_id IN (SELECT playlist_id
+                                                                           FROM playlist p2
+                                                                           WHERE user_id = ? AND p2.playlist_id = p1.playlist_id)
                 """);
 
+        connection.setAutoCommit(false);
         preparedStatement.setInt(2, playlist_id);
-        for (int i = 0; i < trackIds.size(); i++) {
-            preparedStatement.setInt(1, i+1);
-            preparedStatement.setInt(3, trackIds.get(i));
-            preparedStatement.executeUpdate();
+        try {
+            for (int i = 0; i < trackIds.size(); i++) {
+                preparedStatement.setInt(1, i + 1);
+                preparedStatement.setInt(3, trackIds.get(i));
+                preparedStatement.setInt(4, user.id());
+                preparedStatement.executeUpdate();
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw new SQLException(e);
         }
 
+        connection.setAutoCommit(true);
         close(preparedStatement);
     }
 }
