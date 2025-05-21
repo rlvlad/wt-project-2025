@@ -42,6 +42,10 @@
         <url-pattern>/Track</url-pattern>
         <url-pattern>/tracks_page.html</url-pattern>
         <url-pattern>/player_page.html</url-pattern>
+        <url-pattern>/AddTracks</url-pattern>
+        <url-pattern>/CreatePlaylist</url-pattern>
+        <url-pattern>/UploadTrack</url-pattern>
+        <url-pattern>/Logout</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>UserChecker</filter-name>
