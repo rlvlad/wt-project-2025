@@ -1,6 +1,9 @@
 package it.polimi.tiw25.js.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import it.polimi.tiw25.js.DAO.PlaylistDAO;
 import it.polimi.tiw25.js.entities.User;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
@@ -44,9 +47,15 @@ public class TrackReorder extends HttpServlet {
         RequestData requestData = null;
         try {
             requestData = gson.fromJson(req.getReader(), RequestData.class);
-        } catch (Exception e) {
+        } catch (JsonIOException | IOException e) {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.setContentType("plain/text");
+            resp.getWriter().println("Server error");
+            return;
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
