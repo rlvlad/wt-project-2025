@@ -88,13 +88,19 @@ public class PlaylistDAO implements DAO {
         List<Track> tracks = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                 SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path
-                 FROM track a NATURAL JOIN playlist_tracks b
-                 WHERE b.playlist_id = ?
-                 ORDER BY artist ASC, YEAR ASC, title ASC
+                SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path, c.count
+                FROM track a NATURAL JOIN playlist_tracks b, (SELECT COUNT(*) AS count
+                                                              FROM track a NATURAL JOIN playlist_tracks b
+                                                              WHERE playlist_id = ? AND custom_order IS NOT NULL) c
+                WHERE b.playlist_id = ?
+                ORDER BY
+                    CASE WHEN c.count = 0 THEN artist END,
+                    CASE WHEN c.count = 0 THEN year END,
+                    CASE WHEN c.count = 0 THEN title END,
+                    CASE WHEN c.count != 0 THEN -custom_order END DESC
                 """);
-
         preparedStatement.setInt(1, playlistID);
+        preparedStatement.setInt(2, playlistID);
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
