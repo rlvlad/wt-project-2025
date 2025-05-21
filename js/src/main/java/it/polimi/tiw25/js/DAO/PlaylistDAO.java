@@ -96,7 +96,6 @@ public class PlaylistDAO implements DAO {
                 ORDER BY
                     CASE WHEN c.count = 0 THEN artist END,
                     CASE WHEN c.count = 0 THEN year END,
-                    CASE WHEN c.count = 0 THEN title END,
                     CASE WHEN c.count != 0 THEN -custom_order END DESC,
                     CASE WHEN c.count != 0 THEN playlist_track_id END
                 """);
@@ -143,7 +142,7 @@ public class PlaylistDAO implements DAO {
                     FROM playlist p NATURAL JOIN playlist_tracks pt JOIN track t ON t.track_id=pt.track_id
                     WHERE p.playlist_title= ? AND p.user_id = ?
                  )
-                 ORDER BY artist ASC, YEAR ASC, title ASC
+                 ORDER BY artist ASC, YEAR ASC
                 """);
         preparedStatement.setInt(1, userId);
         preparedStatement.setString(2, playlistTitle);
