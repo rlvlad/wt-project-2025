@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Updates the Track(s) order in a given Playlist.
  */
-@WebServlet("/TrackReordering")
+@WebServlet("/TrackReorder")
 public class TrackReorder extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -48,15 +48,21 @@ public class TrackReorder extends HttpServlet {
             return;
         }
 
-
+        System.out.println("sussy");
         PlaylistDAO playlistDAO = new PlaylistDAO(connection);
 
         try {
             playlistDAO.updateTrackOrder(requestData.trackIds(), requestData.playlistId());
         } catch (SQLException e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Couldn't update track order.");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.setContentType("plain/text");
+            resp.getWriter().println("Server error");
             e.printStackTrace();
+            return;
         }
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setContentType("plain/text");
+        resp.getWriter().println("Update successful");
     }
 
     @Override

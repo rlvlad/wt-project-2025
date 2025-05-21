@@ -77,9 +77,7 @@
                             // pass the JSON of all Playlists
                             playlistGrid(playlists);
                         } else {
-                            // request failed, handle it
-                            // self.listcontainer.style.visibility = "hidden";
-                            alert("Cannot recover data. Maybe the User has been logged out."); //for demo purposes
+                            alert("Cannot recover data. Maybe the User has been logged out.");
                         }
                     }
                 });
@@ -347,6 +345,233 @@
             modalContainer.appendChild(modal);
         }
 
+        /**
+         * Get user Tracks and creates list items.
+         *
+         * @param trackSelector
+         */
+        function loadUserTracksOl(trackSelector: HTMLOListElement, playlist: Playlist) {
+            trackSelector.innerHTML = "";
+
+            makeCall("GET", "Playlist?playlistId=" + playlist.id, null, function (req: XMLHttpRequest) {
+                if (req.readyState == XMLHttpRequest.DONE) {
+                    let message: string = req.responseText;
+                    if (req.status == 200) {
+                        let tracks: Track[] = JSON.parse(message);
+                        tracks.forEach(function (track: Track) {
+                            let list_item: HTMLLIElement = document.createElement("li");
+                            list_item.draggable = true;
+                            list_item.addEventListener("dragstart", dragStart);
+                            list_item.addEventListener("dragover", dragOver);
+                            list_item.addEventListener("dragleave", dragLeave);
+                            list_item.addEventListener("drop", drop);
+                            list_item.value = track.id;
+                            list_item.textContent = track.artist + " - " + track.title + " (" + track.year + ")"
+                            trackSelector.appendChild(list_item);
+                        });
+                    } else {
+                        alert("Cannot recover data. Maybe the User has been logged out.");
+                    }
+                }
+            });
+        }
+
+        // Drag events
+
+        let startElement: HTMLLIElement;
+
+        /**
+         * As soon as the User drags an Element.
+         *
+         * @param event the drag event
+         */
+        function dragStart(event: Event) {
+            let list_item: HTMLLIElement = event.target as HTMLLIElement;
+            list_item.style.cursor = "pointer"; // or convert to a proper class
+            startElement = list_item;
+        }
+
+
+        /**
+         * The User is dragging the Element around.
+         *
+         * @param event during the drag event
+         */
+        function dragOver(event: Event) {
+            event.preventDefault()
+            let list_item: HTMLLIElement = event.target as HTMLLIElement;
+            list_item.style.cursor = "grab";
+        }
+
+
+        /**
+         * The User has started dragging the Element.
+         *
+         * @param event after the drag event
+         */
+        function dragLeave(event: Event) {
+            let list_item: HTMLLIElement = event.target as HTMLLIElement;
+            list_item.style.cursor = "pointer";
+        }
+
+        /**
+         * The User has dropped the Track in the desired location.
+         *
+         * @param event the drop event
+         */
+        function drop(event: Event) {
+            // HTML output
+            let finalDest: HTMLLIElement = event.target as HTMLLIElement;
+
+            let completeList: HTMLUListElement = finalDest.closest("ol");
+            let songsArray: HTMLLIElement[] = Array.from(completeList.querySelectorAll("li"));
+
+            let indexDest: number = songsArray.indexOf(finalDest);
+
+            if (songsArray.indexOf(startElement) < indexDest) {
+                startElement.parentElement.insertBefore(
+                    startElement,
+                    songsArray[indexDest + 1],
+                );
+            } else {
+                startElement.parentElement.insertBefore(
+                    startElement,
+                    songsArray[indexDest],
+                );
+            }
+            // update the new position by making a POST call to the database
+        }
+
+        /**
+         * Generates the modal to reorder the Tracks.
+         *
+         * @param playlist Playlist from which recover the tracks
+         */
+        function loadReorderModal(playlist: Playlist) {
+            let modalContainer: HTMLElement = document.getElementById("modals");
+            let modal_div: HTMLDivElement = document.createElement("div");
+            modal_div.setAttribute("id", "reorder-tracks-modal");
+            modal_div.setAttribute("class", "modal-window");
+
+            let inner_div: HTMLDivElement = document.createElement("div");
+
+            // Top nav bar
+            let top_nav_bar: HTMLDivElement = document.createElement("div");
+            top_nav_bar.setAttribute("class", "nav-bar");
+
+            let title_div: HTMLDivElement = document.createElement("div");
+            title_div.setAttribute("class", "modal-title");
+            title_div.textContent = "Reorder Tracks in " + playlist.title.toString();
+
+            let spacer: HTMLDivElement = document.createElement("div");
+            spacer.setAttribute("class", "spacer");
+
+            let modal_close: HTMLAnchorElement = document.createElement("a");
+            modal_close.setAttribute("title", "Close");
+            modal_close.setAttribute("class", "modal-close");
+            modal_close.textContent = "Close";
+
+            modal_close.addEventListener("click", () => {
+                closeReorderModal();
+            })
+
+            top_nav_bar.appendChild(title_div);
+            top_nav_bar.appendChild(spacer);
+            top_nav_bar.appendChild(modal_close);
+
+            // Main form
+            let main_form: HTMLFormElement = document.createElement("form");
+
+            let label: HTMLLabelElement = document.createElement("label");
+            label.setAttribute("class", "label");
+            label.setAttribute("for", "track-reorder");
+            label.textContent = "Drag the track to reorder:";
+
+            let ordered_list: HTMLOListElement = document.createElement("ol");
+            ordered_list.setAttribute("name", "reorderingTracks");
+            ordered_list.setAttribute("id", "track-reorder");
+            ordered_list.setAttribute("class", "text-field");
+
+            loadUserTracksOl(ordered_list, playlist);
+
+            let bottom_div: HTMLDivElement = document.createElement("div");
+            bottom_div.setAttribute("class", "nav-bar");
+
+            let reorder_track_btn: HTMLButtonElement = document.createElement("button");
+            reorder_track_btn.setAttribute("id", "track-reorder-btn");
+            reorder_track_btn.setAttribute("class", "button");
+            reorder_track_btn.type = "button";
+            reorder_track_btn.textContent = "Reorder Tracks";
+
+            reorder_track_btn.addEventListener("click", (e: MouseEvent) => {
+                saveOrder(e, playlist.id.toString());
+            });
+
+            bottom_div.appendChild(reorder_track_btn);
+
+            main_form.appendChild(label);
+            main_form.appendChild(ordered_list);
+            main_form.appendChild(document.createElement("div"));
+            main_form.appendChild(bottom_div);
+
+            // Combine all into modal div
+            inner_div.appendChild(top_nav_bar);
+            inner_div.appendChild(main_form);
+            modal_div.appendChild(inner_div);
+
+            modalContainer.appendChild(modal_div);
+        }
+
+        /**
+         * Closes the reorder tracks modal.
+         */
+        function closeReorderModal() {
+            let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
+            modal_div.remove();
+
+            // Make it not visible
+            // modal_div.style.visibility = "hidden";
+            // modal_div.style.opacity = "0";
+            // modal_div.style.pointerEvents = "none";
+        }
+
+        /**
+         * Save new Tracks custom order.
+         */
+        function saveOrder(e: MouseEvent, _playlistId: string) {
+            let songsContainer: HTMLElement = document.getElementById("track-reorder");
+            let _trackIds: number[] = Array.from(songsContainer.querySelectorAll("li"))
+                .map(e => e.value);
+
+            let req: XMLHttpRequest = new XMLHttpRequest();
+            let target: HTMLElement = e.target as HTMLElement;
+
+            req.onreadystatechange = function () {
+                if (req.readyState == XMLHttpRequest.DONE) {
+                    let message: string = req.responseText;
+                    switch (req.status) {
+                        case 200:
+                            target.parentElement.previousElementSibling.setAttribute("class", "success");
+                            target.parentElement.previousElementSibling.textContent = message;
+                            break;
+                        case 500:
+                            target.parentElement.previousElementSibling.setAttribute("class", "error");
+                            target.parentElement.previousElementSibling.textContent = message;
+                            break;
+
+                    }
+                }
+            }
+
+            let requestData = {
+                trackIds: _trackIds,
+                playlistId: _playlistId
+            }
+
+            req.open("POST", "TrackReorder");
+            req.send(JSON.stringify(requestData));
+        }
+
     }
 
     function PlaylistPage() {
@@ -434,7 +659,6 @@
                             let tracks: Track[] = JSON.parse(message);
 
                             if (tracks.length === 0) {
-                                alert("This Playlist has no Tracks.");
                                 return;
                             }
 
@@ -444,9 +668,7 @@
                             trackGrid(tracks);
                             loadPrevNextButton();
                         } else {
-                            // request failed, handle it
-                            // self.listcontainer.style.visibility = "hidden";
-                            alert("Cannot recover data. Maybe the User has been logged out."); //for demo purposes
+                            alert("Cannot recover data. Maybe the User has been logged out.");
                         }
                     }
                 });
@@ -668,9 +890,7 @@
                             // pass the JSON of all Tracks
                             trackPlayer(document.getElementById("main"), track);
                         } else {
-                            // request failed, handle it
-                            // self.listcontainer.style.visibility = "hidden";
-                            alert("Cannot recover data. Maybe the User has been logged out."); //for demo purposes
+                            alert("Cannot recover data. Maybe the User has been logged out.");
                         }
                     }
                 });
@@ -716,13 +936,11 @@
                         trackSelector.appendChild(option);
                     });
                 } else {
-                    alert("Cannot recover data. Maybe the User has been logged out."); //for demo purposes
+                    alert("Cannot recover data. Maybe the User has been logged out.");
                 }
             }
         });
     }
-
-    // TODO unify the previous and following method
 
     /**
      * Loads the musical genres for upload track modal.
@@ -773,218 +991,5 @@
             option.textContent = i.toString();
             year_selection.appendChild(option);
         }
-    }
-
-    /**
-     * Get user Tracks and creates list items.
-     *
-     * @param trackSelector
-     */
-    function loadUserTracksOl(trackSelector: HTMLOListElement, playlist: Playlist) {
-        trackSelector.innerHTML = "";
-
-        makeCall("GET", "Playlist?playlistId=" + playlist.id, null, function (req: XMLHttpRequest) {
-            if (req.readyState == XMLHttpRequest.DONE) {
-                let message: string = req.responseText;
-                if (req.status == 200) {
-                    let tracks: Track[] = JSON.parse(message);
-                    tracks.forEach(function (track: Track) {
-                        let list_item: HTMLLIElement = document.createElement("li");
-                        list_item.draggable = true;
-                        list_item.addEventListener("dragstart", dragStart);
-                        list_item.addEventListener("dragover", dragOver);
-                        list_item.addEventListener("dragleave", dragLeave);
-                        list_item.addEventListener("drop", drop);
-                        list_item.value = track.id;
-                        list_item.textContent = track.artist + " - " + track.title + " (" + track.year + ")"
-                        trackSelector.appendChild(list_item);
-                    });
-                } else {
-                    alert("Cannot recover data. Maybe the User has been logged out."); //for demo purposes
-                }
-            }
-        });
-    }
-
-    // Drag events
-
-    let startElement: HTMLLIElement;
-
-    /**
-     * As soon as the User drags an Element.
-     *
-     * @param event the drag event
-     */
-    function dragStart(event: Event) {
-        let list_item: HTMLLIElement = event.target as HTMLLIElement;
-        list_item.style.cursor = "pointer"; // or convert to a proper class
-        startElement = list_item;
-    }
-
-
-    /**
-     * The User is dragging the Element around.
-     *
-     * @param event during the drag event
-     */
-    function dragOver(event: Event) {
-        event.preventDefault()
-        let list_item: HTMLLIElement = event.target as HTMLLIElement;
-        list_item.style.cursor = "grab";
-    }
-
-
-    /**
-     * The User has started dragging the Element.
-     *
-     * @param event after the drag event
-     */
-    function dragLeave(event: Event) {
-        let list_item: HTMLLIElement = event.target as HTMLLIElement;
-        list_item.style.cursor = "pointer";
-    }
-
-    /**
-     * The User has dropped the Track in the desired location.
-     *
-     * @param event the drop event
-     */
-    function drop(event: Event) {
-        // HTML output
-        let finalDest: HTMLLIElement = event.target as HTMLLIElement;
-
-        let completeList: HTMLUListElement = finalDest.closest("ol");
-        let songsArray: HTMLLIElement[] = Array.from(completeList.querySelectorAll("li"));
-
-        let indexDest: number = songsArray.indexOf(finalDest);
-
-        if (songsArray.indexOf(startElement) < indexDest) {
-            startElement.parentElement.insertBefore(
-                startElement,
-                songsArray[indexDest + 1],
-            );
-        } else {
-            startElement.parentElement.insertBefore(
-                startElement,
-                songsArray[indexDest],
-            );
-        }
-        // update the new position by making a POST call to the database
-    }
-
-    /**
-     * Generates the modal to reorder the Tracks.
-     *
-     * @param playlist Playlist from which recover the tracks
-     */
-    function loadReorderModal(playlist: Playlist) {
-        let modalContainer: HTMLElement = document.getElementById("modals");
-        let modal_div: HTMLDivElement = document.createElement("div");
-        modal_div.setAttribute("id", "reorder-tracks-modal");
-        modal_div.setAttribute("class", "modal-window");
-
-        let inner_div: HTMLDivElement = document.createElement("div");
-
-        // Top nav bar
-        let top_nav_bar: HTMLDivElement = document.createElement("div");
-        top_nav_bar.setAttribute("class", "nav-bar");
-
-        let title_div: HTMLDivElement = document.createElement("div");
-        title_div.setAttribute("class", "modal-title");
-        title_div.textContent = "Reorder Tracks in " + playlist.title.toString();
-
-        let spacer: HTMLDivElement = document.createElement("div");
-        spacer.setAttribute("class", "spacer");
-
-        let modal_close: HTMLAnchorElement = document.createElement("a");
-        modal_close.setAttribute("title", "Close");
-        modal_close.setAttribute("class", "modal-close");
-        modal_close.textContent = "Close";
-
-        modal_close.addEventListener("click", () => {
-            closeReorderModal();
-        })
-
-        top_nav_bar.appendChild(title_div);
-        top_nav_bar.appendChild(spacer);
-        top_nav_bar.appendChild(modal_close);
-
-        // Main form
-        let main_form: HTMLFormElement = document.createElement("form");
-
-        let label: HTMLLabelElement = document.createElement("label");
-        label.setAttribute("class", "label");
-        label.setAttribute("for", "track-reorder");
-        label.textContent = "Drag the track to reorder:";
-
-        let ordered_list: HTMLOListElement = document.createElement("ol");
-        ordered_list.setAttribute("name", "reorderingTracks");
-        ordered_list.setAttribute("id", "track-reorder");
-        ordered_list.setAttribute("class", "text-field");
-
-        loadUserTracksOl(ordered_list, playlist);
-
-        let bottom_div: HTMLDivElement = document.createElement("div");
-        bottom_div.setAttribute("class", "nav-bar");
-
-        let reorder_track_btn: HTMLButtonElement = document.createElement("button");
-        reorder_track_btn.setAttribute("id", "track-reorder-btn");
-        reorder_track_btn.setAttribute("class", "button");
-        reorder_track_btn.type = "button";
-        reorder_track_btn.textContent = "Reorder Tracks";
-
-        reorder_track_btn.addEventListener("click", (e: MouseEvent) => {
-            saveOrder(e, playlist.id.toString());
-        });
-
-        bottom_div.appendChild(reorder_track_btn);
-
-        main_form.appendChild(label);
-        main_form.appendChild(document.createElement("br"));
-        main_form.appendChild(ordered_list);
-        main_form.appendChild(bottom_div);
-
-        // Combine all into modal div
-        inner_div.appendChild(top_nav_bar);
-        inner_div.appendChild(main_form);
-        modal_div.appendChild(inner_div);
-
-        modalContainer.appendChild(modal_div);
-    }
-
-    /**
-     * Closes the reorder tracks modal.
-     */
-    function closeReorderModal() {
-        let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
-        modal_div.remove();
-
-        // Make it not visible
-        // modal_div.style.visibility = "hidden";
-        // modal_div.style.opacity = "0";
-        // modal_div.style.pointerEvents = "none";
-    }
-
-    /**
-     * Save new Tracks custom order.
-     */
-    function saveOrder(e: MouseEvent, _playlistId: string) {
-        let songsContainer: HTMLElement = document.getElementById("track-reorder");
-        let _trackIds: number[] = Array.from(songsContainer.querySelectorAll("li"))
-            .map(e => e.value);
-
-        let req: XMLHttpRequest = new XMLHttpRequest();
-
-        req.onreadystatechange = function () {
-            // TODO: Handle req
-        }
-
-        let requestData = {
-            trackIds: _trackIds,
-            playlistId: _playlistId
-        }
-
-        req.open("POST", "TrackReorder");
-        req.send(JSON.stringify(requestData));
     }
 })();

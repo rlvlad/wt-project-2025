@@ -64,9 +64,10 @@
     align-items: center;
 }
 
-ol{
+ol {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 /* resized old components to account for new side bar */
