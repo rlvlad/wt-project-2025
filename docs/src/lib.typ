@@ -599,5 +599,6 @@
 }
 
 #let ria() = {
-  box(image("img/javascript.svg"), height: 0.9em, baseline: 1pt)
+  // box(image("img/javascript.svg"), height: 0.9em, baseline: 1pt)
+  box(image("img/typescript.svg"), height: 0.9em, baseline: 1pt)
 }

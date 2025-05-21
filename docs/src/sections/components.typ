@@ -82,3 +82,9 @@ UserDAO methods:
 - addUser
 
 All the methods are intuitively named and don't need further explanations. Either way, they are explained throughout the next section in their respective sequence.
+
+== RIA subproject
+
+#for i in range(0, 5) {
+  lorem(100) + parbreak()
+}
