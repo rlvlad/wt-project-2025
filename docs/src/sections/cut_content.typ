@@ -1,6 +1,6 @@
 #import "../lib.typ":*
 
-= Cut content
+= Cut content<cut-content>
 
 During the development, we had many ideas and thought about ways to implement them -- however, due to time and work restrictions, some features didn't make it to the final release. They can be categorized in features and optimizations.
 

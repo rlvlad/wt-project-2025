@@ -446,3 +446,29 @@
   label_ : "track-reordering-sequence",
   comment_next_page_: false
 )
+
+#seq_diagram(
+  [#ria() GetUserTracks sequence diagram],
+  diagram({
+    _par("A", display-name: "Client")
+    _par("B", display-name: "GetUserTracks")
+    _par("C", display-name: "TrackDAO")
+    _par("D", display-name: "Session")
+    _par("E", display-name: "Gson")
+
+    _seq("A", "B", comment: ["doGet()"])
+    _seq("B", "C", comment: [getAttribute("user")])
+    _seq("C", "B", comment: [return user])
+    _seq("B", "C", comment: [getUserTracks(user)])
+    _seq("C", "B", comment: [return userTracks])
+    _seq("B", "E", comment: [gson.toJson(userTracks)])
+    _seq("E", "B", comment: [return userTracks[JSON]])
+  }),
+  comment:[
+    As the name implies, this servlet retrieves all the Tracks associated to a User. This is fetched as usually from the session.
+
+    Similar to the previous sequences, once it retrieves the track from the database, the list is transformed into a JSON by Gson and finally sent to the browser.
+  ],
+  label_ : "get-user-tracks-sequence",
+  comment_next_page_: false
+)

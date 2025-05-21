@@ -235,6 +235,72 @@
     header-ascent: 40%,
   )
 
+  let frame(color) = (
+    (x, y) => (
+      left: if x > 0 {
+        0pt
+      } else {
+        color
+      },
+      right: color,
+      top: if y == 0 or y == 2 {
+        color
+      } else {
+        0pt
+      },
+      bottom: color,
+    )
+  )
+
+  let shading(dark, light, header) = (
+    (x, y) => {
+      if (y >= 2) {
+        if calc.even(y) {
+          dark
+        } else if calc.odd(y) {
+          light
+        }
+      } else {
+        header
+      }
+    }
+  )
+
+  let custom-inset() = (
+    (x,y) => {
+      if (y<=2) {
+        0.9em
+      } else {
+        0.6em
+      }
+    }
+  )
+
+  set table(
+    stroke: frame(get-data-types()),
+    fill: shading(
+      get-selection-background(),
+      get-default-background(),
+      get-light-background()
+    ),
+    inset: custom-inset(),
+    align: horizon
+  )
+
+  show table.cell: it => context {
+    if (it.y <= 1) {
+      set text(weight: "bold", size: 1.2em, style: "oblique", fill: get-selection-background())
+      smallcaps(it)
+    } else {
+      it
+    }
+  }
+
+  show table:it => {
+    set par(justify: false)
+    it
+  }
+
   // mainmatter
   show outline.entry: it => {
     v(1em, weak: true)

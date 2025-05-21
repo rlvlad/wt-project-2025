@@ -14,7 +14,6 @@
 #include "sections/specification_completion.typ"
 #include "sections/sql.typ"
 #include "sections/components.typ"
-// #include "sections/events_and_actions.typ"
 #include "sections/sequence_diagram.typ"
 #include "sections/filters.typ"
 #include "sections/css_rules.typ"

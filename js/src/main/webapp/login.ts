@@ -1,10 +1,10 @@
 (function () {
     document.getElementById("login-button").addEventListener("click", (e) => {
-        let form = (e.target as HTMLElement).closest("form");
+        let form:HTMLFormElement = (e.target as HTMLElement).closest("form");
         if (form.checkValidity()) {
-            makeCall("POST", "Login", form, (req) => {
+            makeCall("POST", "Login", form, (req:XMLHttpRequest) => {
                 if (req.readyState === XMLHttpRequest.DONE) {
-                    let message = req.responseText;
+                    let message:string = req.responseText;
                     switch (req.status) {
                         case 200:
                             window.location.href = "home_page.html";

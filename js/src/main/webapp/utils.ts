@@ -44,17 +44,19 @@ function clearModals(): void {
 
 /**
  * Create basic modal element; used as a building block for creating modals.
- * @param id
- * @param titleText
- * @param buttonId
- * @param buttonText
+ *
+ * @param id id of this modal
+ * @param titleText title of this modal
+ * @param buttonId ID of the button
+ * @param buttonText text of the button
  */
 function createModal(id: string, titleText: string, buttonId: string, buttonText: string): HTMLElement {
     let modal: HTMLElement = document.createElement("div");
     modal.id = id;
     modal.className = "modal-window";
 
-    let container: HTMLElement = document.createElement("div"), topNavbar: HTMLElement = document.createElement("div");
+    let container: HTMLElement = document.createElement("div"),
+        topNavbar: HTMLElement = document.createElement("div");
     topNavbar.className = "nav-bar";
 
     let title: HTMLElement = document.createElement("div");
@@ -96,7 +98,8 @@ function createModal(id: string, titleText: string, buttonId: string, buttonText
 
 /**
  * Make the modal visible.
- * @param modal
+ *
+ * @param modal modal to make visible
  */
 function showModal(modal: HTMLElement): void {
     modal.style.visibility = "visible"
@@ -106,13 +109,14 @@ function showModal(modal: HTMLElement): void {
 /**
  * Delete the bottom navbar if present.
  */
-function clearBottonNavbar(): void {
+function clearBottomNavbar(): void {
     let navbar: HTMLElement = document.getElementById("bottom-nav-bar");
     if (navbar != null)
         navbar.remove();
 }
 
 // Entities
+// These mirror the entities found in the entities Java package
 
 interface User {
     id: number;

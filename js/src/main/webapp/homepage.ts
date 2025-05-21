@@ -15,7 +15,7 @@
 
         this.show = function () {
             clearModals();
-            clearBottonNavbar();
+            clearBottomNavbar();
             loadCreatePlaylistModal();
             loadUploadTrackModal();
             loadButtons();
@@ -546,7 +546,7 @@
     function PlaylistPage() {
         const PLAYLIST_PAGE_ID: string = "playlist";
         this.show = function (playlist: Playlist) {
-            clearBottonNavbar();
+            clearBottomNavbar();
             clearModals();
             loadAddTracksModal();
             loadPlaylistView(playlist);
@@ -764,7 +764,7 @@
         this.show = function (track: Track) {
             loadSingleTrack(track);
             clearModals();
-            clearBottonNavbar();
+            clearBottomNavbar();
             document.getElementById("upload-track-modal-button").className = "button hidden";
             document.getElementById("track-selector-modal-button").className = "button hidden";
         }
