@@ -27,3 +27,11 @@ The issue was quite simple... the submission didn't specify this; instead, every
 / ORM: The proper (or #emph[elegant]) way interact with the database isn't by directly writing raw SQL code but by using APIs written for this very reason. There are many examples in web techologies -- such as jQuery -- though for the Java programming language, pioneer of the Object-Oriented Programming paradigma, there is a more potent concept: #link("https://en.wikipedia.org/wiki/Object-relational_mapping")[Object Relational Mapping (ORM)]. As the name suggests, a relational object is mapped to a Java object. By using Hibernate @hibernate a table could have mapped 1:1 to a class and its attributes: every query -- select, insert, delete... -- can be performed through it with commits, transactions and so on.
 
 Probably the saddest turn back was not being able to use the Spring Boot framework @spring-boot, which is commonly used. It's a framework to create production-level applications: as such, it surely is useful to know, whatever the case. Also, during research of how thymeleaf operates, it was basically always paired with Spring Boot.
+
+== Code cleanup
+
+The last scrapped ideas were all about some refactor here and there:
+
+- Thymeleaf can process the parameters value directly, effectively bypassing the context setting: this could potentially reduce the boilerplate
+
+- Since the Record classes are immutable, in order to get them to work without settings all nulls there have been some workarounds

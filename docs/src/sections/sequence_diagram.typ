@@ -376,7 +376,7 @@
 )
 
 #seq_diagram(
-  [GetTracksNotInPlaylist sequence diagram],
+  [#ria() GetTracksNotInPlaylist sequence diagram],
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "GetTracksNotInPlaylist")
@@ -398,7 +398,7 @@
 
     // From the session, the User attribute is returned and the same applies for the title of the playlist, which instead comes from the request. Finally, the tracks-not-in-playlist are retrieved by the method of the same name: it returns a list which is then converted to a JSON object for JavaScript to parse.
 
-    #emph[This method is present *only* in the RIA subproject]. Once the needed parameters are obtained, the `getTracksNotInPlaylist` method returns the track, which are converted to a JSON.
+    Once the needed parameters are obtained, the `getTracksNotInPlaylist` method returns the track, which are converted to a JSON.
   ],
   label_ : "get-tracks-not-in-playlist-sequence",
   comment_next_page_: false,
@@ -406,7 +406,7 @@
 )
 
 #seq_diagram(
-  [TrackReordering sequence diagram],
+  [#ria() TrackReorder sequence diagram],
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "TrackReordering")
@@ -425,7 +425,7 @@
   comment:[
     // This method is present *only* in the RIA subproject. It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
 
-    #emph[This method is present *only* in the RIA subproject]. Once the needed parameters are obtained, the `updateTrackOrder()` method update the `playlist_tracks` table.
+    Once the needed parameters are obtained, the `updateTrackOrder()` method updates the `playlist_tracks` table.
   ],
   label_ : "track-reordering-sequence",
   comment_next_page_: false

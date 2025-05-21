@@ -597,3 +597,7 @@
  set text(fill: gradient.linear(rgb("#0F80CC"), rgb("#81CCF2")), weight: "bold")
   box(string)
 }
+
+#let ria() = {
+  box(image("img/javascript.svg"), height: 0.9em, baseline: 1pt)
+}

@@ -3,7 +3,6 @@ package it.polimi.tiw25.js.controller;
 import com.google.gson.Gson;
 import it.polimi.tiw25.js.DAO.PlaylistDAO;
 import it.polimi.tiw25.js.utils.ConnectionHandler;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,14 +14,13 @@ import java.io.IOException;
 import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Updates the Track(s) order in a given Playlist.
  */
 @WebServlet("/TrackReordering")
-public class TrackReordering extends HttpServlet {
+public class TrackReorder extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     private Connection connection = null;

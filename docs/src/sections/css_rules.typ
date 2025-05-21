@@ -342,7 +342,7 @@ select:invalid {
 ```
 this pseudoclass causes the color in the placeholder in dropdown menus (Year, Genres) to be gray, as a a regular placeholder should be #footnote[Otherwise it would have been black as the text, which is not aesthetically pleasant.].
 
-== Sidebar<ria-css-sidebar>
+== #ria() Sidebar<ria-css-sidebar>
 
 This components exists on in the RIA project, where we implemented a lateral bar that contains three menus: Homepage, Playlist and Track. It effectively acts as an upgraded version of the bottom navigation bar of the HTML project.
 

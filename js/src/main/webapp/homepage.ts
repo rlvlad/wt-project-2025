@@ -984,7 +984,7 @@
             playlistId: _playlistId
         }
 
-        req.open("POST", "TrackReordering");
+        req.open("POST", "TrackReorder");
         req.send(JSON.stringify(requestData));
     }
 })();

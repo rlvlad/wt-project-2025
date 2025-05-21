@@ -1,3 +1,5 @@
+#import "../lib.typ":*
+
 = Codebase overview
 
 == Components
@@ -28,7 +30,8 @@ Unlike most WT projects, these are record classes @record-classes: basically the
   - Logout
   - AddTracks
   - CreatePlaylist
-  - [RIA] TrackReordering
+  - #ria() GetTracksNotInPlaylist
+  - #ria() TrackReordering
 
 + Filters
   - UserChecker
@@ -61,8 +64,8 @@ PlaylistDAO methods:
 - getPlaylistTracksByTitle
 - createPlaylist
 - getPlaylistTracksById
-- [RIA] getTracksNotInPlaylist
-- [RIA] updateTrackOrder
+- #ria() getTracksNotInPlaylist
+- #ria() updateTrackOrder
 
 TrackDAO methods:
 
