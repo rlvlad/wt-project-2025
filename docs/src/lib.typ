@@ -349,7 +349,7 @@
     pagebreak(to: "even", weak: true)
     set page(header: { }, columns: 1)
     let number = if it.numbering != none { counter(heading.where(level: 1)).display() }
-    set text(size: 1.75em, font: "JetBrains Mono", hyphenate: true)
+    set text(size: 1.75em, font: "JetBrains Mono", hyphenate: false)
     set par(justify: false)
     v(30%)
     align(
@@ -458,7 +458,7 @@
     scope: "parent",
     float: true,
     block(
-      height: 1 * height, // to fix calculation error
+      height: 1.05 * height, // to fix calculation error
       columns(2, content),
     ),
   )

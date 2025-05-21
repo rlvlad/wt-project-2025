@@ -85,6 +85,4 @@ All the methods are intuitively named and don't need further explanations. Eithe
 
 == RIA subproject
 
-#for i in range(0, 5) {
-  lorem(100) + parbreak()
-}
+// Tutti i vari metodi di JS + il corrispondente commento

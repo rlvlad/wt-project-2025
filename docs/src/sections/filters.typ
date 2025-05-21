@@ -44,7 +44,7 @@
     _seq("B", "C", disable-src: true, comment: [Redirect])
   }),
   comment: [
-    The `InvalidUserChecker` filter does the exact opposite of `UserChecker`. If the client accesses pages all the other pages -- HomePage, PlaylistPage, TrackPage -- and _is not logged in_, then the program redirects to the Login page.
+    The `InvalidUserChecker` filter does the exact opposite of `UserChecker`. If the client accesses pages all the other pages -- HomePage, PlaylistPage, TrackPage, Logout... -- and _is not logged in_, then the program redirects to the Login page.
   ],
   next_page: false,
   comment_next_page_: false,

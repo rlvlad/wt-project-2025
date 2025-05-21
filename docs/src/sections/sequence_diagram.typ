@@ -390,7 +390,7 @@
     _seq("B", "C", enable-dst:true, comment: [getAttribute("user")])
     _seq("C", "B", disable-src:true, comment: [return user])
     _seq("B", "D", enable-dst:true, comment: [getParameter("playlistTitle")])
-    _seq("D", "B", disable-src:true, comment: [return playlistTitle)])
+    _seq("D", "B", disable-src:true, comment: [return playlistTitle])
     _seq("B", "E", enable-dst:true, comment: [getTracksNotInPlaylist(playlistTitle,user.id())])
     _seq("E", "B", disable-src:true, comment: [return userTracks])
     _seq("B", "F", enable-dst:true, comment: [gson.toJson(userTracks)])
@@ -398,11 +398,11 @@
     _seq("B", "A", disable-src:true, comment: [userTracks])
   }),
   comment:[
-    As the name suggests, it obtains the tracks are _not_ in the given Playlist, in order to display them when the User wants to add a new track to a Playlist -- this happens when the User clicks on the corresponding button.
+    As the name suggests, this servlet obtains the tracks are _not_ in the given Playlist, in order to display them when the User wants to add a new track to a Playlist -- this happens when the User clicks on the corresponding button.
 
-    From the session, the User attribute is returned and the same applies for the title of the playlist, which instead comes from the request.
+    Then, the User attribute is retrieved from the session while the playlist title from the request.
 
-    Finally, the tracks-not-in-playlist are retrieved by the method of the same name: it returns a list which is then converted to a JSON object for JavaScript to parse.
+    In conclusion, the tracks that are not in the playlist are retrieved by the `getTracksNotInPlaylist` method: it returns a list which is converted to a JSON object via Gson for JavaScript.
 
     // Once the needed parameters are obtained, the `getTracksNotInPlaylist` method returns the track, which are converted to a JSON.
   ],
@@ -435,9 +435,13 @@
     ])
   }),
   comment:[
-    It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
+    // It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
 
     // Once the needed parameters are obtained, the `updateTrackOrder()` method updates the `playlist_tracks` table.
+
+    This servlet obtains the needed parameters by leveraging a JSON and a Record class. Javascript parses all the information and then sends them as a JSON to Java, which maps it all to the `RequestData` record class.
+
+    Afterwards, the `tracksIds` and `playlistId` attributes are passed to the `updateTrackOrder` method that loads multiple insertions in the database: instead of iterating and performing a query at each cycle, it prepares a transaction to be committed _one single time_.
   ],
   label_ : "track-reordering-sequence",
   comment_next_page_: false

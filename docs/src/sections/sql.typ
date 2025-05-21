@@ -1,3 +1,5 @@
+#import "../lib.typ" : *
+
 = SQL database schema<sql-database-schema>
 
 == Overview
@@ -80,8 +82,6 @@ CREATE TABLE playlist_tracks
 (
     playlist_id  integer not null,
     track_id     integer not null,
-    -- present ONLY in the RIA project
-    custom_order integer default 0,
 
     primary key (playlist_id, track_id),
     foreign key (playlist_id) REFERENCES playlist (playlist_id)
@@ -92,4 +92,21 @@ CREATE TABLE playlist_tracks
 ```<playlist-tracks-code>
 this table represents the "Contained in" relation in the ER diagram (@er-diagram). Its primary key is multiple (the only one in the project) and has to link a track to a playlist -- unlike the other tables, which _explicitly needed_ a primary key _and_ a unique constraints, in this case a composite key it's correct because a track can appear in multiple playlists.
 
-As stated in the comment, the `custom_order` attribute is needed only in the JS project, because the HTML version doesn't need to account for overridden track order in a playlist.
+- #ria() `playlist_tracks` table in RIA project
+```sql
+CREATE TABLE playlist_tracks
+(
+    playlist_track_id integer auto_increment,
+    playlist_id       integer not null,
+    track_id          integer not null,
+    custom_order      integer,
+
+    primary key (playlist_track_id),
+    unique (playlist_id, track_id),
+    foreign key (playlist_id) references playlist (playlist_id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    foreign key (track_id) references track (track_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+```<playlist-tracks-code>
+similarly to the previous code, this one too is the translation of the "Contained in" relation in the RIA ER diagram (@er-diagram-ria), with the added `custom_order` attribute. The previous primary key has been converted to unique -- similarly to other parts in the projects -- and the rest is unvaried.

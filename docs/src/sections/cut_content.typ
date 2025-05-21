@@ -8,6 +8,8 @@ During the development, we had many ideas and thought about ways to implement th
 
 In regards to the features, we wanted to implement *Next/Previous* buttons for the Playlists too, to make the application behave in a more coherent way: according to the submission, only the tracks in the playlist must implement it. Following this cohesion, the same can be said about the *Delete* functionalities: initially, along with the creation of a track/playlist we wanted to add a delete option -- if you add something, you might want to remove it at a later date.
 
+To comply with best practises, since the application does offer a logout button -- which is an added feature, not required -- it should also provide a user profile window; or at least welcome the user upon login.
+
 / JS: For the JavaScript project -- which is not correct to call like that, since we used TypeScript -- there were plans to implement a localization function, similar to how the HTML project works. It would have been a parser for the `.properties` files already created: they would have been recycled. The most ambituos idea was, however, to deploy the JavaScript project to Github pages. This is not possible with thymeleaf since it needs a server running at all times, but with JavaScript running the in client... it was perfect. To access the database, I planned to use SQL.js @sql-js and #sqlite() @sqlite.
 
 / CSS frameworks: We all know CSS is awesome and very powerful, however, as is the case with many technologies, its usage in a raw form is often negleted: as no one dares to write in #text(font: "New Computer Modern")[plain] #TeX because #LaTeX exists, software like Hibernate abstract the SQL from the developer, the same applies to CSS. In the wild there are many frameworks -- Tailwind-CSS, Sass just to name a few. We wanted to have our fair share and use Bulma @bulma; in the end, we wrote everything ourselves.
@@ -28,10 +30,12 @@ The issue was quite simple... the submission didn't specify this; instead, every
 
 Probably the saddest turn back was not being able to use the Spring Boot framework @spring-boot, which is commonly used. It's a framework to create production-level applications: as such, it surely is useful to know, whatever the case. Also, during research of how thymeleaf operates, it was basically always paired with Spring Boot.
 
+/ Caching: If a playlist doesn't change and the user requests it again, there should be no reason to make another GET call to the server. Instead, it should have been cached. We didn't search for specific software to do so: it remained a idea.
+
 == Code cleanup
 
 The last scrapped ideas were all about some refactor here and there:
 
 - Thymeleaf can process the parameters value directly, effectively bypassing the context setting: this could potentially reduce the boilerplate
 
-- Since the Record classes are immutable, in order to get them to work without settings all nulls there have been some workarounds
+- Since the Record classes are immutable, in order to get them to work without settings all nulls there have been some workarounds what could be rewritten and polished

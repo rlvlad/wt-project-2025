@@ -1,8 +1,31 @@
-#import "../lib.typ"
+#import "../lib.typ" :*
 
-= RIA-specific features<ria-specifics>
+= Specifications completion
 
-This project started from the HTML and thymeleaf, where we developed most of the servlets, the ideas and the HTML webpages. Then, we moved on the next task: the RIA, that is the Rich Internet Application.
+// - Tutto il css
+// - La sidebar
+// - Logout
+// - Register
+
+== In all subprojects
+
+In addition to the requirements, we implemented a series of new feutures:
+
+- The logout button (@logout-sequence), to go along with the login one
+
+- The same applies to the registration button (@register-sequence)
+
+- All the CSS styling (@css-styling), from colours to buttons to modal
+
+- The top navigation bar, where the title of the page and various buttons are located
+
+== HTML-specific features<html-specifics>
+
+- THe bottom navigation bar, where the Home button is located
+
+== RIA-specific features<ria-specifics>
+
+This project started from the HTML, where we developed most of the servlets, the ideas and the HTML webpages. Then, we moved on the next task: the RIA, that is the Rich Internet Application.
 
 For this very reason, most of the features were ported to the latter subproject: there is no need to go through the components and logic all over again. Still, the RIA subproject -- the "JavaScript version" -- requires more features and some changes to how the overwall server works.
 
