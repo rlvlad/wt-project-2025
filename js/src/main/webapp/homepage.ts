@@ -1,49 +1,18 @@
 (function () {
-    const HOMEPAGE_LABEL: string = "All Playlists";
-    const HOMEPAGE_ID: string = "homepage", PLAYLIST_PAGE_ID: string = "playlist", PLAYER_PAGE_ID: string = "player";
     let lastPlaylist: Playlist = null, lastTrack: Track = null;
     let tracklist: Track[], trackGroup = 0;
     let homepage = new HomePage(), playlistPage = new PlaylistPage(), playerPage = new PlayerPage();
 
-    window.onload = function () {
-        homepage.show();
-
-        document.getElementById("logout-button").addEventListener("click", () => {
-            makeCall("GET", "Logout", null, (req: XMLHttpRequest) => {
-                if (req.readyState == XMLHttpRequest.DONE) {
-                    if (req.status == 200) {
-                        location.href = "index.html";
-                    }
-                }
-            });
-        });
-
-        // add listeners on sidebar buttons
-        document.getElementById("homepage-button").addEventListener("click", function () {
-            homepage.show();
-        });
-
-        document.getElementById("playlist-button").addEventListener("click", function () {
-            if (lastPlaylist != null) {
-                playlistPage.show(lastPlaylist);
-            }
-        });
-
-        document.getElementById("track-button").addEventListener("click", function () {
-            if (lastTrack != null) {
-                playerPage.show(lastTrack);
-            }
-        });
-
-        // load modal data when clicking on the modal
-        document.getElementById("upload-track-modal-button").addEventListener("click", function () {
-            loadYears();
-            loadGenres();
-            showModal(document.getElementById("upload-track"));
-        });
-    }
+    window.addEventListener("load", () => {
+        let orchestrator = new PageOrchestrator();
+        orchestrator.start();
+        orchestrator.refreshPage();
+    })
 
     function HomePage() {
+        const HOMEPAGE_LABEL: string = "All Playlists";
+        const HOMEPAGE_ID: string = "homepage";
+
         this.show = function () {
             clearModals();
             clearBottonNavbar();
@@ -575,6 +544,7 @@
     }
 
     function PlaylistPage() {
+        const PLAYLIST_PAGE_ID: string = "playlist";
         this.show = function (playlist: Playlist) {
             clearBottonNavbar();
             clearModals();
@@ -790,6 +760,7 @@
     }
 
     function PlayerPage() {
+        const PLAYER_PAGE_ID: string = "player";
         this.show = function (track: Track) {
             loadSingleTrack(track);
             clearModals();
@@ -942,54 +913,97 @@
         });
     }
 
-    /**
-     * Loads the musical genres for upload track modal.
-     */
-    function loadGenres() {
 
-        makeCall("GET", "genres.json", null, (req: XMLHttpRequest) => {
-            let genres: string[];
-
-            if (req.readyState == XMLHttpRequest.DONE) {
-                if (req.status == 200) {
-                    genres = JSON.parse(req.responseText);
-                } else {
-                    genres = [];
-                }
-
-                let genre_selection: HTMLElement = document.getElementById("genre-selection");
-                genre_selection.innerHTML = "";
-                let option: HTMLOptionElement = document.createElement("option");
-                option.setAttribute("value", "");
-                option.textContent = "Genre";
-                genre_selection.appendChild(option);
-
-                genres.forEach(function (genre: string) {
-                    option = document.createElement("option");
-                    option.textContent = genre;
-                    genre_selection.appendChild(option);
+    function PageOrchestrator() {
+        this.start = function () {
+            document.getElementById("logout-button").addEventListener("click", () => {
+                makeCall("GET", "Logout", null, (req: XMLHttpRequest) => {
+                    if (req.readyState == XMLHttpRequest.DONE) {
+                        if (req.status == 200) {
+                            location.href = "index.html";
+                        }
+                    }
                 });
-            }
-        });
-    }
+            });
 
-    /**
-     * Loads year from 1900 to the current one for upload track modal.
-     */
-    function loadYears() {
-        let today: number = new Date().getFullYear();
-        let year_selection = document.getElementById("year-selection");
-        year_selection.innerHTML = "";
+            // add listeners on sidebar buttons
+            document.getElementById("homepage-button").addEventListener("click", function () {
+                homepage.show();
+            });
 
-        let option: HTMLOptionElement = document.createElement("option");
-        option.setAttribute("value", "");
-        option.textContent = "Year";
-        year_selection.appendChild(option);
+            document.getElementById("playlist-button").addEventListener("click", function () {
+                if (lastPlaylist != null) {
+                    playlistPage.show(lastPlaylist);
+                }
+            });
 
-        for (let i = today; i >= 1901; i--) {
-            option = document.createElement("option");
-            option.textContent = i.toString();
+            document.getElementById("track-button").addEventListener("click", function () {
+                if (lastTrack != null) {
+                    playerPage.show(lastTrack);
+                }
+            });
+
+            // load modal data when clicking on the modal
+            document.getElementById("upload-track-modal-button").addEventListener("click", function () {
+                loadYears();
+                loadGenres();
+                showModal(document.getElementById("upload-track"));
+            });
+        }
+
+        this.refreshPage = function () {
+            homepage.show();
+        }
+
+        /**
+         * Loads year from 1900 to the current one for upload track modal.
+         */
+        function loadYears() {
+            let today: number = new Date().getFullYear();
+            let year_selection = document.getElementById("year-selection");
+            year_selection.innerHTML = "";
+
+            let option: HTMLOptionElement = document.createElement("option");
+            option.setAttribute("value", "");
+            option.textContent = "Year";
             year_selection.appendChild(option);
+
+            for (let i = today; i >= 1901; i--) {
+                option = document.createElement("option");
+                option.textContent = i.toString();
+                year_selection.appendChild(option);
+            }
+        }
+
+        /**
+         * Loads the musical genres for upload track modal.
+         */
+        function loadGenres() {
+
+            makeCall("GET", "genres.json", null, (req: XMLHttpRequest) => {
+                let genres: string[];
+
+                if (req.readyState == XMLHttpRequest.DONE) {
+                    if (req.status == 200) {
+                        genres = JSON.parse(req.responseText);
+                    } else {
+                        genres = [];
+                    }
+
+                    let genre_selection: HTMLElement = document.getElementById("genre-selection");
+                    genre_selection.innerHTML = "";
+                    let option: HTMLOptionElement = document.createElement("option");
+                    option.setAttribute("value", "");
+                    option.textContent = "Genre";
+                    genre_selection.appendChild(option);
+
+                    genres.forEach(function (genre: string) {
+                        option = document.createElement("option");
+                        option.textContent = genre;
+                        genre_selection.appendChild(option);
+                    });
+                }
+            });
         }
     }
 })();

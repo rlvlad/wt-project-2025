@@ -88,8 +88,8 @@ public class PlaylistDAO implements DAO {
         List<Track> tracks = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                SELECT track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path, c.count
-                FROM track a NATURAL JOIN playlist_tracks b, (SELECT COUNT(*) AS count
+                SELECT custom_order, track_id, title, album_title, artist, year, genre, song_checksum, image_checksum, song_path, image_path
+                FROM playlist_tracks b NATURAL JOIN track a , (SELECT COUNT(*) AS count
                                                               FROM track a NATURAL JOIN playlist_tracks b
                                                               WHERE playlist_id = ? AND custom_order IS NOT NULL) c
                 WHERE b.playlist_id = ?
@@ -97,7 +97,8 @@ public class PlaylistDAO implements DAO {
                     CASE WHEN c.count = 0 THEN artist END,
                     CASE WHEN c.count = 0 THEN year END,
                     CASE WHEN c.count = 0 THEN title END,
-                    CASE WHEN c.count != 0 THEN -custom_order END DESC
+                    CASE WHEN c.count != 0 THEN -custom_order END DESC,
+                    CASE WHEN c.count != 0 THEN playlist_track_id END
                 """);
         preparedStatement.setInt(1, playlistID);
         preparedStatement.setInt(2, playlistID);
@@ -386,15 +387,16 @@ public class PlaylistDAO implements DAO {
      *
      * @param trackIds    ordered list of track ids to update
      * @param playlist_id playlist_id of the Playlist in which change the custom ordering
+     * @param user        session user
      * @throws SQLException
      */
     public void updateTrackOrder(List<Integer> trackIds, int playlist_id, User user) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("""
-                UPDATE playlist_tracks p1
+                UPDATE playlist_tracks pt
                 SET custom_order = ?
                 WHERE playlist_id = ? AND track_id = ? AND playlist_id IN (SELECT playlist_id
-                                                                           FROM playlist p2
-                                                                           WHERE user_id = ? AND p2.playlist_id = p1.playlist_id)
+                                                                           FROM playlist p
+                                                                           WHERE user_id = ? AND p.playlist_id = pt.playlist_id)
                 """);
 
         connection.setAutoCommit(false);
