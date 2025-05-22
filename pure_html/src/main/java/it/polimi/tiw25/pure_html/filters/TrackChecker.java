@@ -47,7 +47,7 @@ public class TrackChecker extends HttpFilter {
             return;
         }
 
-        boolean isOwner = false;
+        boolean isOwner;
         try {
             isOwner = trackDAO.checkTrackOwner(trackId, user);
         } catch (SQLException e) {

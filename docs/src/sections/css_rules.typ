@@ -218,7 +218,7 @@ Last but not least, the errors.
 
 == Modal<css-modal>
 
-/ RIA version : The modals in the RIA project are dynamically generated via JavaScript only when needed and removed when the screen is changed. This section has been written with the HTML version in mind.
+/ RIA version : The modals in the RIA project are dynamically generated via Javascript only when needed and removed when the screen is changed. This section has been written with the HTML version in mind.
 
 Finally, undoubtedly the most difficult CSS component in this project to comprehend is the modal, which is a dialog window created entirely with CSS.
 

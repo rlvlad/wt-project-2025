@@ -13,9 +13,9 @@
     _par("C", display-name: "HomePage")
 
     _seq("A", "B", enable-dst: true, comment: [Login `||` Register])
-    _seq("B", "D", enable-dst: true, comment: [getAttribute("user")])
-    _seq("D", "B", disable-src: true, comment: [return user $=>$ [`user != null`] ? Redirect])
-    _seq("B", "C", disable-src: true, comment: [Redirect])
+    _seq("B", "D", enable-dst: true, comment: [getAttribute ("user")])
+    _seq("D", "B", disable-src: true, comment: [return user])
+    _seq("B", "C", disable-src: true, comment: [[user != null] ? redirect])
   }),
   comment: [
     The `UserChecker` filter checks, once the client accesses the Login or Register webpage, if the User is logged.
@@ -38,13 +38,13 @@
     _par("D", display-name: "Session")
     _par("C", display-name: "Login")
 
-    _seq("A", "B", enable-dst: true, comment: [Home- `||` Playlist- `||` TrackPage])
-    _seq("B", "D", enable-dst: true, comment: [getAttribute("user")])
-    _seq("D", "B", disable-src: true, comment: [return user $=>$ [`user == null`] ? Redirect])
-    _seq("B", "C", disable-src: true, comment: [Redirect])
+    _seq("A", "B", enable-dst: true, comment: [HomePage `||` Track `||` Logout `||` ...])
+    _seq("B", "D", enable-dst: true, comment: [getAttribute ("user")])
+    _seq("D", "B", disable-src: true, comment: [return user])
+    _seq("B", "C", disable-src: true, comment: [[user == null] ? redirect])
   }),
   comment: [
-    The `InvalidUserChecker` filter does the exact opposite of `UserChecker`. If the client accesses pages all the other pages -- HomePage, PlaylistPage, TrackPage, Logout... -- and _is not logged in_, then the program redirects to the Login page.
+    The `InvalidUserChecker` filter does the exact opposite of `UserChecker`. If the client accesses pages all the other pages -- HomePage, PlaylistPage, Track, Logout... -- and _is not logged in_, then the program redirects to the Login page.
   ],
   next_page: false,
   comment_next_page_: false,
@@ -72,8 +72,8 @@
     _seq("B", "F", enable-dst: true, comment: [getParameter ("trackId")])
     _seq("F", "B", disable-src: true, comment: [return playlistId])
     _seq("B", "C", enable-dst: true, comment: [checkPlaylistOwner (playlistId, user)])
-    _seq("C", "B", disable-src: true, comment: [return result $=>$ [result == false] ? sendError()])
-    _seq("B", "E", disable-src: true, comment: [sendError("Playlist does not exist")])
+    _seq("C", "B", disable-src: true, comment: [return result])
+    _seq("B", "E", disable-src: true, comment: [[result == false] ? sendError ("Playlist does not exist")])
   }),
   comment: [
     The `PlaylistChecker` filter is invoked in two scenario: after the User has clicked on a playlist on HomePage (@playlistpage-sequence) and when uploading a track (@uploadtrack-sequence).
@@ -102,15 +102,15 @@
     _seq("B", "F", enable-dst: true, comment: [getParameter ("selectedTracks")])
     _seq("F", "B", disable-src: true, comment: [return selectedTracks])
     _seq("B", "C", enable-dst: true, comment: [for trackId in selectedTracks \ checkTrackOwner (trackId, user)])
-    _seq("C", "B", disable-src: true, comment: [return isOwner $=>$ [isOwner == false] ? sendError()])
-    _seq("B", "E", disable-src: true, comment: [sendError("Track does not exist")])
+    _seq("C", "B", disable-src: true, comment: [return isOwner])
+    _seq("B", "E", disable-src: true, comment: [[isOwner == false] ? sendError ("Track does not exist")])
   }),
   comment: [
     Even the `SelectedTracksChecker` filter is invoked in two scenarios: during the creation of a playlist (@createplaylist-sequence) and during the UploadTrack sequence (@uploadtrack-sequence).
 
     `SelectedTracksChecker` applies a very similar pipeline `PlaylistChecker`: instead of checking the playlist, it does the same job but for one of more tracks when the User requests to add them to a playlist.
 
-    Again similarly to `PlaylistChecker`, tt also obtains the User attribute from the session and the needed parameters; if the User does not have access rights to the requested track(s), the response is `ERROR 403`.
+    Again similarly to `PlaylistChecker`, it also obtains the User attribute from the session and the needed parameters; if the User does not have access rights to the requested track(s), the response is `ERROR 403`.
   ],
   next_page: false,
   comment_next_page_: false,
@@ -135,8 +135,8 @@
     _seq("B", "F", enable-dst: true, comment: [getParameter ("trackId")])
     _seq("F", "B", disable-src: true, comment: [return trackId])
     _seq("B", "C", enable-dst: true, comment: [checkTrackOwner (trackId, user)])
-    _seq("C", "B", disable-src: true, comment: [return isOwner $=>$ [isOwner == false] ? sendError()])
-    _seq("B", "E", disable-src: true, comment: [sendError("Track does not exist")])
+    _seq("C", "B", disable-src: true, comment: [return isOwner])
+    _seq("B", "E", disable-src: true, comment: [[result == false] ? sendError("Track does not exist")])
   }),
   comment: [
     Finally the `TrackChecker` filter does the same exact job as `SelectedTracksChcker`, but for a single track once a User presses the corresponding button in the `playlist_page` (see @track-sequence).
