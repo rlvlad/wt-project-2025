@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="CSS/colors.css" th:href="@{/CSS/colors.css}">
+    <link rel="stylesheet" href="CSS/components.css" th:href="@{/CSS/components.css}">
+    <link rel="stylesheet" href="CSS/index.css" th:href="@{/CSS/index.css}">
+    <link rel="icon" type="image/x-icon" href="img/icon.ico" th:href="@{/img/icon.ico}">
+</head>
+<body>
+<div class="center-panel">
+    <div class="welcome" th:text="#{register.welcome}">Register</div>
+    <hr>
+    <div th:if="${isUserAdded == false}" class="sql-error">
+        <span th:text="#{register.taken}">Nickname already taken</span>
+        <hr>
+    </div>
+    <form action="Register" method="POST">
+        <div class="credentials">
+            <input class="text-field" type="text" id="nickname" name="nickname"
+                   placeholder="Nickname" required><br>
+            <input class="text-field" type="password" id="password" name="password"
+                   placeholder="Password" required>
+            <input class="text-field" type="text" id="name" name="name"
+                   placeholder="Name" th:placeholder="#{register.name}" required>
+            <input class="text-field" type="text" id="surname" name="surname"
+                   placeholder="Surname" th:placeholder="#{register.surname}" required>
+        </div>
+        <div class="nav-bar">
+            <input type="submit" class="button" value="Create Account" th:value="#{register.createAccount}">
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home page</title>
+    <link rel="stylesheet" href="CSS/colors.css" th:href="@{/CSS/colors.css}">
+    <link rel="stylesheet" href="CSS/components.css" th:href="@{/CSS/components.css}">
+    <link rel="icon" type="image/x-icon" href="img/icon.ico" th:href="@{/img/icon.ico}">
+</head>
+<body>
+<div class="nav-bar">
+    <div class="main-label" th:text="#{tracks_page.allTracks}">All Tracks</div>
+    <div class="spacer"></div>
+    <button class="button" th:text="#{tracks_page.addTrack}">Add Track</button>
+    <button class="button" th:text="#{tracks_page.removeTrack}">Remove Track</button>
+    <button class="button logout" th:text="#{tracks_page.logout}">Logout</button>
+</div>
+<div class="items-container">
+    <div class="single-item">
+        <span class="first-line">TitleTrack</span> <br>
+        <span class="second-line">AlbumTitle</span>
+    </div>
+    <div class="single-item"></div>
+    <div class="single-item"></div>
+    <div class="single-item"></div>
+    <div class="single-item"></div>
+    <div class="single-item"></div>
+    <div class="single-item"></div>
+    <div class="single-item"></div>
+    <div class="single-item"></div>
+</div>
+<div class="nav-bar">
+    <button class="button" th:text="#{tracks_page.previousTracks}">Previous Tracks</button>
+    <div class="spacer"></div>
+    <a href="home_page.html" th:href="@{/HomePage}">
+        <button class="button">Home</button>
+    </a>
+    <div class="spacer"></div>
+    <button class="button" th:text="#{tracks_page.nextTracks}">Next Tracks</button>
+</div>
+</body>
+</html>

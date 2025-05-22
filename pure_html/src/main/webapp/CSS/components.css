@@ -1,0 +1,232 @@
+body {
+    height: 100vh;
+    padding: 1rem 2rem 2rem 2rem;
+    background-color: var(--default-background);
+    font-family: "JetBrains Mono", monospace;
+    line-height: 1.6;
+    word-spacing: 1px;
+    text-overflow: ellipsis;
+}
+
+/* ELEMENTS */
+
+.text-field {
+    width: 100%;
+    background-color: var(--selection-background);
+    border: 2px solid var(--dark-foreground);
+    font-family: "JetBrains Mono", monospace;
+}
+
+/* To fix credentials input size */
+input{
+    box-sizing: border-box;
+}
+
+select:invalid {
+    color: #505050;
+}
+
+.button {
+    color: var(--selection-background);
+    background-color: var(--default-foreground);
+    border: 2px solid var(--dark-foreground);
+    height: 3rem;
+    border-radius: 6px;
+    font-weight: bold;
+    vertical-align: middle;
+    margin: 0.5rem 0 0.5rem 0;
+    padding: 1em;
+    font-family: "JetBrains Mono", monospace;
+}
+
+.button:hover {
+    background-color: var(--dark-foreground);
+    cursor: pointer;
+}
+
+.logout {
+    background-color: var(--variables);
+    font-weight: bolder;
+    color: var(--lighter-background);
+}
+
+.logout:hover {
+    background-color: var(--data-types);
+}
+
+/* used for login, register and track player */
+.center-panel {
+    width: 300px;
+    background-color: var(--lighter-background);
+    border: 1px solid var(--dark-foreground);
+    padding: 3rem;
+    text-align: center;
+}
+
+
+.label {
+    font-size: 0.9rem;
+}
+
+.song-button {
+    width: 100%;
+}
+
+.playlist-title {
+    width: 100%;
+}
+
+.text-container {
+    flex-wrap: wrap;
+}
+
+.error {
+    color: var(--variables);
+    padding-top: 0.5rem;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ITEM CONTAINER AND ITEMS */
+
+.nav-bar {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.items-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-content: baseline;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0 1rem 0;
+}
+
+.single-item {
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: var(--light-background);
+    border: 2px solid var(--data-types);
+    border-radius: 5px;
+    color: var(--lighter-background);
+    padding: 1rem;
+    height: 150px;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    text-align: left;
+    align-content: end;
+    align-items: end;
+    justify-content: space-between;
+}
+
+.single-item:hover {
+    background-color: var(--variables);
+    cursor: pointer;
+}
+
+.first-line {
+    width: 100%;
+    color: var(--lighter-background);
+}
+
+.second-line {
+    width: 100%;
+    color: var(--comments);
+}
+
+/* LINE AND SPACERS */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid var(--light-background);
+    margin: 1em 0;
+    padding: 0;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+/* LABELS */
+
+.main-label {
+    /*padding: 2rem 3em 2rem 3rem;*/
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--light-background)
+}
+
+/* MODALS */
+
+.modal-window {
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.251);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 999; /* on top of everything */
+    visibility: hidden; /* default visibility */
+    pointer-events: none; /* can't be targeted by cursor */
+    /*transition: all 1s;*/
+}
+
+.modal-window:target {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-window > div {
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1em;
+    background: var(--lighter-background);
+    border: 2px solid var(--variables);
+    overflow: hidden;
+}
+
+.modal-close {
+    color: var(--lighter-background);
+    background-color: var(--variables);
+    border-radius: 5px;
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    cursor: pointer;
+    padding: 0.2rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+.modal-close:hover {
+    color: black;
+}
+
+.modal-title {
+    font-size: 1.3rem;
+    padding-bottom: 1em;
+}

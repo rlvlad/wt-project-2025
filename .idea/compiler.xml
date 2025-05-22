@@ -10,5 +10,8 @@
         <module name="pure_html" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="tiw-2025" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
