@@ -456,12 +456,12 @@
     _par("D", display-name: "Session")
     _par("E", display-name: "Gson")
 
-    _seq("A", "B", comment: ["doGet()"])
+    _seq("A", "B", enable-dst: true, comment: [doGet()])
     _seq("B", "C", comment: [getAttribute("user")])
     _seq("C", "B", comment: [return user])
     _seq("B", "C", comment: [getUserTracks(user)])
     _seq("C", "B", comment: [return userTracks])
-    _seq("B", "E", comment: [gson.toJson(userTracks)])
+    _seq("B", "E", disable-src: true, comment: [gson.toJson(userTracks)])
     _seq("E", "B", comment: [return userTracks[JSON]])
   }),
   comment:[

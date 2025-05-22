@@ -1,18 +1,28 @@
 (function () {
+    // Initialize all the global variables and objects
     let lastPlaylist: Playlist = null, lastTrack: Track = null;
     let tracklist: Track[], trackGroup = 0;
     let homepage = new HomePage(), playlistPage = new PlaylistPage(), playerPage = new PlayerPage();
 
+    // Load the HomePage via the PageOrchestrator
     window.addEventListener("load", () => {
         let orchestrator = new PageOrchestrator();
         orchestrator.start();
         orchestrator.refreshPage();
     })
 
+    /**
+     * Class to manage the HomePage.
+     *
+     * @constructor
+     */
     function HomePage() {
         const HOMEPAGE_LABEL: string = "All Playlists";
         const HOMEPAGE_ID: string = "homepage";
 
+        /**
+         * Show the homepage.
+         */
         this.show = function () {
             clearModals();
             clearBottomNavbar();
@@ -20,6 +30,8 @@
             loadUploadTrackModal();
             loadButtons();
             loadPlaylists();
+
+            // show the upload and add track modal
             document.getElementById("upload-track-modal-button").className = "button";
             document.getElementById("track-selector-modal-button").className = "button";
         }
@@ -34,15 +46,12 @@
             mainLabel.textContent = HOMEPAGE_LABEL;
 
             makeCall("GET", "HomePage", null,
-                // callback function
                 function (req: XMLHttpRequest) {
-                    if (req.readyState == XMLHttpRequest.DONE) { // == 4
+                    if (req.readyState == XMLHttpRequest.DONE) {
                         let message: string = req.responseText;
                         if (req.status == 200) {
-                            // parse JSON for user playlists
                             let playlists: Playlist[] = JSON.parse(message);
 
-                            // pass the JSON of all Playlists
                             playlistGrid(playlists);
                         } else {
                             alert("Cannot recover data. Maybe the User has been logged out.");
@@ -52,11 +61,12 @@
         }
 
         /**
-         * Load buttons and button functionality outside the main div in the home view.
+         * Load buttons in the top nav bar and button functionality in the sidebar.
          */
         function loadButtons(): void {
             // Replace the track selector button and add "create playlist" functionality;
-            // needed for removing already present event listeners, as this button is also used for adding tracks to a playlist.
+            // needed for removing already present event listeners, as this button is also used for adding tracks to a
+            // playlist.
             let modalButton = document.getElementById("track-selector-modal-button");
             let newButton = modalButton.cloneNode(true);
             modalButton.parentNode.replaceChild(newButton, modalButton);
@@ -66,9 +76,11 @@
                 showModal(document.getElementById("create-playlist"));
             });
 
-            // Even if no submit button is present, forms with a single implicit submission blocking field still submit when the Enter key is pressed
+            // Even if no submit button is present, forms with a single implicit submission blocking field still
+            // submit when the Enter key is pressed
             // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission
-            document.getElementById("create-playlist").getElementsByTagName("form").item(0).addEventListener("submit", (e) => {
+            document.getElementById("create-playlist").getElementsByTagName("form")
+                .item(0).addEventListener("submit", (e) => {
                 e.preventDefault();
             });
 
@@ -157,11 +169,11 @@
          * @param playlist
          */
         function createPlaylistButton(playlist: Playlist): HTMLButtonElement {
-            let button = document.createElement("button");
+            let button: HTMLButtonElement = document.createElement("button");
             button.setAttribute("class", "single-item playlist-title");
             button.setAttribute("name", "playlistId");
 
-            let span = document.createElement("span");
+            let span: HTMLSpanElement = document.createElement("span");
             span.setAttribute("class", "first-line");
             span.textContent = playlist.title;
 
@@ -265,7 +277,6 @@
             form.insertBefore(albumInput, navbar);
             form.insertBefore(document.createElement("br"), navbar);
 
-
             let yearSelector: HTMLSelectElement = document.createElement("select");
             yearSelector.className = "text-field";
             yearSelector.name = "year";
@@ -315,10 +326,10 @@
         }
 
         /**
-         * Get user Tracks and creates list items.
+         * Get user Tracks and creates draggable list items.
          *
-         * @param trackSelector
-         * @param playlist
+         * @param trackSelector unordered list in which to load all the draggable items
+         * @param playlist playlist from where to fetch the Tracks
          */
         function loadUserTracksOl(trackSelector: HTMLOListElement, playlist: Playlist) {
             trackSelector.innerHTML = "";
@@ -361,7 +372,6 @@
             startElement = list_item;
         }
 
-
         /**
          * The User is dragging the Element around.
          *
@@ -372,7 +382,6 @@
             let list_item: HTMLLIElement = event.target as HTMLLIElement;
             list_item.style.cursor = "grab";
         }
-
 
         /**
          * The User has started dragging the Element.
@@ -390,7 +399,6 @@
          * @param event the drop event
          */
         function drop(event: Event) {
-            // HTML output
             let finalDest: HTMLLIElement = event.target as HTMLLIElement;
 
             let completeList: HTMLUListElement = finalDest.closest("ol");
@@ -409,7 +417,6 @@
                     songsArray[indexDest],
                 );
             }
-            // update the new position by making a POST call to the database
         }
 
         /**
@@ -493,20 +500,18 @@
         }
 
         /**
-         * Closes the reorder tracks modal.
+         * Removes the reorder tracks modal.
          */
         function closeReorderModal() {
             let modal_div: HTMLElement = document.getElementById("reorder-tracks-modal");
             modal_div.remove();
-
-            // Make it not visible
-            // modal_div.style.visibility = "hidden";
-            // modal_div.style.opacity = "0";
-            // modal_div.style.pointerEvents = "none";
         }
 
         /**
          * Save new Tracks custom order.
+         *
+         * @param e mouse event from the User
+         * @param _playlistId ID of the Playlist
          */
         function saveOrder(e: MouseEvent, _playlistId: string) {
             let songsContainer: HTMLElement = document.getElementById("track-reorder");
@@ -533,7 +538,8 @@
                 }
             }
 
-            let requestData = {
+            // data for the servlet to update the custom order
+            let requestData: { trackIds: number[], playlistId: string } = {
                 trackIds: _trackIds,
                 playlistId: _playlistId
             }
@@ -546,12 +552,22 @@
 
     function PlaylistPage() {
         const PLAYLIST_PAGE_ID: string = "playlist";
+
+        /**
+         * Show the Playlist page.
+         *
+         * @param playlist
+         */
         this.show = function (playlist: Playlist) {
             clearBottomNavbar();
             clearModals();
             loadAddTracksModal();
             loadPlaylistView(playlist);
+
+            // hide the upload track modal
             document.getElementById("upload-track-modal-button").className = "button hidden";
+
+            // show the add track modal
             document.getElementById("track-selector-modal-button").className = "button";
         }
 
@@ -570,9 +586,10 @@
             main.appendChild(container);
 
             for (let i: number = 0; i < 5; i++) {
-                let track = tracks[i + trackGroup * 5];
+                let track: Track = tracks[i + trackGroup * 5];
                 if (track == null)
                     break;
+
                 button = document.createElement("button");
                 button.setAttribute("class", "single-item song-button");
                 button.setAttribute("name", "playlistId");
@@ -610,6 +627,8 @@
 
         /**
          * Load all the Tracks associated to a Playlist.
+         *
+         * @param playlist Playlist of which to load the Tracks
          */
         function loadPlaylistTracks(playlist: Playlist) {
             cleanMain()
@@ -621,19 +640,16 @@
 
             makeCall("GET", "Playlist?playlistId=" + playlist.id.toString(),
                 null,
-                // callback function
                 function (req: XMLHttpRequest) {
-                    if (req.readyState == XMLHttpRequest.DONE) { // == 4
+                    if (req.readyState == XMLHttpRequest.DONE) {
                         let message: string = req.responseText;
                         if (req.status == 200) {
-                            // parse JSON for user tracks
                             let tracks: Track[] = JSON.parse(message);
 
                             if (tracks.length === 0) {
                                 return;
                             }
 
-                            // pass the list of all Tracks and setup buttons
                             tracklist = tracks;
                             trackGrid(tracks);
                             loadPrevNextButton();
@@ -645,8 +661,9 @@
         }
 
         /**
-         * Load everything needed for viewing and interacting with the playlist and its contents
-         * @param playlist
+         * Load everything needed for viewing and interacting with the Playlist and its contents.
+         *
+         * @param playlist Playlist to load
          */
         function loadPlaylistView(playlist: Playlist): void {
             loadPlaylistTracks(playlist)
@@ -686,6 +703,7 @@
                     form.reportValidity();
                 }
             });
+
             let bottomNavbar: HTMLDivElement = document.createElement("div");
             bottomNavbar.id = "bottom-nav-bar";
             bottomNavbar.className = "nav-bar";
@@ -759,12 +777,25 @@
         }
     }
 
+    /**
+     * Class to manage the Player page, which contains only the single track player.
+     *
+     * @constructor
+     */
     function PlayerPage() {
         const PLAYER_PAGE_ID: string = "player";
+
+        /**
+         * Show the Track to play.
+         *
+         * @param track Track to play
+         */
         this.show = function (track: Track) {
             loadSingleTrack(track);
             clearModals();
             clearBottomNavbar();
+
+            // Hide the modals
             document.getElementById("upload-track-modal-button").className = "button hidden";
             document.getElementById("track-selector-modal-button").className = "button hidden";
         }
@@ -833,6 +864,8 @@
 
         /**
          * Load a single Track from a Playlist.
+         *
+         * @param track Track to load
          */
         function loadSingleTrack(track: Track) {
             // clean main div
@@ -871,7 +904,7 @@
     /**
      * Get user tracks and add them to the track selector parameter.
      *
-     * @param trackSelector
+     * @param trackSelector HTML element to append the loaded user tracks
      * @param playlist optional parameter used for just loading tracks not present in the specified playlist
      */
     function loadUserTracks(trackSelector: HTMLElement, playlist: Playlist = null) {
@@ -914,7 +947,15 @@
     }
 
 
+    /**
+     * Centralized management of the HomePage.
+     *
+     * @constructor
+     */
     function PageOrchestrator() {
+        /**
+         * Initializes the HomePage: adds listeners on buttons, refreshes the page.
+         */
         this.start = function () {
             document.getElementById("logout-button").addEventListener("click", () => {
                 makeCall("GET", "Logout", null, (req: XMLHttpRequest) => {
@@ -951,12 +992,15 @@
             });
         }
 
+        /**
+         * Refresh the HomePage: clear all modals and reload them.
+         */
         this.refreshPage = function () {
             homepage.show();
         }
 
         /**
-         * Loads year from 1900 to the current one for upload track modal.
+         * Load year from 1900 to the current one for upload track modal.
          */
         function loadYears() {
             let today: number = new Date().getFullYear();
@@ -976,10 +1020,9 @@
         }
 
         /**
-         * Loads the musical genres for upload track modal.
+         * Load the musical genres for upload track modal.
          */
         function loadGenres() {
-
             makeCall("GET", "genres.json", null, (req: XMLHttpRequest) => {
                 let genres: string[];
 
