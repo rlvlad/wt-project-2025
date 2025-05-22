@@ -472,3 +472,81 @@
   label_: "get-user-tracks-sequence",
   comment_next_page_: false,
 )
+
+// VERY MUCH RIA SPECIFIC
+
+#seq_diagram(
+  [#ria() Event: Login],
+  diagram({
+    _par("A", display-name: "index.html")
+    _par("B", display-name: [utils.ts + login.ts])
+    _par("E", display-name: [Login])
+    _par("C", display-name: [UserDAO])
+    _par("D", display-name: [homepage.html])
+
+    _seq("A", "B", comment: [GET])
+    _seq("A", "B", enable-dst: true, comment: [Login], lifeline-style: (fill: rgb("#3178C6")))
+    _seq("B", "E", comment: [POST: Login])
+    _seq("E", "C", comment: [checkUser()])
+    _seq("C", "B", comment: [Response])
+    _seq("B", "B", comment: [[Response.status != 200] ? error])
+    _seq("B", "D", disable-src: true, comment: [Redirect])
+  }),
+  comment: [
+    As the server is deployed the `index.html` request the associated Javascript files (we use Typescript, but it transplies to Javascript and that's what is imported in the HTML files). As they have been loaded thanks to the IIFE, the User is able to Login.
+
+    Once the button has been clicked, Javascript performs a POST request -- always via the `makeCall()` function -- to the Login servlet, which, as seen in the Login sequence diagram (@login-sequence), checks if the User exists: if that's the case it returns a 200 OK and the User is redirected to the Homepage.
+
+    If not, then a error div will appear above the Login button.
+  ],
+  label_: "ria-event-login-sequence",
+  comment_next_page_: false,
+)
+
+#seq_diagram(
+  [#ria() Event: Register],
+  diagram({
+    _par("A", display-name: "index.html")
+    _par("B", display-name: [utils.ts])
+    _par("D", display-name: [register.html + register.ts])
+    _par("E", display-name: [Register])
+    _par("C", display-name: [UserDAO])
+
+    _seq("A", "B", comment: [GET])
+    _seq("A", "B", enable-dst: true, comment: [register()], lifeline-style: (fill: rgb("#3178C6")))
+    _seq("B", "D", comment: [Redirect])
+    _seq("D", "E", comment: [Register])
+    _seq("E", "C", comment: [addUser()])
+    _seq("C", "B", comment: [Response])
+    _seq("B", "D", comment: [[response.status != 200] ? error])
+    _seq("B", "A", disable-src: true, comment: [Redirect])
+  }),
+  comment: [
+    Instead of logging in, the User may want to register: probably because there they have no account. If that's the case, after the Javascript files will have been fetched, the User will be redirect to the `register.html` page.
+
+    From here, as seen in the Register sequence (@register-sequence), the servlet adds the User: if that's successful, then there will the redirect to the `index.html`; if not, an error message will appear above the Register button.
+  ],
+  label_: "ria-event-register-sequence",
+  comment_next_page_: false,
+)
+
+#seq_diagram(
+  [#ria() Event: Logout],
+  diagram({
+    _par("A", display-name: "home_page.html")
+    _par("B", display-name: [homepage.ts])
+    _par("C", display-name: [Logout])
+    _par("D", display-name: [index.html])
+
+    _seq("A", "B", comment: [GET])
+    _seq("A", "B", enable-dst: true, comment: [Logout], lifeline-style: (fill: rgb("#3178C6")))
+    _seq("B", "C", comment: [GET])
+    _seq("C", "B", comment: [response])
+    _seq("B", "D", disable-src: true, comment: [[response.status == 200] ? Redirect])
+  }),
+  comment: [
+    The User is able to logout every moment after the Login. As the Logout button is pressed, Javascript performs a GET request to the Logout servlet: it responds with 200 OK if the session has been invalidated; else nothing will happen.
+  ],
+  label_: "ria-event-logout-sequence",
+  comment_next_page_: false,
+)

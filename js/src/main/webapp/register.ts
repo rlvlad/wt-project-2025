@@ -1,10 +1,17 @@
 (function () {
-    document.getElementById("create-account-button").addEventListener("click", (e) => {
+    document.getElementById("create-account-button").addEventListener("click", (e: MouseEvent) => register(e));
+
+    /**
+     * Register a new User. If successful, redirect to index; otherwise show error.
+     *
+     * @param e  mouse event from the User mouse event from the User
+     */
+    function register(e: MouseEvent) {
         let form = (e.target as HTMLElement).closest("form");
         if (form.checkValidity()) {
-            makeCall("POST", "Register", form, (req) => {
+            makeCall("POST", "Register", form, (req: XMLHttpRequest) => {
                 if (req.readyState === XMLHttpRequest.DONE) {
-                    let message = req.responseText;
+                    let message: string = req.responseText;
                     switch (req.status) {
                         case 201:
                             window.location.href = "index.html";
@@ -21,5 +28,5 @@
         } else {
             form.reportValidity();
         }
-    });
+    }
 }());
