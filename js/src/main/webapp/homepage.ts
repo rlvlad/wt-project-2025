@@ -572,7 +572,7 @@
         }
 
         /**
-         * Load the Tracks of a Playlist.
+         * Create the DOM elements for the Tracks of a Playlist.
          *
          * @param tracks array of Tracks
          */
@@ -801,7 +801,7 @@
         }
 
         /**
-         * Load the Track player. Unlike the other loaders, it's only a center panel.
+         * Load the Track player DOM elements. Unlike the other loaders, it's only a center panel.
          *
          * @param container container in which load the Track player
          * @param track Track to load
@@ -900,52 +900,6 @@
                 });
         }
     }
-
-    /**
-     * Get user tracks and add them to the track selector parameter.
-     *
-     * @param trackSelector HTML element to append the loaded user tracks
-     * @param playlist optional parameter used for just loading tracks not present in the specified playlist
-     */
-    function loadUserTracks(trackSelector: HTMLElement, playlist: Playlist = null) {
-        trackSelector.innerHTML = "";
-        let url: string;
-        if (playlist == null) {
-            url = "GetUserTracks";
-        } else {
-            url = "GetTracksNotInPlaylist?playlistTitle=" + playlist.title;
-        }
-
-        makeCall("GET", url, null, function (req: XMLHttpRequest) {
-            if (req.readyState == XMLHttpRequest.DONE) {
-                let message: string = req.responseText;
-                if (req.status == 200) {
-                    let tracks: Track[] = JSON.parse(message);
-                    if (tracks.length === 0) {
-                        let option: HTMLOptionElement = document.createElement("option");
-                        option.value = "";
-                        option.textContent = "There are no available tracks to be added."
-                        trackSelector.setAttribute("size", "1");
-                        trackSelector.appendChild(option);
-                        return;
-                    } else if (tracks.length < 10) {
-                        trackSelector.setAttribute("size", tracks.length.toString());
-                    } else {
-                        trackSelector.setAttribute("size", "10");
-                    }
-                    tracks.forEach(function (track: Track) {
-                        let option: HTMLOptionElement = document.createElement("option");
-                        option.value = track.id.toString();
-                        option.textContent = track.artist + " - " + track.title + " (" + track.year + ")"
-                        trackSelector.appendChild(option);
-                    });
-                } else {
-                    alert("Cannot recover data. Maybe the User has been logged out.");
-                }
-            }
-        });
-    }
-
 
     /**
      * Centralized management of the HomePage.
