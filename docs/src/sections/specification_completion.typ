@@ -32,7 +32,7 @@ This project started from the HTML, where we developed most of the servlets, the
 
 For this very reason, most of the features were ported to the latter subproject: there is no need to go through the components and logic all over again. Still, the RIA subproject -- the "JavaScript version" -- requires more features and some changes to how the overall server works. The #ria() symbol means that the currently described features is present _only_ in the RIA subproject, NOT in the HTML one.
 
-Furthermore, by using JavaScript, some features can be upgraded -- this mainly applies to the modal @css-modal. Briefly, the main changes are as follows:
+Furthermore, by using Javascript, some features can be upgraded -- this mainly applies to the modal @css-modal. Briefly, the main changes are as follows:
 
 - Thymeleaf has been completely removed, since everything it did can be done via Javascript
 

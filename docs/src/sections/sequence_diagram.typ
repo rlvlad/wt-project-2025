@@ -11,21 +11,21 @@
   diagram({
     _par("A", display-name: "Client")
     _par("B", display-name: "Login")
-    _par("D", display-name: "UserDAO")
     _par("G", display-name: "Request")
     _par("H", display-name: "ctx")
     _par("C", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
+    _par("D", display-name: "UserDAO")
     _par("E", display-name: "Session")
     _par("F", display-name: "HomePage")
 
     // get
     _seq("A", "B", enable-dst: true, comment: "doGet()")
-    _seq("B", "G", enable-dst: true, comment: [getParameter("error")])
+    _seq("B", "G", enable-dst: true, comment: [getParameter ("error")])
     _seq("G", "B", disable-src: true, comment: [return error])
     _seq(
       "B",
       "H",
-      comment: [[error != null && error == true] \ setVariable("error", true)],
+      comment: [[error != null && error == true] \ ? setVariable ("error", true)],
     )
     _seq("B", "C", enable-dst: true, comment: "process(index.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("C", "B", disable-src: true, comment: "index.html")
@@ -33,22 +33,25 @@
 
     // post
     _seq("A", "B", enable-dst: true, comment: "doPost()")
-    _seq("B", "D", enable-dst: true, comment: "checkUser()")
+    _seq("B", "D", enable-dst: true, comment: [getParameter ("nickname")])
+    _seq("D", "B", disable-src: true, comment: [return nickname])
+    _seq("B", "D", enable-dst: true, comment: [getParameter ("password")])
+    _seq("D", "B", disable-src: true, comment: [return password])
+    _seq("B", "D", enable-dst: true, comment: "checkUser (nickname,password)")
     _seq("D", "B", disable-src: true, comment: "return schrödingerUser")
     _seq("B", "B", comment: [[schrödingerUser == null] \ ? redirect `/Login?error=true`])
-    _seq("B", "E", comment: [[schrödingerUser != null] ? setAttribute("user", schrödingerUser)])
+    _seq("B", "E", comment: [[schrödingerUser != null] \ ? setAttribute("user", schrödingerUser)])
     _seq("B", "F", disable-src: true, comment: "Redirect")
   }),
   comment: [
-    Once the server is up and running, the Client requests the Login page. Then, thymeleaf processes the request and returns the correct context, to index the chosen locale.\
-    Afterwards, the User inserts their credentials.
+    Once the server is up and running, the Client requests the Login page. Then, thymeleaf processes the request and returns the correct context, to index the chosen locale. Afterwards, the User inserts their credentials.
 
     Those values are passed to the `checkUser()` function that returns `schrödingerUser` -- as the name implies, the variable might return a User; otherwise `null`. If `null`, then the credentials inserted do not match any record in the database; else the User is redirected to their HomePage and the `user` variable is set for the current session.
 
     If there has been some error in the process -- the credentials are incorrect, database can't be accessed... -- then the servlet will redirect to itself by setting the variable `error` to true, which then will be evaluated by thymeleaf and if true, it will print an error; otherwise it won't (this is the case for the first time the User inserts the credentials).
   ],
   label_: "login-sequence",
-  comment_next_page_: false,
+  comment_next_page_: true,
 )
 
 #seq_diagram(
@@ -65,27 +68,27 @@
 
     // get
     _seq("A", "B", enable-dst: true, comment: "doGet()")
-    _seq("B", "H", enable-dst: true, comment: [getParameter("isUserAdded")])
+    _seq("B", "H", enable-dst: true, comment: [getParameter ("isUserAdded")])
     _seq("H", "B", disable-src: true, comment: [return isUserAdded])
-    _seq("B", "C", enable-dst: true, comment: "process(register.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
+    _seq("B", "C", enable-dst: true, comment: "process (register.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("C", "B", disable-src: true, comment: "register.html")
     _seq("B", "A", disable-src: true, comment: "register.html")
 
     // post
     _seq("A", "B", enable-dst: true, comment: "doPost()")
-    _seq("B", "H", enable-dst: true, comment: [getParameter("nickname")])
+    _seq("B", "H", enable-dst: true, comment: [getParameter ("nickname")])
     _seq("H", "B", disable-src: true, comment: [return nickname])
-    _seq("B", "H", enable-dst: true, comment: [getParameter("password")])
+    _seq("B", "H", enable-dst: true, comment: [getParameter ("password")])
     _seq("H", "B", disable-src: true, comment: [return password])
-    _seq("B", "H", enable-dst: true, comment: [getParameter("name")])
+    _seq("B", "H", enable-dst: true, comment: [getParameter ("name")])
     _seq("H", "B", disable-src: true, comment: [return name])
-    _seq("B", "H", enable-dst: true, comment: [getParameter("surname")])
+    _seq("B", "H", enable-dst: true, comment: [getParameter ("surname")])
     _seq("H", "B", disable-src: true, comment: [return surname])
-    _seq("B", "D", enable-dst: true, comment: "addUser()")
+    _seq("B", "D", enable-dst: true, comment: "addUser (user)")
     _seq("D", "B", disable-src: true, comment: "return isUserAdded")
     _seq("B", "F", comment: "[isUserAdded] ? redirect")
     _seq("B", "B", comment: [[!isUserAdded] \ ? redirect `/Registration?isUserAdded=false`])
-    _seq("B", "C", enable-dst: true, comment: "process(register.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
+    _seq("B", "C", enable-dst: true, comment: "process (register.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("C", "B", disable-src: true, comment: "register.html")
     _seq("B", "A", disable-src: true, comment: "register.html")
   }),
@@ -113,26 +116,26 @@
     _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
     _seq("A", "B", enable-dst: true, comment: "doGet()")
-    _seq("B", "F", enable-dst: true, comment: [getAttribute("user")])
+    _seq("B", "F", enable-dst: true, comment: [getAttribute ("user")])
     _seq("F", "B", disable-src: true, comment: [return user])
-    _seq("B", "C", enable-dst: true, comment: "getUserPlaylists(user)")
+    _seq("B", "C", enable-dst: true, comment: "getUserPlaylists (user)")
     _seq("C", "B", disable-src: true, comment: "return playlists")
-    _seq("B", "C", enable-dst: true, comment: "getUserTracks(user)")
+    _seq("B", "C", enable-dst: true, comment: "getUserTracks (user)")
     _seq("C", "B", disable-src: true, comment: "return userTracks")
-    _seq("B", "G", enable-dst: true, comment: [getParameter("duplicateTrack")])
+    _seq("B", "G", enable-dst: true, comment: [getParameter ("duplicateTrack")])
     _seq("G", "B", disable-src: true, comment: [return duplicateTrack])
-    _seq("B", "G", enable-dst: true, comment: [getParameter("duplicatePlaylist")])
+    _seq("B", "D", comment: [[duplicateTrack != null && duplicateTrack == true] \ ? setVariable("duplicateTrack", true)])
+    _seq("B", "G", enable-dst: true, comment: [getParameter ("duplicatePlaylist")])
     _seq("G", "B", disable-src: true, comment: [return duplicatePlaylist])
-    _seq("B", "D", comment: [[duplicateTrack != null && duplicateTrack == true] \ setVariable("duplicateTrack", true)])
     _seq(
       "B",
       "D",
-      comment: [[duplicatePlaylist != null && duplicatePlaylist == true] \ setVariable("duplicatePlaylist", true)],
+      comment: [[duplicatePlaylist != null && duplicatePlaylist == true] \ ? setVariable("duplicatePlaylist", true)],
     )
-    _seq("B", "D", comment: [setVariable("userTracks", userTracks)])
-    _seq("B", "D", comment: [setVariable("playlists", Playlists)])
-    _seq("B", "D", comment: [setVariable("genres", genres)])
-    _seq("B", "E", enable-dst: true, comment: "process(home_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
+    _seq("B", "D", comment: [setVariable ("userTracks", userTracks)])
+    _seq("B", "D", comment: [setVariable ("playlists", Playlists)])
+    _seq("B", "D", comment: [setVariable ("genres", genres)])
+    _seq("B", "E", enable-dst: true, comment: "process (home_page.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("E", "B", disable-src: true, comment: "home_page.html")
     _seq("B", "A", disable-src: true, comment: "home_page.html")
   }),
@@ -148,10 +151,10 @@
 )
 
 #seq_diagram(
-  [PlaylistPage sequence diagram],
+  [Playlist sequence diagram],
   diagram({
     _par("A", display-name: "HomePage")
-    _par("B", display-name: "PlaylistPage")
+    _par("B", display-name: "Playlist")
     _par("F", display-name: "Session")
     _par("G", display-name: "Request")
     _par("C", display-name: "PlaylistDAO")
@@ -159,24 +162,24 @@
     _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
     _seq("A", "B", enable-dst: true, comment: "doGet()")
-    _seq("B", "F", enable-dst: true, comment: [getAttribute("user")])
+    _seq("B", "F", enable-dst: true, comment: [getAttribute ("user")])
     _seq("F", "B", disable-src: true, comment: [return user])
-    _seq("B", "G", enable-dst: true, comment: [getParameter("playlist_title")])
-    _seq("G", "B", disable-src: true, comment: [return playlistTitle])
-    _seq("B", "G", enable-dst: true, comment: [getParameter("gr")])
+    _seq("B", "G", enable-dst: true, comment: [getParameter ("playlistId")])
+    _seq("G", "B", disable-src: true, comment: [return playlistId])
+    _seq("B", "G", enable-dst: true, comment: [getParameter ("gr")])
     _seq("G", "B", disable-src: true, comment: [return trackGroupString])
-    _seq("B", "C", enable-dst: true, comment: "getPlaylistTracks(playlistTitle, user)")
-    _seq("C", "B", disable-src: true, comment: "return Playlists")
-    _seq("B", "C", enable-dst: true, comment: "getTrackGroup(playlistId, trackGroup)")
+    _seq("B", "C", enable-dst: true, comment: [getPlaylistTitle (playlistId)])
+    _seq("C", "B", disable-src: true, comment: "return playlistTitle")
+    _seq("B", "C", enable-dst: true, comment: "getTrackGroup (playlistId, trackGroup)")
     _seq("C", "B", disable-src: true, comment: "return playlistTracks")
-    _seq("B", "C", enable-dst: true, comment: "getTracksNotInPlaylist(playlistTitle, user.id())")
+    _seq("B", "C", enable-dst: true, comment: "getTracksNotInPlaylist (playlistTitle, user.id())")
     _seq("C", "B", disable-src: true, comment: "return addableTracks")
     _seq("B", "D", comment: [setVariable("trackGroup", trackGroup)])
     _seq("B", "D", comment: [setVariable("playlistId", playlistId)])
-    _seq("B", "D", comment: [setVariable("playlistsTitle", playlistTitle)])
+    _seq("B", "D", comment: [setVariable("playlistTitle", playlistTitle)])
     _seq("B", "D", comment: [setVariable("addableTracks", addableTracks)])
     _seq("B", "D", comment: [setVariable("playlistTracks", playlistTracks)])
-    _seq("B", "E", enable-dst: true, comment: "process(playlist_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
+    _seq("B", "E", enable-dst: true, comment: "process (playlist_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("E", "B", disable-src: true, comment: "playlist_page.html")
     _seq("B", "A", disable-src: true, comment: "playlist_page.html")
   }),
@@ -195,41 +198,31 @@
 
 #seq_diagram(
   [Track sequence diagram],
-  scale(
-    100%,
-    diagram({
-      _par("A", display-name: "Client")
-      _par("B", display-name: "Track")
-      _par("F", display-name: "Session")
-      _par("G", display-name: "Request")
-      _par("C", display-name: "TrackDAO")
-      // _par("H", display-name: [`ERROR 404`], color: red.lighten(50%))
-      _par("D", display-name: "ctx")
-      // _par("H", display-name: `ERROR 500`)
-      _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
+  diagram({
+    _par("A", display-name: "Client")
+    _par("B", display-name: "Track")
+    _par("G", display-name: "Request")
+    _par("C", display-name: "TrackDAO")
+    _par("D", display-name: "ctx")
+    _par("E", display-name: "Thymeleaf", shape: "custom", custom-image: thymeleaf)
 
-      _seq("A", "B", enable-dst: true, comment: "doGet()")
-      _seq("B", "F", enable-dst: true, comment: [getAttribute("user")])
-      _seq("F", "B", disable-src: true, comment: [return user])
-      _seq("B", "G", enable-dst: true, comment: [getParameter("track_id")])
-      _seq("G", "B", disable-src: true, comment: [return trackId])
-      // _seq("B", "C", enable-dst: true, comment: "checkTrackOwner(trackId, user)")
-      // _seq("C", "B", disable-src: true, comment: "return isOwner")
-      // _seq("B", "H", comment: [[isOwner == false] sendError("Track does not exist")])
-      _seq("B", "C", enable-dst: true, comment: "getTrackById(trackId)")
-      _seq("C", "B", disable-src: true, comment: "return track")
-      _seq("B", "D", comment: [setVariable("track", track)])
-      _seq("B", "E", enable-dst: true, comment: "process(player_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
-      _seq("E", "B", disable-src: true, comment: "player_page.html")
-      _seq("B", "A", disable-src: true, comment: "player_page.html")
-    }),
-  ),
+    _seq("A", "B", enable-dst: true, comment: "doGet()")
+    _seq("B", "G", enable-dst: true, comment: [getParameter ("track_id")])
+    _seq("G", "B", disable-src: true, comment: [return trackId])
+    _seq("B", "C", enable-dst: true, comment: "getTrackById (trackId)")
+    _seq("C", "B", disable-src: true, comment: "return track")
+    _seq("B", "D", comment: [setVariable("track", track)])
+    _seq("B", "E", enable-dst: true, comment: "process (player_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
+    _seq("E", "B", disable-src: true, comment: "player_page.html")
+    _seq("B", "A", disable-src: true, comment: "player_page.html")
+  }),
   comment: [
     Once the program has lodead all the tracks associated to a playlist, it allows to play them one by one in the dedicated player page. In a similar fashion to the `getPlaylistTracks()` method, in order to retrieve all the information regarding a single track the program is given the `track_id` parameter by pressing the corresponding button.
 
     Finally, `getTrackById()` returns the track metadata -- that is title, artist, album, path and album image -- thymeleaf then processes the context and displays all the information. If an exception is caught during this operation, the server will respond with `ERROR 500` (see @trackchecker-filter).
   ],
   label_: "track-sequence",
+  comment_next_page_: false
 )
 
 #seq_diagram(
@@ -303,24 +296,28 @@
     _par("D", display-name: "HomePage")
 
     _seq("A", "B", enable-dst: true, comment: "doPost()")
-    _seq("B", "G", enable-dst: true, comment: [getParameter("playlistTitle")])
+    _seq("B", "G", enable-dst: true, comment: [getParameter ("playlistTitle")])
     _seq("G", "B", disable-src: true, comment: [return playlistTitle])
-    _seq("B", "G", enable-dst: true, comment: [getParameterValues("selectedTracks")])
+    _seq("B", "G", enable-dst: true, comment: [getParameterValues ("selectedTracks")])
     _seq("G", "B", disable-src: true, comment: [return selectedTracks])
-    _seq("B", "E", enable-dst: true, comment: [createPlaylist(playlistTitle)])
+    _seq("B", "E", enable-dst: true, comment: [createPlaylist (playlistTitle)])
     _seq("E", "B", disable-src: true, comment: [return playlistId])
-    _alt(
-      "!selectedTracksIds.isEmpty()",
-      {
-        _seq("B", "E", comment: [addTracksToPlaylist(playlistId,selectedTracksIds)])
-      },
-    )
+    _seq("B", "E", comment: [
+      !selectedTracksIds.isEmpty() \
+      ? addTracksToPlaylist (playlistId,selectedTracksIds)
+    ])
+    // _alt(
+    //   "!selectedTracksIds.isEmpty()",
+    //   {
+    //     _seq("B", "E", comment: [addTracksToPlaylist (playlistId,selectedTracksIds)])
+    //   },
+    // )
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
   comment: [
-    The user can create playlists with the appropriate form in the homepage. There, a title needs to be inserted and, optionally, one or more tracks can be chosen from the ones uploaded by the user. When the servlet gets the POST request, it interacts with the PlaylistDAO to create the playlist with the createPlaylist method and to add the selected tracks with the addTracksToPlaylist method.
+    The User can create playlists with the appropriate form in the homepage. There, a title needs to be inserted and, optionally, one or more tracks can be chosen from the ones uploaded by the User. When the servlet gets the POST request, it interacts with the PlaylistDAO to create the playlist with the `createPlaylist()` method and to add the selected tracks with the `addTracksToPlaylist()` method.
 
-    Note that selectedTracksIds is a list of integers obtained by converting the strings inside the array returned by getParameterValues("selectedTracks") with the Integer.parseInt method.
+    Note that selectedTracksIds is a list of integers obtained by converting the strings inside the array returned by the `getParameterValues("selectedTracks")` method with `Integer.parseInt()`.
   ],
   label_: "createplaylist-sequence",
   comment_next_page_: false,
@@ -335,7 +332,7 @@
     _par("D", display-name: "Login")
 
     _seq("A", "B", enable-dst: true, comment: "doGet()")
-    _seq("B", "C", enable-dst: true, comment: [getSession(false)])
+    _seq("B", "C", enable-dst: true, comment: [getSession (false)])
     _seq("C", "B", disable-src: true, comment: [return session $=>$ [session != null] ? session.invalidate()])
     _seq("B", "D", disable-src: true, comment: "Redirect")
   }),
@@ -357,13 +354,13 @@
     _par("E", display-name: "PlaylistDAO")
 
     _seq("A", "B", enable-dst: true, comment: "doPost()")
-    _seq("B", "C", enable-dst: true, comment: [getAttribute("user")])
+    _seq("B", "C", enable-dst: true, comment: [getAttribute ("user")])
     _seq("C", "B", disable-src: true, comment: [return user])
-    _seq("B", "D", enable-dst: true, comment: [getParameterValues("selectedTracks")])
+    _seq("B", "D", enable-dst: true, comment: [getParameterValues ("selectedTracks")])
     _seq("D", "B", disable-src: true, comment: [return selectedTracksIds])
-    _seq("B", "D", enable-dst: true, comment: [getParameter("playlistId")])
+    _seq("B", "D", enable-dst: true, comment: [getParameter ("playlistId")])
     _seq("D", "B", disable-src: true, comment: [return playlistId])
-    _seq("B", "E", disable-src: true, comment: [addTracksToPlaylist(selectedTracksIds, playlistId)])
+    _seq("B", "E", disable-src: true, comment: [addTracksToPlaylist (selectedTracksIds, playlistId)])
     // _seq("D", "A", comment: [scCreated])
   }),
   comment: [
@@ -388,16 +385,16 @@
     _par("E", display-name: "PlaylistDAO")
     _par("F", display-name: "Gson")
 
-    _seq("A", "B", enable-dst: true, comment: "doGet()")
-    _seq("B", "C", enable-dst: true, comment: [getAttribute("user")])
-    _seq("C", "B", disable-src: true, comment: [return user])
-    _seq("B", "D", enable-dst: true, comment: [getParameter("playlistTitle")])
-    _seq("D", "B", disable-src: true, comment: [return playlistTitle])
-    _seq("B", "E", enable-dst: true, comment: [getTracksNotInPlaylist(playlistTitle,user.id())])
-    _seq("E", "B", disable-src: true, comment: [return userTracks])
-    _seq("B", "F", enable-dst: true, comment: [gson.toJson(userTracks)])
-    _seq("F", "B", disable-src: true, comment: [return userTracks])
-    _seq("B", "A", disable-src: true, comment: [userTracks])
+    _seq("A", "B", enable-dst:true, comment: "doGet()")
+    _seq("B", "C", enable-dst:true, comment: [getAttribute ("user")])
+    _seq("C", "B", disable-src:true, comment: [return user])
+    _seq("B", "D", enable-dst:true, comment: [getParameter ("playlistTitle")])
+    _seq("D", "B", disable-src:true, comment: [return playlistTitle])
+    _seq("B", "E", enable-dst:true, comment: [getTracksNotInPlaylist (playlistTitle,user.id())])
+    _seq("E", "B", disable-src:true, comment: [return userTracks])
+    _seq("B", "F", enable-dst:true, comment: [toJson (userTracks)])
+    _seq("F", "B", disable-src: true, comment: [return userTracks[JSON]])
+    _seq("B", "A", disable-src:true, comment: [userTracks])
   }),
   comment: [
     As the name suggests, this servlet obtains the tracks are _not_ in the given Playlist, in order to display them when the User wants to add a new track to a Playlist -- this happens when the User clicks on the corresponding button.
@@ -428,18 +425,13 @@
     // _seq("C", "B", disable-src:true, comment: [return trackId)])
     // _seq("B", "C", enable-dst:true, comment: [getParameter("newOrder")])
     // _seq("C", "B", disable-src:true, comment: [return newOrder)])
-    _seq("B", "C", enable-dst: true, comment: [getReader])
-    _seq("C", "B", disable-src: true, comment: [return reader])
-    _seq("B", "E", enable-dst: true, comment: [gson.fromJson(reader)])
-    _seq("E", "B", disable-src: true, comment: [return requestData])
-    _seq(
-      "B",
-      "D",
-      disable-src: true,
-      comment: [
-        updateTrackOrder(requestData.trackIds(),\ requestData.playlistId())
-      ],
-    )
+    _seq("B", "C", enable-dst:true, comment: [getReader])
+    _seq("C", "B", disable-src:true, comment: [return reader])
+    _seq("B", "E", enable-dst:true, comment: [fromJson(reader)])
+    _seq("E", "B", disable-src:true, comment: [return requestData])
+    _seq("B", "D", disable-src:true, comment: [
+      updateTrackOrder(requestData.trackIds(),\ requestData.playlistId())
+    ])
   }),
   comment: [
     // It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
@@ -460,16 +452,17 @@
     _par("A", display-name: "Client")
     _par("B", display-name: "GetUserTracks")
     _par("C", display-name: "TrackDAO")
-    _par("D", display-name: "Session")
+    // _par("D", display-name: "Session")
     _par("E", display-name: "Gson")
 
     _seq("A", "B", enable-dst: true, comment: [doGet()])
-    _seq("B", "C", comment: [getAttribute("user")])
+    _seq("B", "C", comment: [getAttribute ("user")])
     _seq("C", "B", comment: [return user])
-    _seq("B", "C", comment: [getUserTracks(user)])
+    _seq("B", "C", comment: [getUserTracks (user)])
     _seq("C", "B", comment: [return userTracks])
-    _seq("B", "E", disable-src: true, comment: [gson.toJson(userTracks)])
-    _seq("E", "B", comment: [return userTracks[JSON]])
+    _seq("B", "E", enable-dst: true, comment: [toJson (userTracks)])
+    _seq("E", "B", disable-src: true, comment: [return userTracks[JSON]])
+    _seq("B", "A", disable-src: true, comment: [userTracks])
   }),
   comment: [
     As the name implies, this servlet retrieves all the Tracks associated to a User. This is fetched as usually from the session.
