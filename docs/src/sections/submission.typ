@@ -100,3 +100,16 @@ The user can #user_action[drag] the title of a track and #user_action[drop] it i
   image("../img/er_diagram_ria.svg", width: 100%),
   caption: [ER diagram (RIA).],
 )<er-diagram-ria>
+
+
+#figure(
+  placement: bottom,
+  scope: "parent",
+  image(
+    width: 110%,
+    // height: 100%,
+    fit: "contain",
+    "../img/ifml-ria.png",
+  ),
+  caption: "IFML diagram.",
+)
