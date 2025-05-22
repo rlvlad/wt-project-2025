@@ -98,9 +98,11 @@
       </SHUTDOWN>
     </ConfigurationWrapper>
     <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="ConnectionTester" run_configuration_type="JUnit" />
+      <option name="RunConfigurationTask" enabled="false" run_configuration_name="ConnectionTester" run_configuration_type="JUnit" />
       <option name="Make" enabled="true" />
-      <option name="BuildArtifacts" enabled="false" />
+      <option name="BuildArtifacts" enabled="false">
+        <artifact name="pure_html:war exploded" />
+      </option>
     </method>
   </configuration>
 </component>
