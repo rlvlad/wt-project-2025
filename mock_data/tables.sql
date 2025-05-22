@@ -59,13 +59,11 @@ CREATE TABLE playlist
 
 CREATE TABLE playlist_tracks
 (
-    playlist_track_id integer auto_increment,
-    playlist_id       integer not null,
-    track_id          integer not null,
-    custom_order      integer,
+    playlist_id  integer not null,
+    track_id     integer not null,
+    custom_order integer,
 
-    primary key (playlist_track_id),
-    unique (playlist_id, track_id),
+    primary key (playlist_id, track_id),
     foreign key (playlist_id) references playlist (playlist_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     foreign key (track_id) references track (track_id)
