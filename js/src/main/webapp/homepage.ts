@@ -167,6 +167,7 @@
 
             button.addEventListener("click", () => {
                 playlistPage.show(playlist);
+                trackGroup = 0;
             }, false);
 
             let playlist_reorder_btn: HTMLButtonElement = document.createElement("button");
@@ -634,7 +635,6 @@
 
                             // pass the list of all Tracks and setup buttons
                             tracklist = tracks;
-                            trackGroup = 0;
                             trackGrid(tracks);
                             loadPrevNextButton();
                         } else {

@@ -239,6 +239,7 @@ hr {
     padding: 1em;
     background: var(--lighter-background);
     border: 2px solid var(--variables);
+    overflow: hidden;
 }
 
 .modal-close {
