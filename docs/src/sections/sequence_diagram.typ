@@ -245,8 +245,8 @@
 
     _seq("A", "B", enable-dst: true, comment: "doPost()")
     _note("right", [POST /UploadTrack \ title, artist, album, year, \ genre, musicTrack, image])
-    _seq("B", "B", enable-dst: true, comment: [imagePath = processPart(image, "image")])
-    _seq("B", "B", comment: [imageHash = getSHA256Hash(image\ .getInputStream().readAllBytes())])
+    _seq("B", "B", enable-dst: true, comment: [fileDetails = processPart(image, "image")])
+    _seq("B", "B", comment: [hash = getSHA256Hash(image\ .getInputStream().readAllBytes())])
     _seq("B", "C", enable-dst: true, comment: [relativeFilePath = isImageFileAlreadyPresent(hash)])
     _seq("C", "B", disable-src: true, comment: [return path || null])
     _alt(
@@ -261,12 +261,15 @@
         )
       },
     )
-    _seq("B", "B", disable-src: true, comment: [return relativeFilePath])
-    _seq("B", "B", comment: [songPath = processPart(musicTrack, "audio")])
+    _seq("B", "B", disable-src: true, comment: [return new FileDetails(relativeFilePath, hash)])
+    _seq("B", "B", comment: [fileDetails = processPart(musicTrack, "audio")])
     _seq("B", "E", comment: [track = new Track(...)])
     _alt(
       "try",
-      { _seq("B", "C", comment: [addTrack(track)]) },
+      {
+        _seq("B", "C", comment: [addTrack(track)])
+        _seq("B", "D", disable-src: true, comment: [Redirect])
+      },
       "catch SQLException",
       { _seq("B", "B", comment: [newFiles.forEach(file -> file.delete())]) },
       [finally],
@@ -274,7 +277,6 @@
         _seq("B", "B", comment: [newFiles.clear()])
       },
     )
-    _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
   comment: [
     The User can upload tracks from the appropriate form in the homepage (@homepage-sequence). When the POST request is received, the request parameters are checked for null values and emptiness (omitted in the diagram for the sake of simplicity), and the uploaded files are written to disk by the `processPart` method, which has two parameters: a Part object, which "represents a part or form item that was received within a multipart/form-data POST request" @part, and its expected MIME type. The latter does not need to be fully specified (i.e. the subtype can be omitted).
@@ -342,7 +344,7 @@
   ],
   label_: "logout-sequence",
   comment_next_page_: false,
-  next_page: false
+  next_page: false,
 )
 
 #seq_diagram(
@@ -373,7 +375,7 @@
   ],
   label_: "add-tracks-sequence",
   comment_next_page_: false,
-  next_page: false
+  next_page: false,
 )
 
 #seq_diagram(
@@ -386,18 +388,18 @@
     _par("E", display-name: "PlaylistDAO")
     _par("F", display-name: "Gson")
 
-    _seq("A", "B", enable-dst:true, comment: "doGet()")
-    _seq("B", "C", enable-dst:true, comment: [getAttribute("user")])
-    _seq("C", "B", disable-src:true, comment: [return user])
-    _seq("B", "D", enable-dst:true, comment: [getParameter("playlistTitle")])
-    _seq("D", "B", disable-src:true, comment: [return playlistTitle])
-    _seq("B", "E", enable-dst:true, comment: [getTracksNotInPlaylist(playlistTitle,user.id())])
-    _seq("E", "B", disable-src:true, comment: [return userTracks])
-    _seq("B", "F", enable-dst:true, comment: [gson.toJson(userTracks)])
+    _seq("A", "B", enable-dst: true, comment: "doGet()")
+    _seq("B", "C", enable-dst: true, comment: [getAttribute("user")])
+    _seq("C", "B", disable-src: true, comment: [return user])
+    _seq("B", "D", enable-dst: true, comment: [getParameter("playlistTitle")])
+    _seq("D", "B", disable-src: true, comment: [return playlistTitle])
+    _seq("B", "E", enable-dst: true, comment: [getTracksNotInPlaylist(playlistTitle,user.id())])
+    _seq("E", "B", disable-src: true, comment: [return userTracks])
+    _seq("B", "F", enable-dst: true, comment: [gson.toJson(userTracks)])
     _seq("F", "B", disable-src: true, comment: [return userTracks])
-    _seq("B", "A", disable-src:true, comment: [userTracks])
+    _seq("B", "A", disable-src: true, comment: [userTracks])
   }),
-  comment:[
+  comment: [
     As the name suggests, this servlet obtains the tracks are _not_ in the given Playlist, in order to display them when the User wants to add a new track to a Playlist -- this happens when the User clicks on the corresponding button.
 
     Then, the User attribute is retrieved from the session while the playlist title from the request.
@@ -406,7 +408,7 @@
 
     // Once the needed parameters are obtained, the `getTracksNotInPlaylist` method returns the track, which are converted to a JSON.
   ],
-  label_ : "get-tracks-not-in-playlist-sequence",
+  label_: "get-tracks-not-in-playlist-sequence",
   comment_next_page_: false,
 )
 
@@ -419,22 +421,27 @@
     _par("E", display-name: "Gson")
     _par("D", display-name: "PlaylistDAO")
 
-    _seq("A", "B", enable-dst:true, comment: "doGet()")
+    _seq("A", "B", enable-dst: true, comment: "doGet()")
     // _seq("B", "C", enable-dst:true, comment: [getParameter("playlistId")])
     // _seq("C", "B", disable-src:true, comment: [return playlistId)])
     // _seq("B", "C", enable-dst:true, comment: [getParameter("trackId")])
     // _seq("C", "B", disable-src:true, comment: [return trackId)])
     // _seq("B", "C", enable-dst:true, comment: [getParameter("newOrder")])
     // _seq("C", "B", disable-src:true, comment: [return newOrder)])
-    _seq("B", "C", enable-dst:true, comment: [getReader])
-    _seq("C", "B", disable-src:true, comment: [return reader])
-    _seq("B", "E", enable-dst:true, comment: [gson.fromJson(reader)])
-    _seq("E", "B", disable-src:true, comment: [return requestData])
-    _seq("B", "D", disable-src:true, comment: [
-      updateTrackOrder(requestData.trackIds(),\ requestData.playlistId())
-    ])
+    _seq("B", "C", enable-dst: true, comment: [getReader])
+    _seq("C", "B", disable-src: true, comment: [return reader])
+    _seq("B", "E", enable-dst: true, comment: [gson.fromJson(reader)])
+    _seq("E", "B", disable-src: true, comment: [return requestData])
+    _seq(
+      "B",
+      "D",
+      disable-src: true,
+      comment: [
+        updateTrackOrder(requestData.trackIds(),\ requestData.playlistId())
+      ],
+    )
   }),
-  comment:[
+  comment: [
     // It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
 
     // Once the needed parameters are obtained, the `updateTrackOrder()` method updates the `playlist_tracks` table.
@@ -443,8 +450,8 @@
 
     Afterwards, the `tracksIds` and `playlistId` attributes are passed to the `updateTrackOrder` method that loads multiple insertions in the database: instead of iterating and performing a query at each cycle, it prepares a transaction to be committed _one single time_.
   ],
-  label_ : "track-reordering-sequence",
-  comment_next_page_: false
+  label_: "track-reordering-sequence",
+  comment_next_page_: false,
 )
 
 #seq_diagram(
@@ -464,11 +471,11 @@
     _seq("B", "E", disable-src: true, comment: [gson.toJson(userTracks)])
     _seq("E", "B", comment: [return userTracks[JSON]])
   }),
-  comment:[
+  comment: [
     As the name implies, this servlet retrieves all the Tracks associated to a User. This is fetched as usually from the session.
 
     Similar to the previous sequences, once it retrieves the track from the database, the list is transformed into a JSON by Gson and finally sent to the browser.
   ],
-  label_ : "get-user-tracks-sequence",
-  comment_next_page_: false
+  label_: "get-user-tracks-sequence",
+  comment_next_page_: false,
 )

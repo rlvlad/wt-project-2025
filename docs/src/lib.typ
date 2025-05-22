@@ -112,7 +112,7 @@
     fill: color_filter(get-default-background(), colortheme.lighten(90%)),
     header: { },
     footer: { },
-    numbering: "1"
+    numbering: "1",
   )
 
   set text(
@@ -267,8 +267,8 @@
   )
 
   let custom-inset() = (
-    (x,y) => {
-      if (y<=2) {
+    (x, y) => {
+      if (y <= 2) {
         0.9em
       } else {
         0.6em
@@ -281,10 +281,10 @@
     fill: shading(
       get-selection-background(),
       get-default-background(),
-      get-light-background()
+      get-light-background(),
     ),
     inset: custom-inset(),
-    align: horizon
+    align: horizon,
   )
 
   show table.cell: it => context {
@@ -296,7 +296,7 @@
     }
   }
 
-  show table:it => {
+  show table: it => {
     set par(justify: false)
     it
   }
@@ -630,15 +630,15 @@
     size: 0.7em,
   )
   let T = (
-    x_offset: -0.12em
+    x_offset: -0.12em,
   )
   let E = (
     x_offset: -0.2em,
     y_offset: 0.23em,
-    size: 1em
+    size: 1em,
   )
   let X = (
-    x_offset: -0.1em
+    x_offset: -0.1em,
   )
   [L#h(A.offset.x)#text(size: A.size, baseline: A.offset.y)[A]#h(T.x_offset)T#h(E.x_offset)#text(size: E.size, baseline: E.y_offset)[E]#h(X.x_offset)X]
 }
@@ -646,21 +646,21 @@
 #let TeX = {
   set text(font: "New Computer Modern")
   let T = (
-    x_offset: -0.12em
+    x_offset: -0.12em,
   )
   let E = (
     x_offset: -0.2em,
     y_offset: 0.23em,
-    size: 1em
+    size: 1em,
   )
   let X = (
-    x_offset: -0.1em
+    x_offset: -0.1em,
   )
   [#h(T.x_offset)T#h(E.x_offset)#text(size: E.size, baseline: E.y_offset)[E]#h(X.x_offset)X]
 }
 
 #let sqlite(string: "SQLite") = {
- set text(fill: gradient.linear(rgb("#0F80CC"), rgb("#81CCF2")), weight: "bold")
+  set text(fill: gradient.linear(rgb("#0F80CC"), rgb("#81CCF2")), weight: "bold")
   box(string)
 }
 
