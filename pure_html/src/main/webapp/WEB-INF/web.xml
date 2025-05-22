@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
-    <display-name>TIW-project</display-name>
+    <display-name>TIW-project-2025</display-name>
     <context-param>
         <param-name>dbUrl</param-name>
         <param-value>jdbc:mariadb://localhost:3306/tiw?serverTimezone=UTC</param-value>

@@ -3,6 +3,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+**/webapp/**.js
+**/webapp/**.js.*
+
 ### IntelliJ IDEA ###
 .idea/dataSources
 .idea/dataSources*
@@ -41,4 +44,4 @@ build/
 ### Mac OS ###
 .DS_Store
 
-docs/test.*
+docs/**/test.*

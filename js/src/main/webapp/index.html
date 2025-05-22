@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login page</title>
+    <link rel="stylesheet" href="CSS/colors.css">
+    <link rel="stylesheet" href="CSS/components.css">
+    <link rel="stylesheet" href="CSS/index.css">
+    <link rel="icon" type="image/x-icon" href="img/icon.ico">
+    <script src="utils.js" charset="UTF-8" defer></script>
+    <script src="login.js" charset="UTF-8" defer></script>
+</head>
+<body>
+<div class="center-panel">
+    <div class="welcome">Welcome to the Playlist Manager!</div>
+    <hr>
+    <a>
+        <button id="register-button" type="button" class="button">Register</button>
+    </a>
+    <form>
+        <hr>
+        <div class="credentials">
+            <input class="text-field" type="text" id="nickname" name="nickname"
+                   placeholder="Nickname" required><br>
+            <input class="text-field" type="password" id="password" name="password"
+                   placeholder="Password" required>
+        </div>
+        <div id="error" class="error"></div>
+        <div class="nav-bar">
+            <input id="login-button" type="button" class="button" value="Login">
+        </div>
+    </form>
+</div>
+</body>
+</html>

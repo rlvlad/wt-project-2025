@@ -14,4 +14,7 @@
       <module name="tiw-2025" target="21" />
     </bytecodeTargetLevel>
   </component>
+  <component name="TypeScriptCompiler">
+    <option name="recompileOnChanges" value="true" />
+  </component>
 </project>
