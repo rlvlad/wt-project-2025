@@ -86,7 +86,53 @@ All the methods are intuitively named and don't need further explanations. Eithe
 
 == RIA subproject
 
+HomePage, class to manage the HomePage:
+  - `show()` --- Show the homepage
+  - `loadPlaylist()` --- Loads all the User Playlists
+  - `loadButtons()` --- Load buttons in the top nav bar and button functionality in the sidebar
+  - `playlistGrid()` --- Load the Playlists
+  - `createPlaylistButton()` --- Creates and returns a button based on the playlist parameter
+  - `loadCreatePlaylistModal()` --- Loads the modal for creating playlists to the modal container
+  - `loadUploadTrackModal()` --- Loads the modal for uploading tracks to the modal container
+  - `loadUserTracksOl()` --- Get user Tracks and creates draggable list items
+  - `dragStart()` --- As soon as the User drags an Element
+  - `dragOver()` --- The User is dragging the Element around
+  - `dragLeave()` --- The User has started dragging the Element
+  - `drop()` --- The User has dropped the Track in the desired location
+  - `loadReorderModal()` --- Generates the modal to reorder the Tracks
+  - `closeReorderModal()` --- Removes the reorder tracks modal
+  - `saveOrder()` --- Save new Tracks custom order
 
+PageOrchestrator, centralized management of the HomePage:
+  - `start()` --- Initializes the HomePage: adds listeners on buttons, refreshes the page
+  - `refreshPage()` --- Refresh the HomePage: clear all modals and reload them
+  - `loadYears()` --- Load year from 1900 to the current one for upload track modal
+  - `loadGenres()` --- Load the musical genres for upload track modal
+
+PlaylistPage class:
+  - `trackGrid()` --- Load all the Tracks associated to a Playlist
+  - `loadPlaylistTracks()` --- Load all the Tracks associated to a Playlist
+  - `loadPlaylistView()` --- Load everything needed for viewing and interacting with the Playlist and its contents
+  - `loadAddTracksModal()` --- Load the modal for adding tracks to a playlist to the modal container
+  - `loadPrevNextButton()` --- Load the buttons for changing the viewed track group in the playlist view
+
+PlayerPage class:
+  - `show()` --- Show the Track to play
+  - `trackPlayer()` --- Load the Track player DOM elements. Unlike the other loaders, it's only a center panel
+  - `loadSingleTrack()` --- Load a single Track from a Playlist
+
+Utils (not a class but a file):
+  - `makeCall()` --- Make an asynchronous call to the server by specifying method, URL, form to send, the function to execute and whether to reset the given form
+  - `loadUserTracks()` --- Get user tracks and add them to the track selector parameter
+  - `createModal()`--- Create basic modal element; used as a building block for creating modals
+  - `clearModals()` --- Delete everything from modals div
+  - `cleanMain()` --- Delete everything from main div
+  - `clearBottomNavbar()` --- Delete the bottom navbar if present
+  - `showModal()` --- Make the modal visible
+
+And finally the interfaces, which are the Typescript translation of the Record classes.
+
+#pagebreak()
 
 #show: table-styles.with()
 

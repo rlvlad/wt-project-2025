@@ -41,16 +41,15 @@ public class LoginController extends HttpServlet {
         String password = req.getParameter("password");
 
         UserDAO userDAO = new UserDAO(connection);
-        User schrondingerUser = null;
+        User schrödingerUser = null;
         try {
-            schrondingerUser = userDAO.checkUser(nickname, password);
+            schrödingerUser = userDAO.checkUser(nickname, password);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-
-        if (schrondingerUser != null) {
-            req.getSession().setAttribute("user", schrondingerUser);
+        if (schrödingerUser != null) {
+            req.getSession().setAttribute("user", schrödingerUser);
             res.setStatus(HttpServletResponse.SC_OK);
         } else {
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

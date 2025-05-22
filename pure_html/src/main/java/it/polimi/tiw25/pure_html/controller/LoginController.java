@@ -51,16 +51,16 @@ public class LoginController extends HttpServlet {
         String password = req.getParameter("password");
 
         UserDAO userDAO = new UserDAO(connection);
-        User schrondingerUser = null;
+        User schrödingerUser = null;
         try {
-            schrondingerUser = userDAO.checkUser(nickname, password);
+            schrödingerUser = userDAO.checkUser(nickname, password);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        req.getSession().setAttribute("user", schrondingerUser);
+        req.getSession().setAttribute("user", schrödingerUser);
 
-        if (schrondingerUser != null) {
+        if (schrödingerUser != null) {
             res.sendRedirect(getServletContext().getContextPath() + "/HomePage");
         } else {
             res.sendRedirect(getServletContext().getContextPath() + "/Login?error=true");

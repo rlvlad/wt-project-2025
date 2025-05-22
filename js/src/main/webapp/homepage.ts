@@ -37,7 +37,7 @@
         }
 
         /**
-         * Loads the HomePage, that is all the Playlists.
+         * Loads all the User Playlists.
          */
         function loadPlaylists() {
             cleanMain();
@@ -64,9 +64,8 @@
          * Load buttons in the top nav bar and button functionality in the sidebar.
          */
         function loadButtons(): void {
-            // Replace the track selector button and add "create playlist" functionality;
-            // needed for removing already present event listeners, as this button is also used for adding tracks to a
-            // playlist.
+            // Replace the track selector button and add "create playlist" functionality; needed for removing already
+            // present event listeners, as this button is also used for adding tracks to a playlist
             let modalButton = document.getElementById("track-selector-modal-button");
             let newButton = modalButton.cloneNode(true);
             modalButton.parentNode.replaceChild(newButton, modalButton);
@@ -680,7 +679,6 @@
                 showModal(document.getElementById("add-tracks"));
             });
 
-
             document.getElementById("add-tracks-btn").addEventListener("click", function () {
                 let self: HTMLElement = this;
                 let form: HTMLFormElement = this.closest("form");
@@ -859,7 +857,6 @@
 
             centerPanelContainer.appendChild(center_panel);
             container.appendChild(centerPanelContainer);
-
         }
 
         /**
@@ -878,12 +875,10 @@
             lastTrack = track;
 
             makeCall("GET", "Track?track_id=" + track.id.toString(), null,
-                // callback function
                 function (req: XMLHttpRequest) {
-                    if (req.readyState == XMLHttpRequest.DONE) { // == 4
+                    if (req.readyState == XMLHttpRequest.DONE) {
                         let message: string = req.responseText;
                         if (req.status == 200) {
-                            // parse JSON for user tracks
                             let track: Track = JSON.parse(message);
 
                             if (track === null) {
@@ -891,7 +886,6 @@
                                 return;
                             }
 
-                            // pass the JSON of all Tracks
                             trackPlayer(document.getElementById("main"), track);
                         } else {
                             alert("Cannot recover data. Maybe the User has been logged out.");

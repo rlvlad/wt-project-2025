@@ -2,7 +2,7 @@
 
 = Cut content<cut-content>
 
-During the development, we had many ideas and thought about ways to implement them -- however, due to time and work restrictions, some features didn't make it to the final release. They can be categorized in features and optimizations.
+During the development, we had many ideas and thought about ways to implement them -- however, due to time and work restrictions, some features didn't make it to the final release. They can be categorized in features, optimizations and code cleanup.
 
 == Features
 
@@ -39,3 +39,7 @@ The last scrapped ideas were all about some refactor here and there:
 - Thymeleaf can process the parameters value directly, effectively bypassing the context setting: this could potentially reduce the boilerplate
 
 - Since the Record classes are immutable, in order to get them to work without settings all nulls there have been some workarounds what could be rewritten and polished
+
+- The `homepage.ts` file is not easily navigabile -- we often found ourselves scrolling up and down -- though it's thoroughly commented: we wanted to dismember it in separate files (`homepage.ts`, `playlist.ts`, `playerpage.ts`) to fix this, but due to the use of global variables and time we didn't do it
+
+- The `createModal` function was being created in parallel with the `track-reorder` modal, thus the second couldn't have been generated with the first and now there is some code duplication; this could have happened anyway because this particular modal is quite different from the others
