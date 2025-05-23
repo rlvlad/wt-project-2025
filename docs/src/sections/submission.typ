@@ -23,7 +23,7 @@ After the login, the user is able to #rel[create tracks] by loading their data a
 #figure(
   placement: bottom,
   scope: "parent",
-  image("../img/er_diagram.svg", width: 100%),
+  image("../img/er/er_diagram.svg", width: 100%),
   caption: [ER diagram (HTML).],
 )<er-diagram>
 
@@ -68,13 +68,13 @@ After adding a new track to the current playlist, the application #server_action
   placement: bottom,
   scope: "parent",
   image(
-    width: 110%,
+    width: 100%,
     // height: 100%,
     fit: "contain",
-    "../img/ifml_vertical.png",
+    "../img/ifml/ifml-pure_html.png",
   ),
-  caption: "IFML diagram.",
-)
+  caption: "IFML diagram (HTML).",
+)<html-ifml-diagram>
 
 #colbreak()
 
@@ -97,7 +97,7 @@ The user can #user_action[drag] the title of a track and #user_action[drop] it i
 #figure(
   placement: bottom,
   scope: "parent",
-  image("../img/er_diagram_ria.svg", width: 100%),
+  image("../img/er/er_diagram_ria.svg", width: 100%),
   caption: [ER diagram (RIA).],
 )<er-diagram-ria>
 
@@ -109,7 +109,7 @@ The user can #user_action[drag] the title of a track and #user_action[drop] it i
     width: 110%,
     // height: 100%,
     fit: "contain",
-    "../img/ifml-ria.png",
+    "../img/ifml/ifml-ria.png",
   ),
-  caption: "IFML diagram.",
-)
+  caption: "IFML diagram (RIA).",
+)<ria-ifml-diagram>

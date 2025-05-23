@@ -9,7 +9,7 @@ The project requirements slightly change from `pure_html` and `js`, where the la
 In both scenarios, the schema is composed by four tables: `user`, `track`, `playlist` and `playlist_tracks`.
 
 #figure(
-  image("../img/uml_bluetto.png"),
+  image("../img/uml/uml_bluetto.png"),
   caption: [UML diagram.],
 )<uml-diagram>
 

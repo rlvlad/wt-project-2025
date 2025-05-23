@@ -397,7 +397,7 @@
       + h(0.1cm)
       + box(
         image(
-          "img/thymeleaf.svg",
+          "img/logos/thymeleaf.svg",
           width: 1em,
           height: 1em,
         ),
@@ -445,7 +445,7 @@
 
 #import "@preview/chronos:0.2.1": * // sequence diagrams
 
-#let thymeleaf = image("img/thymeleaf.svg", width: 1.5em, height: 1.5em, fit: "contain")
+#let thymeleaf = image("img/logos/thymeleaf.svg", width: 1.5em, height: 1.5em, fit: "contain")
 
 #let balance(content, position: top) = context {
   let height = measure(
@@ -657,6 +657,6 @@
 }
 
 #let ria() = {
-  // box(image("img/javascript.svg"), height: 0.9em, baseline: 1pt)
-  box(image("img/typescript.svg"), height: 0.9em, baseline: 1pt)
+  // box(image("img/logos/javascript.svg"), height: 0.9em, baseline: 1pt)
+  box(image("img/logos/typescript.svg"), height: 0.9em, baseline: 1pt)
 }

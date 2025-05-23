@@ -4,7 +4,7 @@
     let tracklist: Track[], trackGroup = 0;
     let homeView = new HomeView(), playlistView = new PlaylistView(), playerView = new PlayerView();
 
-    // Load the HomePage via the PageOrchestrator
+    // Load the HomePage via the MainLoader
     window.addEventListener("load", () => {
         let mainLoader = new MainLoader();
         mainLoader.start();
