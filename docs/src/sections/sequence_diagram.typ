@@ -124,7 +124,11 @@
     _seq("C", "B", disable-src: true, comment: "return userTracks")
     _seq("B", "G", enable-dst: true, comment: [getParameter ("duplicateTrack")])
     _seq("G", "B", disable-src: true, comment: [return duplicateTrack])
-    _seq("B", "D", comment: [[duplicateTrack != null && duplicateTrack == true] \ ? setVariable("duplicateTrack", true)])
+    _seq(
+      "B",
+      "D",
+      comment: [[duplicateTrack != null && duplicateTrack == true] \ ? setVariable("duplicateTrack", true)],
+    )
     _seq("B", "G", enable-dst: true, comment: [getParameter ("duplicatePlaylist")])
     _seq("G", "B", disable-src: true, comment: [return duplicatePlaylist])
     _seq(
@@ -222,7 +226,7 @@
     Finally, `getTrackById()` returns the track metadata -- that is title, artist, album, path and album image -- thymeleaf then processes the context and displays all the information. If an exception is caught during this operation, the server will respond with `ERROR 500` (see @trackchecker-filter).
   ],
   label_: "track-sequence",
-  comment_next_page_: false
+  comment_next_page_: false,
 )
 
 #seq_diagram(
@@ -302,10 +306,14 @@
     _seq("G", "B", disable-src: true, comment: [return selectedTracks])
     _seq("B", "E", enable-dst: true, comment: [createPlaylist (playlistTitle)])
     _seq("E", "B", disable-src: true, comment: [return playlistId])
-    _seq("B", "E", comment: [
-      !selectedTracksIds.isEmpty() \
-      ? addTracksToPlaylist (playlistId,selectedTracksIds)
-    ])
+    _seq(
+      "B",
+      "E",
+      comment: [
+        !selectedTracksIds.isEmpty() \
+        ? addTracksToPlaylist (playlistId,selectedTracksIds)
+      ],
+    )
     // _alt(
     //   "!selectedTracksIds.isEmpty()",
     //   {
@@ -385,16 +393,16 @@
     _par("E", display-name: "PlaylistDAO")
     _par("F", display-name: "Gson")
 
-    _seq("A", "B", enable-dst:true, comment: "doGet()")
-    _seq("B", "C", enable-dst:true, comment: [getAttribute ("user")])
-    _seq("C", "B", disable-src:true, comment: [return user])
-    _seq("B", "D", enable-dst:true, comment: [getParameter ("playlistTitle")])
-    _seq("D", "B", disable-src:true, comment: [return playlistTitle])
-    _seq("B", "E", enable-dst:true, comment: [getTracksNotInPlaylist (playlistTitle,user.id())])
-    _seq("E", "B", disable-src:true, comment: [return userTracks])
-    _seq("B", "F", enable-dst:true, comment: [toJson (userTracks)])
+    _seq("A", "B", enable-dst: true, comment: "doGet()")
+    _seq("B", "C", enable-dst: true, comment: [getAttribute ("user")])
+    _seq("C", "B", disable-src: true, comment: [return user])
+    _seq("B", "D", enable-dst: true, comment: [getParameter ("playlistTitle")])
+    _seq("D", "B", disable-src: true, comment: [return playlistTitle])
+    _seq("B", "E", enable-dst: true, comment: [getTracksNotInPlaylist (playlistTitle,user.id())])
+    _seq("E", "B", disable-src: true, comment: [return userTracks])
+    _seq("B", "F", enable-dst: true, comment: [toJson (userTracks)])
     _seq("F", "B", disable-src: true, comment: [return userTracks[JSON]])
-    _seq("B", "A", disable-src:true, comment: [userTracks])
+    _seq("B", "A", disable-src: true, comment: [userTracks])
   }),
   comment: [
     As the name suggests, this servlet obtains the tracks are _not_ in the given Playlist, in order to display them when the User wants to add a new track to a Playlist -- this happens when the User clicks on the corresponding button.
@@ -425,13 +433,18 @@
     // _seq("C", "B", disable-src:true, comment: [return trackId)])
     // _seq("B", "C", enable-dst:true, comment: [getParameter("newOrder")])
     // _seq("C", "B", disable-src:true, comment: [return newOrder)])
-    _seq("B", "C", enable-dst:true, comment: [getReader])
-    _seq("C", "B", disable-src:true, comment: [return reader])
-    _seq("B", "E", enable-dst:true, comment: [fromJson(reader)])
-    _seq("E", "B", disable-src:true, comment: [return requestData])
-    _seq("B", "D", disable-src:true, comment: [
-      updateTrackOrder(requestData.trackIds(),\ requestData.playlistId())
-    ])
+    _seq("B", "C", enable-dst: true, comment: [getReader])
+    _seq("C", "B", disable-src: true, comment: [return reader])
+    _seq("B", "E", enable-dst: true, comment: [fromJson(reader)])
+    _seq("E", "B", disable-src: true, comment: [return requestData])
+    _seq(
+      "B",
+      "D",
+      disable-src: true,
+      comment: [
+        updateTrackOrder(requestData.trackIds(),\ requestData.playlistId())
+      ],
+    )
   }),
   comment: [
     // It obtains the needed parameters from the request -- the ID of the playlist, the ID of the track and the new order of said track -- and simply makes a POST request to the servlet, which invokes the updateTrackOrder method.
@@ -546,6 +559,38 @@
   }),
   comment: [
     The User is able to logout every moment after the Login. As the Logout button is pressed, Javascript performs a GET request to the Logout servlet: it responds with 200 OK if the session has been invalidated; else nothing will happen.
+  ],
+  label_: "ria-event-logout-sequence",
+  comment_next_page_: false,
+)
+
+#seq_diagram(
+  [#ria() Event: Access HomeView],
+  diagram({
+    _par("A", display-name: "home_page.html + homepage.ts")
+    _par("B", display-name: "HomeView")
+    _par("C", display-name: "HomePage")
+    _par("D", display-name: "PlaylistDAO")
+
+    _seq("A", "B", enable-dst: true, comment: [homeView.show()])
+    _seq("B", "B", comment: [clearModals()])
+    _seq("B", "B", comment: [clearBottomNavBar()])
+    _seq("B", "B", comment: [loadCreatePlaylistModal()])
+    _seq("B", "B", comment: [loadUploadTrackModal()])
+    _seq("B", "B", comment: [loadButtons()])
+    _seq("B", "B", enable-dst: true, comment: [loadPlaylists()])
+    _seq("B", "B", comment: [cleanMain()])
+    _seq("B", "C", enable-dst: true, comment: [AJAX GET])
+    _seq("C", "D", enable-dst: true, comment: [getUserPlaylists(user)])
+    _seq("D", "C", disable-src: true, comment: [playlists])
+    _seq("C", "B", disable-src: true, comment: [playlists])
+    _seq("B", "B", comment: [playlistGrid(playlists)])
+    _seq("B", "B", disable-src: true)
+    _seq("B", "A", disable-src: true)
+  }),
+  comment: [
+    The user can access the home view when the `home_page.html` first loads or after pressing the Homepage button in the sidebar.
+    The view is loaded by calling the `show` method of the `HomeView` object, which clears the possibly remaining elements left by other views and loads the modals, buttons, playlists and event listeners associated to them.
   ],
   label_: "ria-event-logout-sequence",
   comment_next_page_: false,

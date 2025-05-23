@@ -2,13 +2,13 @@
     // Initialize all the global variables and objects
     let lastPlaylist: Playlist = null, lastTrack: Track = null;
     let tracklist: Track[], trackGroup = 0;
-    let homepage = new HomePage(), playlistPage = new PlaylistPage(), playerPage = new PlayerPage();
+    let homeView = new HomeView(), playlistView = new PlaylistView(), playerView = new PlayerView();
 
     // Load the HomePage via the PageOrchestrator
     window.addEventListener("load", () => {
-        let orchestrator = new PageOrchestrator();
-        orchestrator.start();
-        orchestrator.refreshPage();
+        let mainLoader = new MainLoader();
+        mainLoader.start();
+        mainLoader.refreshPage();
     })
 
     /**
@@ -16,7 +16,7 @@
      *
      * @constructor
      */
-    function HomePage() {
+    function HomeView() {
         const HOMEPAGE_LABEL: string = "All Playlists";
         const HOMEPAGE_ID: string = "homepage";
 
@@ -30,10 +30,6 @@
             loadUploadTrackModal();
             loadButtons();
             loadPlaylists();
-
-            // show the upload and add track modal
-            document.getElementById("upload-track-modal-button").className = "button";
-            document.getElementById("track-selector-modal-button").className = "button";
         }
 
         /**
@@ -144,6 +140,10 @@
                     form.reportValidity();
                 }
             });
+
+            // show the upload and add track modal
+            document.getElementById("upload-track-modal-button").className = "button";
+            document.getElementById("track-selector-modal-button").className = "button";
         }
 
         /**
@@ -177,7 +177,7 @@
             span.textContent = playlist.title;
 
             button.addEventListener("click", () => {
-                playlistPage.show(playlist);
+                playlistView.show(playlist);
                 trackGroup = 0;
             }, false);
 
@@ -204,7 +204,7 @@
         }
 
         /**
-         * Loads the modal for creating playlists to the modal container.
+         * Loads the create-playlist modal DOM elements to the modal container.
          */
         function loadCreatePlaylistModal(): void {
             let modalContainer: HTMLElement = document.getElementById("modals"),
@@ -549,7 +549,7 @@
 
     }
 
-    function PlaylistPage() {
+    function PlaylistView() {
         const PLAYLIST_PAGE_ID: string = "playlist";
 
         /**
@@ -612,7 +612,7 @@
                 image.setAttribute("height", "100");
 
                 button.addEventListener("click", () => {
-                    playerPage.show(track);
+                    playerView.show(track);
                 });
 
                 button.appendChild(text);
@@ -780,7 +780,7 @@
      *
      * @constructor
      */
-    function PlayerPage() {
+    function PlayerView() {
         const PLAYER_PAGE_ID: string = "player";
 
         /**
@@ -900,7 +900,7 @@
      *
      * @constructor
      */
-    function PageOrchestrator() {
+    function MainLoader() {
         /**
          * Initializes the HomePage: adds listeners on buttons, refreshes the page.
          */
@@ -917,18 +917,18 @@
 
             // add listeners on sidebar buttons
             document.getElementById("homepage-button").addEventListener("click", function () {
-                homepage.show();
+                homeView.show();
             });
 
             document.getElementById("playlist-button").addEventListener("click", function () {
                 if (lastPlaylist != null) {
-                    playlistPage.show(lastPlaylist);
+                    playlistView.show(lastPlaylist);
                 }
             });
 
             document.getElementById("track-button").addEventListener("click", function () {
                 if (lastTrack != null) {
-                    playerPage.show(lastTrack);
+                    playerView.show(lastTrack);
                 }
             });
 
@@ -944,7 +944,7 @@
          * Refresh the HomePage: clear all modals and reload them.
          */
         this.refreshPage = function () {
-            homepage.show();
+            homeView.show();
         }
 
         /**
