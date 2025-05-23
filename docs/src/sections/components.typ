@@ -116,7 +116,7 @@ PlaylistView class:
 - `loadAddTracksModal()` --- Load the modal for adding tracks to a playlist to the modal container
 - `loadPrevNextButton()` --- Load the buttons for changing the viewed track group in the playlist view
 
-PlayerView class:
+TrackView class:
 - `show()` --- Show the Track to play
 - `trackPlayer()` --- Load the Track player DOM elements. Unlike the other loaders, it's only a center panel
 - `loadSingleTrack()` --- Load a single Track from a Playlist

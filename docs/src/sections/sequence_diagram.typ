@@ -265,13 +265,13 @@
       "try",
       {
         _seq("B", "C", comment: [addTrack(track)])
-        _seq("B", "D", disable-src: true, comment: [Redirect])
+        _seq("B", "D", comment: [Redirect])
       },
       "catch SQLException",
       { _seq("B", "B", comment: [newFiles.forEach(file -> file.delete())]) },
       [finally],
       {
-        _seq("B", "B", comment: [newFiles.clear()])
+        _seq("B", "B", disable-src: true, comment: [newFiles.clear()])
       },
     )
   }),
@@ -567,7 +567,8 @@
 #seq_diagram(
   [#ria() Event: Access HomeView],
   diagram({
-    _par("A", display-name: "home_page.html + homepage.ts")
+    _par("A", display-name: "home_page.html +
+      homepage.ts")
     _par("B", display-name: "HomeView")
     _par("C", display-name: "HomePage")
     _par("D", display-name: "PlaylistDAO")
@@ -584,7 +585,8 @@
     _seq("C", "D", enable-dst: true, comment: [getUserPlaylists(user)])
     _seq("D", "C", disable-src: true, comment: [playlists])
     _seq("C", "B", disable-src: true, comment: [playlists])
-    _seq("B", "B", comment: [playlistGrid(playlists)])
+    _seq("B", "B", comment: [[req.status == 200]? \ playlistGrid(playlists)])
+    _seq("B", "B", comment: [[else] alert(...)])
     _seq("B", "B", disable-src: true)
     _seq("B", "A", disable-src: true)
   }),
@@ -609,20 +611,52 @@
     _seq("B", "B", comment: [clearBottomNavBar()])
     _seq("B", "B", comment: [clearModals()])
     _seq("B", "B", comment: [loadAddTracksModal()])
-    _seq("B", "B", enable-dst: true, comment: [loadPlaylistView(playlist)])
-    _seq("B", "B", comment: [loadPlaylistTracks()])
+    _seq("B", "B", comment: [loadPlaylistView(playlist)])
+    _seq("B", "B", enable-dst: true, comment: [loadPlaylistTracks()])
+    _seq("B", "B", comment: [cleanMain()])
     _seq("B", "C", enable-dst: true, comment: [AJAX GET \ /Playlist?\ playlistId=playlist.id])
     _seq("C", "D", enable-dst: true, comment: [getPlaylistTracksById(playlistId)])
     _seq("D", "C", disable-src: true, comment: [playlistTracks])
     _seq("C", "B", disable-src: true, comment: [playlistTracks])
-    _seq("B", "B", comment: [trackGrid(playlistTracks)])
-    _seq("B", "B", comment: [loadPrevNextButtons()])
+    _seq("B", "B", comment: [[req.status == 200]? \ trackGrid(playlistTracks) \ loadPrevNextButtons()])
+    _seq("B", "B", comment: [[else] alert(...)])
     _seq("B", "B", disable-src: true)
     _seq("B", "A", disable-src: true)
   }),
   comment: [
     The user can access the playlist view by selecting a playlist in the home view or by pressing the Playlist button in the sidebar, which will open the last visted playlist.
     The view is loaded by calling the `show` method of the `PlaylistView` object, which clears the elements from other views and loads the modal, buttons, tracks and event listeners associated to them.
+  ],
+  label_: "ria-event-logout-sequence",
+  comment_next_page_: false,
+)
+
+#seq_diagram(
+  [#ria() Event: Access TrackView],
+  diagram({
+    _par("A", display-name: "home_page.html +
+      homepage.ts")
+    _par("B", display-name: "TrackView")
+    _par("C", display-name: "Track")
+    _par("D", display-name: "TrackDAO")
+
+    _seq("A", "B", enable-dst: true, comment: [trackView.show(track)])
+    _seq("B", "B", comment: [clearModals()])
+    _seq("B", "B", comment: [clearBottomNavBar()])
+    _seq("B", "B", enable-dst: true, comment: [loadSingleTrack(track)])
+    _seq("B", "B", comment: [cleanMain()])
+    _seq("B", "C", enable-dst: true, comment: [AJAX GET \ /Track?\ track_id=track.id])
+    _seq("C", "D", enable-dst: true, comment: [getTrackById(track_id)])
+    _seq("D", "C", disable-src: true, comment: [track])
+    _seq("C", "B", disable-src: true, comment: [track])
+    _seq("B", "B", comment: [[req.status == 200]? trackPlayer(track)])
+    _seq("B", "B", comment: [[else] alert(...)])
+    _seq("B", "B", disable-src: true)
+    _seq("B", "A", disable-src: true)
+  }),
+  comment: [
+    The user can access the track view by selecting a track in the playlist view or by pressing the Track button in the sidebar, which will open the last visted track.
+    The view is loaded by calling the `show` method of the `TrackView` object, which clears the elements from other views and loads the player and the song details.
   ],
   label_: "ria-event-logout-sequence",
   comment_next_page_: false,

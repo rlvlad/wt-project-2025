@@ -2,7 +2,7 @@
     // Initialize all the global variables and objects
     let lastPlaylist: Playlist = null, lastTrack: Track = null;
     let tracklist: Track[], trackGroup = 0;
-    let homeView = new HomeView(), playlistView = new PlaylistView(), playerView = new PlayerView();
+    let homeView = new HomeView(), playlistView = new PlaylistView(), trackView = new TrackView();
 
     // Load the HomePage via the MainLoader
     window.addEventListener("load", () => {
@@ -612,7 +612,7 @@
                 image.setAttribute("height", "100");
 
                 button.addEventListener("click", () => {
-                    playerView.show(track);
+                    trackView.show(track);
                 });
 
                 button.appendChild(text);
@@ -780,7 +780,7 @@
      *
      * @constructor
      */
-    function PlayerView() {
+    function TrackView() {
         const PLAYER_PAGE_ID: string = "player";
 
         /**
@@ -789,13 +789,9 @@
          * @param track Track to play
          */
         this.show = function (track: Track) {
-            loadSingleTrack(track);
             clearModals();
             clearBottomNavbar();
-
-            // Hide the modals
-            document.getElementById("upload-track-modal-button").className = "button hidden";
-            document.getElementById("track-selector-modal-button").className = "button hidden";
+            loadSingleTrack(track);
         }
 
         /**
@@ -868,6 +864,10 @@
             // clean main div
             cleanMain();
 
+            // Hide the modals
+            document.getElementById("upload-track-modal-button").className = "button hidden";
+            document.getElementById("track-selector-modal-button").className = "button hidden";
+
             let mainLabel: Element = document.getElementsByClassName("main-label").item(0);
             mainLabel.id = PLAYER_PAGE_ID;
             mainLabel.textContent = track.title;
@@ -928,7 +928,7 @@
 
             document.getElementById("track-button").addEventListener("click", function () {
                 if (lastTrack != null) {
-                    playerView.show(lastTrack);
+                    trackView.show(lastTrack);
                 }
             });
 

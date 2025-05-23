@@ -36,7 +36,6 @@ public class TrackController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession s = req.getSession();
-        User user = (User) s.getAttribute("user");
         int trackId = Integer.parseInt(req.getParameter("track_id"));
 
         TrackDAO trackDAO = new TrackDAO(connection);
