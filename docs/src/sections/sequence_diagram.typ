@@ -866,13 +866,14 @@
 #seq_diagram(
   [#ria() Event: Add Track modal],
   diagram({
-    _par("A", display-name: "home_page.html +
-      homepage.ts")
-    _par("B", display-name: "modal button")
+    _par("A", display-name: "Browser")
+    _par("B", display-name: "PlaylistView")
+    _par("E", display-name: "Add Track modal")
     _par("C", display-name: "utils.ts")
     _par("D", display-name: "GetTracksNotInPlaylist")
+    _par("F", display-name: "PlaylistDAO")
 
-    _seq("A", "B", enable-dst: true, comment: [click])
+    _seq("A", "B", enable-dst: true, comment: [Add Playlist \ button click])
     _seq(
       "B",
       "C",
@@ -880,18 +881,34 @@
       comment: [loadUserTracks \ (trackSelector, playlist)],
       lifeline-style: (fill: rgb("#3178C6")),
     )
-    _seq("C", "D", enable-dst: true, comment: [AJAX GET \ GetTracksNotInPlaylist? \ playlistTitle= playlist.title])
+    _seq("C", "D", enable-dst: true, comment: [AJAX GET \ /GetTracksNotInPlaylist? \ playlistTitle=playlist.title])
     _seq("D", "C", disable-src: true, comment: [tracks])
     _seq("C", "C", comment: [[req.status == 200]? \ add tracks to selector])
     _seq("C", "C", comment: [[else] alert(...)])
     _seq("C", "B", disable-src: true)
     _seq("B", "C", comment: [showModal(modal)])
     _seq("B", "B", disable-src: true)
+    _seq("A", "E", enable-dst: true, comment: [Create playlist button click])
+    _seq("E", "F", comment: [AJAX POST /AddTracks?playlistId=playlist.id])
+    _alt(
+      [req.status==201],
+      {
+        _seq("E", "C", comment: [loadUserTracks \ (trackSelector, \ playlist)])
+        _seq("E", "B", comment: [loadPlaylist \ Tracks(playlist)])
+        _seq("E", "E", comment: [Show success \ message \ form.reset()])
+      },
+      [else],
+      {
+        _seq("E", "E", comment: [Show error \ message])
+      },
+    )
+    _seq("E", "E", disable-src: true)
   }),
   comment: [
-    The User can access the add-tracks modal by pressing the Add Tracks button in the playlist view.
+    The User can access the add-tracks modal by clicking the Add Tracks button in the playlist view.
     The click event listener on the button gets the user tracks not already added to the playlist from the server, adds them to the track selector and then makes the modal visible.
+    When the Add Tracks button inside the modal is clicked, an AJAX POST request containing the selected tracks and the playlist id is sent; depending on the response status an error or success message is shown in the modal.
   ],
   label_: "add-track-modal-sequence",
-  comment_next_page_: false,
+  comment_next_page_: true,
 )

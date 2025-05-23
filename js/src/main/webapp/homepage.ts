@@ -694,6 +694,9 @@
                                     self.parentElement.previousElementSibling.textContent = "Tracks added successfully";
                                     form.reset();
                                     break;
+                                default:
+                                    self.parentElement.previousElementSibling.setAttribute("class", "success");
+                                    self.parentElement.previousElementSibling.textContent = "Error";
                             }
                         }
                     }, false);
