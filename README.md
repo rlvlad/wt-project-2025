@@ -12,13 +12,15 @@ Vittorio Robecchi
 
 ---
 
-<center>
+<p align="center">
 <img src="preview/login_page.png" width=350>
+</p>
+
 </center>
 
 # Usage
 
-To run the project you need to install all the dependencies – which is mostrly taken care of by Maven – and [configure MariaDB](#mariadb-configuration).
+To run the project you need to install all the dependencies – which is mostly taken care by Maven – and [configure MariaDB](#mariadb-configuration).
 
 There are already included Tomcat configuration that:
 
