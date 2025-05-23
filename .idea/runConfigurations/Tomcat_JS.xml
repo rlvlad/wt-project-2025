@@ -98,6 +98,7 @@
       </SHUTDOWN>
     </ConfigurationWrapper>
     <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="ConnectionTester [JS]" run_configuration_type="JUnit" />
       <option name="TypeScript.Before.Run" enabled="true" FAIL_ON_ERROR="true" CONFIG_PATH="$PROJECT_DIR$/js/src/main/webapp/tsconfig.json" />
       <option name="Make" enabled="true" />
       <option name="BuildArtifacts" enabled="true">

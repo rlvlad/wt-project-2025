@@ -14,7 +14,7 @@ To comply with best practises, since the application does offer a logout button 
 
 / CSS frameworks: We all know CSS is awesome and very powerful, however, as is the case with many technologies, its usage in a raw form is often negleted: as no one dares to write in #text(font: "New Computer Modern")[plain] #TeX because #LaTeX exists, software like Hibernate (more on this later) abstract the SQL from the developer, the same applies to CSS. In the wild there are many frameworks -- Tailwind-CSS, Sass just to name a few. We wanted to have our fair share and use Bulma @bulma; in the end, we wrote everything ourselves.
 
-== Optimizations
+== Optimizations<cut-content-optimizations>
 
 / The OG database : The first database implementation was created with a different logic than the one we ended up with. We thought that the tracks were a common pool, similarly to all the tracks of a streaming service, and then each user could select some among them. In this way, if a user wanted to upload a track but it had already been uploaded by someone else, the server would have just linked that track to the current user -- the reason behind was to optimize track storage and forbid duplicates.
 
