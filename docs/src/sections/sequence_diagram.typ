@@ -661,3 +661,36 @@
   label_: "ria-event-logout-sequence",
   comment_next_page_: false,
 )
+
+#seq_diagram(
+  [#ria() Event: Open add-tracks modal],
+  diagram({
+    _par("A", display-name: "home_page.html +
+      homepage.ts")
+    _par("B", display-name: "modal button")
+    _par("C", display-name: "utils.ts")
+    _par("D", display-name: "GetTracksNotInPlaylist")
+
+    _seq("A", "B", enable-dst: true, comment: [click])
+    _seq(
+      "B",
+      "C",
+      enable-dst: true,
+      comment: [loadUserTracks \ (trackSelector, playlist)],
+      lifeline-style: (fill: rgb("#3178C6")),
+    )
+    _seq("C", "D", enable-dst: true, comment: [AJAX GET \ GetTracksNotInPlaylist? \ playlistTitle= playlist.title])
+    _seq("D", "C", disable-src: true, comment: [tracks])
+    _seq("C", "C", comment: [[req.status == 200]? \ add tracks to selector])
+    _seq("C", "C", comment: [[else] alert(...)])
+    _seq("C", "B", disable-src: true)
+    _seq("B", "C", comment: [showModal(modal)])
+    _seq("B", "B", disable-src: true)
+  }),
+  comment: [
+    The user can access the add-tracks modal by pressing the Add Tracks button in the playlist view.
+    The click event listener on the button gets the user tracks not already added to the playlist from the server, adds them to the track selector and then makes the modal visible.
+  ],
+  label_: "ria-event-logout-sequence",
+  comment_next_page_: false,
+)
