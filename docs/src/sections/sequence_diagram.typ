@@ -595,3 +595,35 @@
   label_: "ria-event-logout-sequence",
   comment_next_page_: false,
 )
+
+#seq_diagram(
+  [#ria() Event: Access PlaylistView],
+  diagram({
+    _par("A", display-name: "home_page.html +
+      homepage.ts")
+    _par("B", display-name: "PlaylistView")
+    _par("C", display-name: "Playlist")
+    _par("D", display-name: "PlaylistDAO")
+
+    _seq("A", "B", enable-dst: true, comment: [playlistView.show(playlist)])
+    _seq("B", "B", comment: [clearBottomNavBar()])
+    _seq("B", "B", comment: [clearModals()])
+    _seq("B", "B", comment: [loadAddTracksModal()])
+    _seq("B", "B", enable-dst: true, comment: [loadPlaylistView(playlist)])
+    _seq("B", "B", comment: [loadPlaylistTracks()])
+    _seq("B", "C", enable-dst: true, comment: [AJAX GET \ /Playlist?\ playlistId=playlist.id])
+    _seq("C", "D", enable-dst: true, comment: [getPlaylistTracksById(playlistId)])
+    _seq("D", "C", disable-src: true, comment: [playlistTracks])
+    _seq("C", "B", disable-src: true, comment: [playlistTracks])
+    _seq("B", "B", comment: [trackGrid(playlistTracks)])
+    _seq("B", "B", comment: [loadPrevNextButtons()])
+    _seq("B", "B", disable-src: true)
+    _seq("B", "A", disable-src: true)
+  }),
+  comment: [
+    The user can access the playlist view by selecting a playlist in the home view or by pressing the Playlist button in the sidebar, which will open the last visted playlist.
+    The view is loaded by calling the `show` method of the `PlaylistView` object, which clears the elements from other views and loads the modal, buttons, tracks and event listeners associated to them.
+  ],
+  label_: "ria-event-logout-sequence",
+  comment_next_page_: false,
+)
