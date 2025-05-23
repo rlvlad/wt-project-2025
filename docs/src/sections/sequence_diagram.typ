@@ -581,7 +581,13 @@
     _seq("B", "B", comment: [loadButtons()])
     _seq("B", "B", enable-dst: true, comment: [loadPlaylists()])
     _seq("B", "B", comment: [cleanMain()])
-    _seq("B", "C", enable-dst: true, comment: [AJAX GET])
+    _seq(
+      "B",
+      "C",
+      enable-dst: true,
+      comment: [AJAX GET],
+      lifeline-style: (fill: rgb("#3178C6")),
+    )
     _seq("C", "D", enable-dst: true, comment: [getUserPlaylists(user)])
     _seq("D", "C", disable-src: true, comment: [playlists])
     _seq("C", "B", disable-src: true, comment: [playlists])
@@ -624,7 +630,7 @@
     _seq("B", "A", disable-src: true)
   }),
   comment: [
-    The user can access the playlist view by selecting a playlist in the home view or by pressing the Playlist button in the sidebar, which will open the last visted playlist.
+    The user can access the playlist view by selecting a playlist in the home view or by pressing the Playlist button in the sidebar, which will open the last visited playlist.
     The view is loaded by calling the `show` method of the `PlaylistView` object, which clears the elements from other views and loads the modal, buttons, tracks and event listeners associated to them.
   ],
   label_: "ria-event-logout-sequence",
@@ -663,7 +669,202 @@
 )
 
 #seq_diagram(
-  [#ria() Event: Open add-tracks modal],
+  [#ria() Event: Upload Track modal],
+  diagram({
+    _par("A", display-name: "HomeView")
+    _par("B", display-name: "MainLoader")
+    _par("D", display-name: "utils.ts")
+    _par("C", display-name: "UploadTrack modal")
+    _par("F", display-name: "UploadTrack")
+
+    _seq("A", "B", enable-dst: true, comment: [click()])
+    _seq("B", "B", comment: [loadYears()])
+    _seq(
+      "B",
+      "D",
+      enable-dst: true,
+      comment: [loadGenres()],
+      lifeline-style: (fill: rgb("#3178C6")),
+    )
+    _seq(
+      "D",
+      "D",
+      comment: [
+        AJAX GET \
+        genres.json
+      ],
+    )
+    _seq(
+      "D",
+      "D",
+      comment: [
+        [req.status == 200] ? \
+        append genres to \
+        genre-selection
+      ],
+    )
+    _seq("D", "B", disable-src: true)
+    _seq("B", "C", disable-src: true, enable-dst: true, comment: [showModal (upload-track)])
+    _seq("C", "C", comment: [upload-track-btn.click()])
+    _seq(
+      "C",
+      "F",
+      enable-dst: true,
+      comment: [
+        AJAX POST \
+        form
+      ],
+      lifeline-style: (fill: rgb("#3178C6")),
+    )
+    _seq(
+      "F",
+      "C",
+      disable-src: true,
+      comment: [response],
+    )
+    _seq(
+      "C",
+      "C",
+      comment: [
+        [req.status == 201] \
+        ? success : error
+      ],
+    )
+    _seq("C", "A", disable-src: true, comment: [modal-close.click()])
+  }),
+  comment: [
+    As the User logs in, in order to being able to listen the tracks, they must be uploaded. From the top nav bar, in the HomeView, there is the corresponding button.
+
+    After the click event, the MainLoader calls the `loadYears()`, `loadGenres()` and finally the `showModal()` functions. From there, the User is able to create new tracks by inserting the necessary metadata: title, artist, album, year, genre, image and file path (these are the same as seen in the Upload track sequence, see @uploadtrack-sequence -- that's why they are omitted).
+
+    If the operation is successful, a div with "Success" is shown; otherwise error. Finally the User can close and modal and return to the HomeView.
+  ],
+  label_: "upload-track-modal-sequence",
+  comment_next_page_: false,
+)
+
+#seq_diagram(
+  [#ria() Event: Reorder modal],
+  diagram({
+    _par("B", display-name: "HomeView")
+    _par("A", display-name: "MainLoader")
+    _par("C", display-name: "ReorderTrack modal")
+    _par("D", display-name: "homepage.ts")
+    _par("E", display-name: "Playlist")
+    _par("F", display-name: "TrackReoder")
+
+    _seq("B", "A", comment: [click()])
+    _seq("A", "C", enable-dst: true, comment: [loadReorderModal()])
+    _seq(
+      "C",
+      "D",
+      enable-dst: true,
+      comment: [
+        loadUserTracksOl (\
+        trackSelector,\
+        playlist)
+      ],
+      lifeline-style: (fill: rgb("#3178C6")),
+    )
+    _seq("D", "E", enable-dst: true, comment: [AJAX GET \ Playlist? \ playlistId=playlist.id])
+    _seq("E", "D", disable-src: true, comment: [tracks])
+    _seq("D", "D", comment: [[req.status == 200] ? \ add tracks to selector])
+    _seq("D", "D", comment: [[else] alert(...)])
+    _seq("D", "C", disable-src: true)
+    _seq(
+      "C",
+      "D",
+      enable-dst: true,
+      comment: [saveOrder (e, \
+        playlistId)
+      ],
+      lifeline-style: (fill: rgb("#3178C6")),
+    )
+    _seq(
+      "D",
+      "F",
+      enable-dst: true,
+      comment: [
+        AJAX POST \
+        requestData:\
+        {trackIds,playlistId}
+      ],
+    )
+    _seq(
+      "F",
+      "D",
+      disable-src: true,
+      comment: [
+        [req.status == 201] \
+        ? success : error
+      ],
+    )
+    _seq("D", "C", disable-src: true)
+    _seq("C", "B", disable-src: true, comment: [closeReorderModal()])
+  }),
+  comment: [
+    // This modal is responible for adding a custom order to the added tracks in a playlist. From the HomeView, every playlist has a reorder button thats open the corresponding modal.
+
+    This modal is quite different from the upload tracks modal becuase, in that case, the User must see the tracks that are _not_ in that playlist, however if they are to be reordered, the User has to see them all. And being able to drag and drop them: that's why the `loadUserTracksOl()` function is called -- `ol` stands for _Ordered List_. The logic is very similary to the regular `loadUserTracks()`.
+
+    After being satisfied with the new order, the User clicks on the save oreder button that POSTS a JSON-formatted object to Java -- the only function in the project to do so.
+
+    If the operation is successful, a div with "Success" is shown; otherwise error. Finally the User can close and modal and return to the HomeView.
+  ],
+  label_: "reorder-modal-sequence",
+  comment_next_page_: false,
+)
+#seq_diagram(
+  [#ria() Event: Create Playlist modal],
+  diagram({
+    _par("B", display-name: "HomeView")
+    _par("C", display-name: "create-playlist modal")
+    _par("D", display-name: "homepage.ts")
+    _par("E", display-name: "CreatePlaylist")
+
+    _seq("B", "C", comment: [click()])
+    // _seq("A", "C", enable-dst: true, comment: [loadCreatePlaylistModal()])
+    _seq(
+      "C",
+      "D",
+      enable-dst: true,
+      comment: [create-playlist-btn.click()],
+      lifeline-style: (fill: rgb("#3178C6")),
+    )
+    _seq(
+      "D",
+      "F",
+      enable-dst: true,
+      comment: [
+        AJAX POST \
+        form
+      ],
+    )
+    _seq(
+      "F",
+      "D",
+      disable-src: true,
+      comment: [
+        [req.status == 201] \
+        ? success : error
+      ],
+    )
+    _seq("D", "C", disable-src: true)
+    _seq("C", "B", disable-src: true, comment: [modal-close.click()])
+  }),
+  comment: [
+    The User is able to create playlists by clicking on the corresponding button in the top navigation bar. Then, the User must insert the required data, which is only the title (as seen in @createplaylist-sequence); there is no way to add already uploaded tracks -- it can only be done via the the modal (@add-track-modal-sequence).
+
+    Once satisfied, the User can click on the button in bottom part of the modal to save the updates.
+
+    If the operation is successful, a div with "Playlist created successfully" is shown; otherwise error. Finally the User can close and modal and return to the HomeView.
+  ],
+  label_: "create-playlist-modal-sequence",
+  comment_next_page_: false,
+)
+
+#seq_diagram(
+  [#ria() Event: Add Track modal],
   diagram({
     _par("A", display-name: "home_page.html +
       homepage.ts")
@@ -688,9 +889,9 @@
     _seq("B", "B", disable-src: true)
   }),
   comment: [
-    The user can access the add-tracks modal by pressing the Add Tracks button in the playlist view.
+    The User can access the add-tracks modal by pressing the Add Tracks button in the playlist view.
     The click event listener on the button gets the user tracks not already added to the playlist from the server, adds them to the track selector and then makes the modal visible.
   ],
-  label_: "ria-event-logout-sequence",
+  label_: "add-track-modal-sequence",
   comment_next_page_: false,
 )
