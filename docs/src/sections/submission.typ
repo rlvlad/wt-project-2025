@@ -12,11 +12,11 @@
 )
 #legend(db_legend)
 
-Each #entity[user] has a #attr[username], #attr[password], #attr[name] and #attr[surname]. Each musical #entity[track] is stored in the database by #attr[title], #attr[image], #attr[album title], #attr[album artist name] (single or group), #attr[album release year], #attr[musical genre] and #attr[file]. Furthermore:
+Each #entity[user] has a #attr[username], #attr[password], #attr[name] and #attr[surname]. Each musical #entity[track] is stored in the database via #attr[title], #attr[image], #attr[album title], #attr[album artist name] (single or group), #attr[album release year], #attr[musical genre] and #attr[file]. Furthermore:
 
-- Suppose the #attr_spec[genres are predetermined] #comment("the user cannot create new genres")
+- Suppose the #attr_spec[genres are predetermined]\ #comment("the user cannot create new genres")
 - It is not requested to store the track order within albums
-- Suppose each track can belong to a unique album (no compilations)
+- Suppose #attr_spec[each track can belong to a unique album] (no compilations)
 
 After the login, the user is able to #rel[create tracks] by loading their data and then group them in playlists. A #entity[playlist] #rel[is a set of chosen tracks] from the uploaded ones of the user. A playlist has a #attr[title], a #attr[creation date] and is #rel[associated to its creator].
 
@@ -82,7 +82,7 @@ After adding a new track to the current playlist, the application #server_action
 
 Create a client-server web application that modifies the previous specification as follows:
 
-- After the #page[LOGIN], the entire application is built as a single webapp#comment("RIA")
+- After the login, the entire application is built as a single webapp#comment("RIA")
 
 - Every user interaction is managed without completely refreshing the page, but instead it asynchrounosly invokes the server and the content displayed is potentially updated
 
@@ -92,7 +92,7 @@ Create a client-server web application that modifies the previous specification 
 
 #colbreak()
 
-The user can #user_action[drag] the title of a track and #user_action[drop] it in a different position to achieve the desidered order, without invoking the server. Once finished, the user can click on a #element[button to save the order] and #server_action[store] the sequence on the server. In subsequent accesses, the personalized track order is #server_action[loaded] instead of the default one. A newly added track in a custom-ordered playlist is #server_action[inserted always at the end].
+The user can #user_action[drag] the title of a track and #user_action[drop] it in a different position to achieve the desidered order, without invoking the server. Once finished, the user can click on a #element[button to save the order] and #server_action[store] the sequence on the server. In subsequent accesses, the personalized track order is #server_action[loaded] instead of the default one. A newly added track in a custom-ordered playlist is #server_action[inserted #underline(stroke: yellow.darken(20%))[always] at the end].
 
 #figure(
   placement: bottom,

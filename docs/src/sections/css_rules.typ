@@ -4,7 +4,7 @@
 
 == Introduction
 
-The project is based on a single CSS file, `components.css`, and all the others rely upon it to retrieve the styles. Furthermore, all the colours are sourced from the `colors.css` file, which is based on #emph[tinted-theming] @tinted-theming, a collection of commonly used themes in the developing world. We have chosen to use the #emph[Classic Light theme]#footnote[This very documentation also is sourced from the exact same colourscheme.].
+The project is based on a single CSS file, `components.css`, and all the others rely upon it to retrieve the styles. Furthermore, all the colours are sourced from the `colors.css` file, which is based on #emph[tinted-theming] @tinted-theming, a collection of commonly used themes in the developing world. We have chosen to use the #emph[Classic Light theme]#footnote[This very documentation is also sourced from that same colourscheme.].
 
 If you want to change the overall theme of the website, just switch to a new colorscheme by looking at the #link("https://tinted-theming.github.io/tinted-gallery/")[tinted-theming gallery]. In `colors.css` there are a few commented styles to choose from.
 
@@ -45,7 +45,7 @@ After the body, we styled all the elements in a consistent manner.
   }
   ```,
   [
-    Every button is derived from the one above. The text is aligned in the center both horizontally and vertically; its weight set to bold. Then there are some margin and padding to help the user see better#footnote[There will be later an exception.].
+    Every button is derived from the one above. The text is aligned in the center both horizontally and vertically; its weight set to bold. Then there are some margin and padding to help the user see better#footnote[There will be an exception later.].
   ],
 )
 
@@ -100,7 +100,7 @@ The first container the user sees is the Login one, which shares its design with
   ],
 )
 
-A basic function of a Playlist Manager is being able to display all the playlists and tracks of a given user. To achieve that, we opted for a classic layout composed of a top and bottom navigation bars and a main, central section.
+Some very basic functions of a playlist manager is being able to display all the playlists and tracks of a given user. To achieve that, we opted for a classic layout composed of a top and bottom navigation bars and a main, central section.
 
 #css_explanation(
   ```css
@@ -130,6 +130,9 @@ A basic function of a Playlist Manager is being able to display all the playlist
       `logout`,
     )
     so we created the `spacer` element:
+
+    #colbreak()
+
     #emph[
       ```css
       .spacer {
@@ -218,7 +221,7 @@ Last but not least, the errors.
 
 == Modal<css-modal>
 
-/ RIA version : The modals in the RIA project are dynamically generated via Javascript only when needed and removed when the screen is changed. This section has been written with the HTML version in mind.
+/ RIA version : The modals in the RIA project are dynamically generated via Javascript only when needed and removed when the view is changed. This section has been written with the HTML version in mind.
 
 Finally, undoubtedly the most difficult CSS component in this project to comprehend is the modal, which is a dialog window created entirely with CSS.
 
@@ -239,11 +242,11 @@ A complex element, it can be broken in multiple parts:
     transition: all 0.5s;
 }
 ```
-it's `hidden` by default, but once it's invoked it must be be above everything -- this is handled by the `z-index` property. Its position must be `fixed`, since it's not a movable window; also it can't be targeted by cursor: `pointer-events` are none. Another key aspect is the background color: in order to make it stand from its background, a slight blurred white is needed:
-#context figure(
+it's `hidden` by default, but once it's invoked it must be be above everything -- this is handled by the `z-index` property. Its position must be `fixed`, since it's not a movable window; also it can't be targeted by the cursor: `pointer-events` are none. Another key aspect is the background color: in order to make it stand from its background, a slight blurred white is needed (see @css-modal-representation).
+#figure(
   scope: "parent",
   placement: bottom,
-  {
+  context {
     let height = 3cm
     let width = 7cm
     let spacing = 1.25cm
@@ -285,7 +288,7 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
     )
   },
   caption: [Modal representation.],
-)
+)<css-modal-representation>
 
 // #pagebreak()
 
@@ -309,7 +312,7 @@ it's `hidden` by default, but once it's invoked it must be be above everything -
     border: 2px solid var(--variables);
 }
 ```
-once the modal has been invoked, its visibility must be switched to `visible` and `opacity` to 1. The child element `div` of the window must at the center of screen, both horizontally and vertically: this is managed with the `top`, `left` and `translate` properties.
+once the modal has been invoked, its visibility must be switched to `visible` and `opacity` to 1. The child element `div` of the window must be at the center of the screen, both horizontally and vertically: this is managed with the `top`, `left` and `translate` properties.
 
 - The close button
 ```css
@@ -332,7 +335,7 @@ once the modal has been invoked, its visibility must be switched to `visible` an
     color: black;
 }
 ```
-as stated previously, the `modal-close` button is an exception to the `button` rule. It's considerably smaller than the others, the cursor is immediately `pointer`. Its position is computed on the `modal-window`, from above right.
+as stated previously, the `modal-close` button is an exception to the `button` rule. It's considerably smaller than the others, the cursor is a `pointer`. Its position is computed on the `modal-window`, from the above right.
 
 - The dropdown menus
 ```css
@@ -340,11 +343,11 @@ select:invalid {
     color: #505050;
 }
 ```
-this pseudoclass causes the color in the placeholder in dropdown menus (Year, Genres) to be gray, as a a regular placeholder should be #footnote[Otherwise it would have been black as the text, which is not aesthetically pleasant.].
+this pseudoclass causes the color of the placeholder in dropdown menus (Year, Genres) to be gray, as regular placeholders should be #footnote[Otherwise it would have been black as the text, which is not aesthetically pleasant.].
 
 == #ria() Sidebar<ria-css-sidebar>
 
-This components exists on in the RIA project, where we implemented a lateral bar that contains three menus: Homepage, Playlist and Track. It effectively acts as an upgraded version of the bottom navigation bar of the HTML project.
+This components exists only in the RIA project, where we implemented a lateral bar that contains three buttons: Homepage, Playlist and Track. It effectively acts as an upgraded version of the bottom navigation bar of the HTML project.
 
 #css_explanation(
   ```css
@@ -363,11 +366,11 @@ This components exists on in the RIA project, where we implemented a lateral bar
   }
   ```,
   [
-    It always sits in the left side, with a 100% height. Its position can't be changed and neither its content. The background acts as contrast with the playlist tracks buttons.
+    It always sits on the left side, with a 100% height. Its position can't be changed and neither its content. The background acts as contrast with the playlist tracks buttons.
   ]
 )
 
-Then the styling the menus.
+Then the styling of the menus.
 
 #css_explanation(
   ```css
@@ -396,7 +399,7 @@ Then the styling the menus.
   }
   ```,
   [
-    The menus are of `entry-button` class, which can exists _only_ in a `side-bar` container (as seen in the first line of the previous source code extract). They are horizontally centered.
+    The menus are of `entry-button` class, which can exist _only_ in a `side-bar` container (as seen in the first line of the previous source code extract). They are horizontally centered.
 
     The class `icon`, `.title` can exist only inside the `entry-button` -- thus they can exist only inside the `side-bar` class.
   ]

@@ -398,12 +398,12 @@
       + box(
         image(
           "img/logos/thymeleaf.svg",
-          width: 1em,
-          height: 1em,
+          width: 0.9em,
+          height: 0.9em,
         ),
         // width: 1em,
         // height: 1em,
-        baseline: 0.1cm,
+        baseline: 1pt
       )
   )
 

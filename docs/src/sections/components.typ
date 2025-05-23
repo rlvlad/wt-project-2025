@@ -4,7 +4,7 @@
 
 == Components
 
-The projects is composed of the following components:
+/ Introduction : The projects is built upon the following components:
 
 + DAOs
   - PlaylistDAO
@@ -55,80 +55,80 @@ As per the DAO interface, the same idea has been applied to the `ConnectionHandl
 
 PlaylistDAO methods:
 
-- getPlaylistTitle
-- deletePlaylist
-- getTrackGroup
-- addTracksToPlaylist
-- removeTracksFromPlaylist
-- checkPlaylistOwner
-- getUserPlaylists
-- getPlaylistTracksByTitle
-- createPlaylist
-- getPlaylistTracksById#footnote[Modified in the RIA version to account for custom track order.]
-- getTracksNotInPlaylist
-- #ria() updateTrackOrder
+- `getPlaylistTitle`
+- `deletePlaylist`
+- `getTrackGroup`
+- `addTracksToPlaylist`
+- `removeTracksFromPlaylist`
+- `checkPlaylistOwner`
+- `getUserPlaylists`
+- `getPlaylistTracksByTitle`
+- `createPlaylist`
+- `getPlaylistTracksById`#footnote[#ria() Modified in the RIA version to account for custom track order.]
+- `getTracksNotInPlaylist`
+- #ria() `updateTrackOrder`
 
 TrackDAO methods:
 
-- addTrack
-- isImageFileAlreadyPresent
-- checkTrackOwner
-- isTrackFileAlreadyPresent
-- getTrackById
-- getUserTracks
+- `addTrack`
+- `isImageFileAlreadyPresent`
+- `checkTrackOwner`
+- `isTrackFileAlreadyPresent`
+- `getTrackById`
+- `getUserTracks`
 
 UserDAO methods:
 
-- checkUser
-- addUser
+- `checkUser`
+- `addUser`
 
 All the methods are intuitively named and don't need further explanations. Either way, they are explained throughout the next section in their respective sequence.
 
 == RIA subproject
 
 HomeView, class that manages the homepage:
-- `show()` --- Show the homepage
-- `loadPlaylist()` --- Loads all the User Playlists
-- `loadButtons()` --- Load buttons in the top nav bar and button functionality in the sidebar
-- `playlistGrid()` --- Load the Playlists
-- `createPlaylistButton()` --- Creates and returns a button based on the playlist parameter
-- `loadCreatePlaylistModal()` --- Loads the modal for creating playlists to the modal container
-- `loadUploadTrackModal()` --- Loads the modal for uploading tracks to the modal container
-- `loadUserTracksOl()` --- Get user Tracks and creates draggable list items
-- `dragStart()` --- As soon as the User drags an Element
-- `dragOver()` --- The User is dragging the Element around
-- `dragLeave()` --- The User has started dragging the Element
-- `drop()` --- The User has dropped the Track in the desired location
-- `loadReorderModal()` --- Generates the modal to reorder the Tracks
-- `closeReorderModal()` --- Removes the reorder tracks modal
-- `saveOrder()` --- Save new Tracks custom order
+- `show` --- Show the homepage
+- `loadPlaylist` --- Loads all the User Playlists
+- `loadButtons` --- Load buttons in the top nav bar and button functionality in the sidebar
+- `playlistGrid` --- Load the Playlists
+- `createPlaylistButton` --- Creates and returns a button based on the playlist parameter
+- `loadCreatePlaylistModal` --- Loads the modal for creating playlists to the modal container
+- `loadUploadTrackModal` --- Loads the modal for uploading tracks to the modal container
+- `loadUserTracksOl` --- Get user Tracks and creates draggable list items
+- `dragStart` --- As soon as the User drags an Element
+- `dragOver` --- The User is dragging the Element around
+- `dragLeave` --- The User has started dragging the Element
+- `drop` --- The User has dropped the Track in the desired location
+- `loadReorderModal` --- Generates the modal to reorder the Tracks
+- `closeReorderModal` --- Removes the reorder tracks modal
+- `saveOrder` --- Save new Tracks custom order
 
 MainLoader, centralized management of the HomePage:
-- `start()` --- Initializes the HomeView: adds listeners on buttons, refreshes the page
-- `refreshPage()` --- Refresh the HomeView: clear all modals and reload them
-- `loadYears()` --- Load year from 1900 to the current one for upload track modal
-- `loadGenres()` --- Load the musical genres for upload track modal
+- `start` --- Initialize the HomeView: add listeners on buttons, refresh the page
+- `refreshPage` --- Refresh the HomeView: clear all modals and reload them
+- `loadYears` --- Load year from 1900 to the current one for upload track modal
+- `loadGenres` --- Load the musical genres for upload track modal
 
 PlaylistView class:
-- `trackGrid()` --- Load all the Tracks associated to a Playlist
-- `loadPlaylistTracks()` --- Load all the Tracks associated to a Playlist
-- `loadPlaylistView()` --- Load everything needed for viewing and interacting with the Playlist and its contents
-- `loadAddTracksModal()` --- Load the modal for adding tracks to a playlist to the modal container
-- `loadPrevNextButton()` --- Load the buttons for changing the viewed track group in the playlist view
+- `trackGrid` --- Load all the Tracks associated to a Playlist and return a grid
+- `loadPlaylistTracks` --- Load all the Tracks associated to a Playlist
+- `loadPlaylistView` --- Load everything needed for viewing and interacting with the Playlist and its contents
+- `loadAddTracksModal` --- Load the modal for adding tracks to a playlist to the modal container
+- `loadPrevNextButton` --- Load the buttons for changing the viewed track group in the playlist view
 
 TrackView class:
-- `show()` --- Show the Track to play
-- `trackPlayer()` --- Load the Track player DOM elements. Unlike the other loaders, it's only a center panel
-- `loadSingleTrack()` --- Load a single Track from a Playlist
+- `show` --- Show the Track to play
+- `trackPlayer` --- Load the Track player DOM elements. Unlike the other loaders, it's only a center panel
+- `loadSingleTrack` --- Load a single Track from a Playlist
 
 Utils (not a class but a file):
-- `makeCall()` --- Make an asynchronous call to the server by specifying method, URL, form to send, the function to execute and whether to reset the given form
-- `loadUserTracks()` --- Get user tracks and add them to the track selector parameter
-- `createModal()`--- Create basic modal element; used as a building block for creating modals
-- `clearModals()` --- Delete everything from modals div
-- `cleanMain()` --- Delete everything from main div
-- `clearBottomNavbar()` --- Delete the bottom navbar if present
-- `showModal()` --- Make the modal visible
+- `makeCall` --- Make an asynchronous call to the server by specifying method, URL, form to send, the function to execute and whether to reset the given form
+- `loadUserTracks` --- Get user tracks and add them to the track selector parameter
+- `createModal`--- Create basic modal element; used as a building block for creating modals
+- `clearModals` --- Delete everything from modals div
+- `cleanMain` --- Delete everything from main div
+- `clearBottomNavbar` --- Delete the bottom navbar if present
+- `showModal` --- Make the modal visible
 
 And finally the interfaces, which are the Typescript translation of the Record classes.
 
@@ -211,46 +211,48 @@ And finally the interfaces, which are the Typescript translation of the Record c
 
     [Index $=>$ Login form $=>$ Submit], [`makeCall()` function], [POST (`username`, `password`)], [Login (servlet)],
     [HomeView $=>$ Load],
-    [`HomeView.show()` function (its invocation is done by the MainLoader)],
+    [`HomeView.show()` (its invocation is done by the `MainLoader` class)],
     [GET],
     [Homepage (servlet)],
 
     [HomeView $=>$ Click on a playlist],
-    [Loads all tracks associated to that Playlist],
+    `loadPlaylist()`,
     [GET (`playlistId`)],
     [Playlist (servlet)],
 
     [HomeView $=>$ Click on reorder button],
-    [Load a modal to custom order the track in the Playlist],
+    `loadReorderModal()`,
     [GET (`playlistId`)],
     [Playlist (servlet)],
 
     [Reorder modal $=>$ Save order button],
-    [Saves the custom order to the database],
+    `saveOrder()`,
     [POST (`trackIds`, `playlistId`)],
     [TrackReorder (servlet)],
 
     [Create playlist modal $=>$ Create playlist button],
-    [Loads the modal to create a new playlist; returns the newly created playlist if successful],
+    `makeCall()`,
     [POST (`playlistTitle`, `selectedTracks`)],
     [CreateNewPlaylist (servlet)],
 
     [Upload track modal $=>$ Upload track button],
-    [Loads the modal to upload a new track; returns the newly uploaded track if successful],
+    `makeCall()`,
     [POST (`title`, `artist`, `year`, `album`, `genre`, `image`, `musicTrack`)],
     [UploadTrack (servlet)],
 
     [Sidebar $=>$ Playlist button],
-    [Views the last selected Playlist, if one had been selected],
+    `playlistView.show()`,
     [GET (`last selected Playlist`)],
     [Playlist (servlet)],
 
     [Sidebar $=>$ Track button],
-    [Views the last selected Track, if one had been selected],
+    `trackView.show()`,
     [GET (`last selected Track`)],
     [Track (servlet)],
 
-    [Sidebar $=>$ HomePage], [Returns to the HomeView], [GET (`user playlists`)], [Homepage (servlet)],
+    [Sidebar $=>$ HomePage],
+    `homeView.show()`,
+    [GET (`user playlists`)], [Homepage (servlet)],
     [Logout], [`makeCall()` function], [GET], [Logout (servlet)],
   ),
   caption: [Events & Controllers (or event handlers).],

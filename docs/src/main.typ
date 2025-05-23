@@ -16,9 +16,9 @@
 #include "sections/components.typ"
 #include "sections/sequence_diagram.typ"
 #include "sections/filters.typ"
-#include "sections/css_rules.typ"
 
 #show: appendix.with()
+#include "sections/css_rules.typ"
 #include "sections/cut_content.typ"
 
 #bibliography(

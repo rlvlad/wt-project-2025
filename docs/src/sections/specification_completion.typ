@@ -14,11 +14,14 @@
 In addition to the requirements, we implemented a series of new features:
 
 - Since the application does need to implement a login function, we thought to complement this with a logout button (@logout-sequence)
-  - The motivation is the same with the registration button (@register-sequence)
+
+  - Same with the registration button (@register-sequence)
 
 - All the CSS styling (@css-styling), from colours to buttons to modals
 
 - The top navigation bar, where the title of the page and various buttons are located (upload or add track, create playlist and logout)
+
+- Checksum for images path and song files
 
 == HTML-specific features<html-specifics>
 
@@ -30,7 +33,7 @@ The following features are HTML specific, which means they do not appear in the 
 
 This project started from the HTML, where we developed most of the servlets, the ideas and the HTML webpages. Then, we moved on the next task: the RIA, that is the _Rich Internet Application_.
 
-For this very reason, most of the features were ported to the latter subproject: there is no need to go through the components and logic all over again. Still, the RIA subproject -- the "JavaScript version" -- requires more features and some changes to how the overall server works. The #ria() symbol means that the currently described features is present _only_ in the RIA subproject, NOT in the HTML one.
+For this very reason, most of the features were ported to the latter subproject: there is no need to go through the components and logic all over again. Still, the RIA subproject -- the "JavaScript version" -- requires more features and some changes to how the server works. The #ria() symbol means that the currently described features is present _only_ in the RIA subproject, NOT in the HTML one.
 
 Furthermore, by using Javascript, some features can be upgraded -- this mainly applies to the modal @css-modal. Briefly, the main changes are as follows:
 
@@ -40,4 +43,4 @@ Furthermore, by using Javascript, some features can be upgraded -- this mainly a
 
 - To account for the new User Experience, we developed the sidebar to host the various buttons (@ria-css-sidebar)
 
-/ Typescript: Instead of Javascript we opted for #text(fill: rgb("#3178C6"), weight: "bold")[Typescript]. This was done mainly for two reasons:  the retrocompability with Javascript (since Typescript transpiles in JS) and the static typing system, which can be quite bothersome in some cases, but saves a lot of time overall.
+/ Typescript: Instead of Javascript we opted for #text(fill: rgb("#3178C6"), weight: "bold")[Typescript]. This was done mainly for two reasons:  the retrocompability with Javascript (since Typescript transpiles in JS) and the static typing system, which can be quite bothersome in some cases, but saves a lot of time over the development cycle.

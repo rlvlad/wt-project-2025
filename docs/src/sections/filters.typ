@@ -18,7 +18,7 @@
     _seq("B", "C", disable-src: true, comment: [[user != null] ? redirect])
   }),
   comment: [
-    The `UserChecker` filter checks, once the client accesses the Login or Register webpage, if the User is logged.
+    The `UserChecker` filter checks, once the client accesses the Login or Register webpage, if the User is logged in.
 
     #v(0.1em)
 
@@ -44,7 +44,7 @@
     _seq("B", "C", disable-src: true, comment: [[user == null] ? redirect])
   }),
   comment: [
-    The `InvalidUserChecker` filter does the exact opposite of `UserChecker`. If the client accesses pages all the other pages -- HomePage, PlaylistPage, Track, Logout... -- and _is not logged in_, then the program redirects to the Login page.
+    The `InvalidUserChecker` filter does the exact opposite of `UserChecker`. If the client accesses all the other pages -- HomePage, PlaylistPage, Track, Logout... -- and _is not logged in_, then the program redirects to the Login page.
   ],
   next_page: false,
   comment_next_page_: false,
@@ -76,7 +76,7 @@
     _seq("B", "E", disable-src: true, comment: [[result == false] ? sendError ("Playlist does not exist")])
   }),
   comment: [
-    The `PlaylistChecker` filter is invoked in two scenario: after the User has clicked on a playlist on HomePage (@playlistpage-sequence) and when uploading a track (@uploadtrack-sequence).
+    The `PlaylistChecker` filter is invoked in two scenarios: after the User has clicked on a playlist on HomePage (@playlistpage-sequence) and when uploading a track (@uploadtrack-sequence).
 
     It is in charge of checking if the requested playlist _actually belongs_ to the User requesting or trying to upload it. This is done via obtaining the User attribute from the session -- which is impossibile without extending the `HttpServlet` or `HttpFilter` classes -- and getting the needed paramaters from the request.
 
@@ -106,9 +106,9 @@
     _seq("B", "E", disable-src: true, comment: [[isOwner == false] ? sendError ("Track does not exist")])
   }),
   comment: [
-    Even the `SelectedTracksChecker` filter is invoked in two scenarios: during the creation of a playlist (@createplaylist-sequence) and during the UploadTrack sequence (@uploadtrack-sequence).
+     The `SelectedTracksChecker` filter is invoked in two scenarios too: during the creation of a playlist (@createplaylist-sequence) and during the UploadTrack sequence (@uploadtrack-sequence).
 
-    `SelectedTracksChecker` applies a very similar pipeline `PlaylistChecker`: instead of checking the playlist, it does the same job but for one of more tracks when the User requests to add them to a playlist.
+    `SelectedTracksChecker` applies a very similar pipeline to c`PlaylistChecker`: instead of checking the playlist, it does the same job but for one of more tracks when the User requests to add them to a playlist.
 
     Again similarly to `PlaylistChecker`, it also obtains the User attribute from the session and the needed parameters; if the User does not have access rights to the requested track(s), the response is `ERROR 403`.
   ],

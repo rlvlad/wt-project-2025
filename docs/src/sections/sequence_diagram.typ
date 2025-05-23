@@ -27,7 +27,7 @@
       "H",
       comment: [[error != null && error == true] \ ? setVariable ("error", true)],
     )
-    _seq("B", "C", enable-dst: true, comment: "process(index.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
+    _seq("B", "C", enable-dst: true, comment: "process (index.html, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("C", "B", disable-src: true, comment: "index.html")
     _seq("B", "A", disable-src: true, comment: "index.html")
 
@@ -44,7 +44,7 @@
     _seq("B", "F", disable-src: true, comment: "Redirect")
   }),
   comment: [
-    Once the server is up and running, the Client requests the Login page. Then, thymeleaf processes the request and returns the correct context, to index the chosen locale. Afterwards, the User inserts their credentials.
+    Once the server is up and running, the Client requests the Login page. Then, thymeleaf processes the request and returns the correct context to index the correct locale. Afterwards, the User inserts their credentials.
 
     Those values are passed to the `checkUser()` function that returns `schrödingerUser` -- as the name implies, the variable might return a User; otherwise `null`. If `null`, then the credentials inserted do not match any record in the database; else the User is redirected to their HomePage and the `user` variable is set for the current session.
 
@@ -96,9 +96,9 @@
   comment: [
     If the User is not yet registered, they might want to create an account. If that's the case, as per the Login sequence diagram, once all the parameters are gathered and verified (omitted for simplicity) initially thymeleaf processes the correct context, then the User inserts the credentials.
 
-    Depending on the nickname inserted, the operation might fail: there can't be two Users with the same nickname. If that does not happen, then `isUserAdded` is `true`, then there will be the redirection to the Login page.
+    Depending on the nickname inserted, the operation might fail: there can't be two Users with the same nickname. If that does not happen, then `isUserAdded` is `true` and there will be the redirection to the Login page.
 
-    Else the program appends `isUserAdded` with `false` value and redirects to the Registration servlet: thymeleaf checks for that context variable and if it evaluates to false, it prints an error.
+    Otherwise the program appends `isUserAdded` with `false` value and redirects to the Registration servlet: thymeleaf checks for that context variable and if it evaluates to false, it prints an error.
 
   ],
   label_: "register-sequence",
@@ -145,11 +145,11 @@
   }),
   comment_next_page_: true,
   comment: [
-    Once the Login is complete, the User is redirected to their HomePage, which hosts all their Playlists. In order to do so, the program needs to User attribute -- which is retrieved via the session; then, it is passed to the `getUserPlaylists` function and finally thymeleaf displays all values.
+    Once the Login is complete, the User is redirected to their HomePage, which hosts all their Playlists. In order to do so, the program needs to User attribute -- which is retrieved via the session; then, it is passed to the `getUserPlaylists()` method and finally thymeleaf displays all values.
 
     From this page, the User can upload new tracks. for this reason the HomePage servlet fetches all the user tracks (which are not to be displayed). Then, as the User presses the upload button, the modal shows up allowing to fill the information for a new track (title, album, path, playlist...); the genres are predetermined: they are statically loaded from the `genres.json` file.
 
-    Once the information are completed, the servlet checks if a playlist or track is duplicate -- hence the need to fetch all the tracks -- and if so it redirectes to itself with a `duplicate-` error, the same principle applied to the precedent servlets. Otherwise, the track would have been successfully added.
+    Once the information are completed, the servlet checks if a playlist or track is duplicate -- hence the need to fetch all the tracks -- and if so it redirectes to itself with a `duplicate-` error, the same principle applied to the precedent servlets. Otherwise, the track is successfully added.
   ],
   label_: "homepage-sequence",
 )
@@ -178,11 +178,11 @@
     _seq("C", "B", disable-src: true, comment: "return playlistTracks")
     _seq("B", "C", enable-dst: true, comment: "getTracksNotInPlaylist (playlistTitle, user.id())")
     _seq("C", "B", disable-src: true, comment: "return addableTracks")
-    _seq("B", "D", comment: [setVariable("trackGroup", trackGroup)])
-    _seq("B", "D", comment: [setVariable("playlistId", playlistId)])
-    _seq("B", "D", comment: [setVariable("playlistTitle", playlistTitle)])
-    _seq("B", "D", comment: [setVariable("addableTracks", addableTracks)])
-    _seq("B", "D", comment: [setVariable("playlistTracks", playlistTracks)])
+    _seq("B", "D", comment: [setVariable ("trackGroup", trackGroup)])
+    _seq("B", "D", comment: [setVariable ("playlistId", playlistId)])
+    _seq("B", "D", comment: [setVariable ("playlistTitle", playlistTitle)])
+    _seq("B", "D", comment: [setVariable ("addableTracks", addableTracks)])
+    _seq("B", "D", comment: [setVariable ("playlistTracks", playlistTracks)])
     _seq("B", "E", enable-dst: true, comment: "process (playlist_page, ctx)", lifeline-style: (fill: rgb("#005F0F")))
     _seq("E", "B", disable-src: true, comment: "playlist_page.html")
     _seq("B", "A", disable-src: true, comment: "playlist_page.html")
@@ -190,11 +190,11 @@
   comment: [
     From the HomePage, the User is able to see all their playlists. By clicking on either one of them, the program redirects to the corresponding PlaylistPage, which lists all the tracks associated to that playlist.
 
-    In order to do so, the program needs the User attribute -- which is retrieved via the session -- and the title of the playlists, which is given as a parameter by pressing the corresponding button in HomePage.
+    In order to do so, the program needs the User attribute -- which is again retrieved via the session -- and the title of the playlist, which is given as a parameter by pressing the corresponding button in HomePage.
 
-    Then those value are passed to `getPlaylistTracks()`, that returns all the tracks. Finally, thymeleaf processes the context and display all the tracks.
+    Then those values are passed to the `getPlaylistTracks()` method, that returns all the tracks. Finally, thymeleaf processes the context and display all the tracks.
 
-    From this page the User is also able to add chosen tracks to a playlist. In order to do, similar to HomePage with the upload, the program fetches all tracks that _can be added_, thats is the ones that are not already in a playlist, and displays them to a User via a dropdown menu (again similar to genres in HomePage).
+    From this page the User is also able to add chosen tracks to a playlist. In order to do so, similarly to HomePage with the upload, the program fetches all tracks that _can be added_, thats is the ones that are not already in the playlist, and displays them to a User via a dropdown menu (again similar to genres in HomePage).
   ],
   label_: "playlistpage-sequence",
   comment_next_page_: true,
@@ -276,15 +276,15 @@
     )
   }),
   comment: [
-    The User can upload tracks from the appropriate form in the homepage (@homepage-sequence). When the POST request is received, the request parameters are checked for null values and emptiness (omitted in the diagram for the sake of simplicity), and the uploaded files are written to disk by the `processPart` method, which has two parameters: a Part object, which "represents a part or form item that was received within a multipart/form-data POST request" @part, and its expected MIME type. The latter does not need to be fully specified (i.e. the subtype can be omitted).
+    The User can upload tracks from the appropriate form in the HomePage (@homepage-sequence). When the POST request is received, the parameters are checked for null values and emptiness (omitted in the diagram for the sake of simplicity), and the uploaded files are written to disk by the `processPart()` method, which has two parameters: a Part object, which "represents a part or form item that was received within a multipart/form-data POST request" @part, and its expected MIME type. The latter does not need to be fully specified (i.e. the subtype can be omitted).
 
-    Before writing the file to disk, the method checks for duplicates of the file by calculating its SHA256 hash and querying the database with the two methods: `isTrackFileAlreadyPresent` and `isImageFileAlreadyPresent`; present in TrackDAO.
+    Before writing the file to disk, the method checks for duplicates of the file by calculating its SHA256 hash and querying the database with two methods: `isTrackFileAlreadyPresent()` and `isImageFileAlreadyPresent()` -- present in TrackDAO.
 
-    Those two return the relative file path corresponding to the file hash if a matching one is found, otherwise null. In the former case, `processPart` returns the found path and the new track is uploaded using the already present file, this avoiding creating duplicates; in the latter case `processPart` proceeds by writing the file to disk and returning the new file's path.
+    Those two return the relative file path corresponding to the file hash if a matching one is found, otherwise `null`. In the former case, `processPart()` returns the found path and the new track is uploaded using the already present file, thus avoiding creating duplicates; in the latter case `processPart()` proceeds by writing the file to disk and returning the new file's path.
 
-    To write the file to the correct path in the webapp folder (`realOutputFolder`), the method `context.getRealPath(relativeOutputFolder)` is called, where `relativeOutputFolder` is obtained from the `web.xml` file and is, in our case, `"uploads"`; `realOutputFolder` is obtained by appending, with the needed separators, the MIME type to the result of `getRealPath`; to get `realOutputFilePath`, a random UUID and the file extension are appended to `realOutputFolder`. Having obtained the desired path, the file can be created and then written with the `Files.copy` method. The file can be found in target/#emph[artifactId]-#emph[version]/uploads/ in the project folder.
+    To write the file to the correct path in the webapp folder (`realOutputFolder`), the method `context.getRealPath(relativeOutputFolder)` is called, where `relativeOutputFolder` is obtained from the `web.xml` file and is, in our case, `"uploads"`; `realOutputFolder` is obtained by appending, with the needed separators, the MIME type to the result of `getRealPath`; to get `realOutputFilePath`, a random UUID and the file extension are appended to `realOutputFolder`. Having obtained the desired path, the file can be created and then written with the `Files.copy()` method. The file can be found in `target/`#emph[artifactId]`-`#emph[version]`/uploads/` in the project folder.
 
-    In conclusion, `processPart` adds the new file to the newFiles list in `UploadTrack` and returns the path relative to the webapp folder because that's where the application will be looking for when it has to retrieve files. Once this is completed, the new Track object is created and passed to the `addTrack` method of TrackDAO; if an `SQLException` is thrown, all the files in `newFiles` list are deleted and then, in the finally block, the list is cleared.
+    In conclusion, `processPart()` adds the new file to the newFiles list in `UploadTrack` and returns the path relative to the webapp folder because that's where the application will be looking for when it has to retrieve files. Once this is completed, the new Track object is created and passed to the `addTrack()` method of TrackDAO; if an `SQLException` is thrown, all the files in `newFiles` list are deleted and then, in the finally block, the list is cleared.
   ],
   label_: "uploadtrack-sequence",
 )
@@ -323,9 +323,9 @@
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
   comment: [
-    The User can create playlists with the appropriate form in the homepage. There, a title needs to be inserted and, optionally, one or more tracks can be chosen from the ones uploaded by the User. When the servlet gets the POST request, it interacts with the PlaylistDAO to create the playlist with the `createPlaylist()` method and to add the selected tracks with the `addTracksToPlaylist()` method.
+    The User can create playlists with the appropriate form in the HomePage. There, a title needs to be inserted and, optionally, one or more tracks can be chosen from the ones uploaded by the User. When the servlet gets the POST request, it interacts with the PlaylistDAO to create the playlist with the `createPlaylist()` method and to add the selected tracks with the `addTracksToPlaylist()` method.
 
-    Note that selectedTracksIds is a list of integers obtained by converting the strings inside the array returned by the `getParameterValues("selectedTracks")` method with `Integer.parseInt()`.
+    Note that selectedTracksIds is a list of integers obtained by converting the strings inside the array returned by the `getParameterValues("selectedTracks")` method and parsing them with `Integer.parseInt()`.
   ],
   label_: "createplaylist-sequence",
   comment_next_page_: false,
@@ -372,11 +372,11 @@
     // _seq("D", "A", comment: [scCreated])
   }),
   comment: [
-    From the modal, once the User has completed the selection of the Tracks to add in the current Playlist, the form calls the `AddTracks` servlet via a POST method.
+    From the modal, once the User has completed the selection of the Tracks to add in the current Playlist, the form calls the `AddTracks` servlet via a POST request.
 
     Afterwards, by making sure there are no `nulls` in the `selectedTracksIds`, the `addTracksToPlaylist` method is called: it performs an insertion in the `playlist_tracks` table. Finally, the User is redirected to the newly created Playlist.
 
-    #ria() In the RIA subproject, the servlet response with a `201` code instead of redirecting.
+    #ria() In the RIA subproject, the servlet responds with a `201` code instead of redirecting.
   ],
   label_: "add-tracks-sequence",
   comment_next_page_: false,
@@ -409,7 +409,7 @@
 
     Then, the User attribute is retrieved from the session while the playlist title from the request.
 
-    In conclusion, the tracks that are not in the playlist are retrieved by the `getTracksNotInPlaylist` method: it returns a list which is converted to a JSON object via Gson for JavaScript.
+    In conclusion, the tracks that are not in the playlist are retrieved by the `getTracksNotInPlaylist()` method: it returns a list which is converted to a JSON object via Gson for JavaScript.
 
     // Once the needed parameters are obtained, the `getTracksNotInPlaylist` method returns the track, which are converted to a JSON.
   ],
@@ -486,8 +486,6 @@
   comment_next_page_: false,
 )
 
-// VERY MUCH RIA SPECIFIC
-
 #seq_diagram(
   [#ria() Event: Login],
   diagram({
@@ -506,7 +504,7 @@
     _seq("B", "D", disable-src: true, comment: [Redirect])
   }),
   comment: [
-    As the server is deployed the `index.html` request the associated Javascript files (we use Typescript, but it transplies to Javascript and that's what is imported in the HTML files). As they have been loaded thanks to the IIFE, the User is able to Login.
+    As the server is deployed the `index.html` requests the associated Javascript files (we use Typescript, but it transplies to Javascript and that's what is imported in the HTML files). As they have been loaded thanks to the IIFE, the User is able to Login.
 
     Once the button has been clicked, Javascript performs a POST request -- always via the `makeCall()` function -- to the Login servlet, which, as seen in the Login sequence diagram (@login-sequence), checks if the User exists: if that's the case it returns a 200 OK and the User is redirected to the Homepage.
 
@@ -535,9 +533,9 @@
     _seq("B", "A", disable-src: true, comment: [Redirect])
   }),
   comment: [
-    Instead of logging in, the User may want to register: probably because there they have no account. If that's the case, after the Javascript files will have been fetched, the User will be redirect to the `register.html` page.
+    Instead of logging in, the User may want to register: probably because there they have no account. If that's the case, after the Javascript files have been fetched, the User will be redirected to the `register.html` page.
 
-    From here, as seen in the Register sequence (@register-sequence), the servlet adds the User: if that's successful, then there will the redirect to the `index.html`; if not, an error message will appear above the Register button.
+    From there, as seen in the Register sequence (@register-sequence), the servlet adds the User: if that's successful, then there will the redirect to the `index.html`; if not, an error message will appear above the Register button.
   ],
   label_: "ria-event-register-sequence",
   comment_next_page_: false,
@@ -598,7 +596,7 @@
   }),
   comment: [
     The user can access the home view when the `home_page.html` first loads or after pressing the Homepage button in the sidebar.
-    The view is loaded by calling the `show` method of the `HomeView` object, which clears the possibly remaining elements left by other views and loads the modals, buttons, playlists and event listeners associated to them.
+    The view is loaded by calling the `show()` method of the `HomeView` object, which clears the possibly remaining elements left by other views and loads the modals, buttons, playlists and event listeners associated to them.
   ],
   label_: "ria-event-logout-sequence",
   comment_next_page_: false,
@@ -620,7 +618,7 @@
     _seq("B", "B", comment: [loadPlaylistView(playlist)])
     _seq("B", "B", enable-dst: true, comment: [loadPlaylistTracks()])
     _seq("B", "B", comment: [cleanMain()])
-    _seq("B", "C", enable-dst: true, comment: [AJAX GET \ /Playlist?\ playlistId=playlist.id])
+    _seq("B", "C", enable-dst: true, comment: [AJAX GET \ /Playlist?\ playlistId=playlist.id], lifeline-style: (fill: rgb("#3178C6")))
     _seq("C", "D", enable-dst: true, comment: [getPlaylistTracksById(playlistId)])
     _seq("D", "C", disable-src: true, comment: [playlistTracks])
     _seq("C", "B", disable-src: true, comment: [playlistTracks])
@@ -631,7 +629,7 @@
   }),
   comment: [
     The user can access the playlist view by selecting a playlist in the home view or by pressing the Playlist button in the sidebar, which will open the last visited playlist.
-    The view is loaded by calling the `show` method of the `PlaylistView` object, which clears the elements from other views and loads the modal, buttons, tracks and event listeners associated to them.
+    The view is loaded by calling the `show()` method of the `PlaylistView` object, which clears the elements from other views and loads the modal, buttons, tracks and event listeners associated to them.
   ],
   label_: "ria-event-logout-sequence",
   comment_next_page_: false,
@@ -651,7 +649,7 @@
     _seq("B", "B", comment: [clearBottomNavBar()])
     _seq("B", "B", enable-dst: true, comment: [loadSingleTrack(track)])
     _seq("B", "B", comment: [cleanMain()])
-    _seq("B", "C", enable-dst: true, comment: [AJAX GET \ /Track?\ track_id=track.id])
+    _seq("B", "C", enable-dst: true, comment: [AJAX GET \ /Track?\ track_id=track.id], lifeline-style: (fill: rgb("#3178C6")))
     _seq("C", "D", enable-dst: true, comment: [getTrackById(track_id)])
     _seq("D", "C", disable-src: true, comment: [track])
     _seq("C", "B", disable-src: true, comment: [track])
@@ -661,8 +659,8 @@
     _seq("B", "A", disable-src: true)
   }),
   comment: [
-    The user can access the track view by selecting a track in the playlist view or by pressing the Track button in the sidebar, which will open the last visted track.
-    The view is loaded by calling the `show` method of the `TrackView` object, which clears the elements from other views and loads the player and the song details.
+    The user can access the track view by selecting a track in the playlist view or by pressing the Track button in the sidebar, which will open the last visited track.
+    The view is loaded by calling the `show()` method of the `TrackView` object, which clears the elements from other views and loads the player and the song metadata.
   ],
   label_: "ria-event-logout-sequence",
   comment_next_page_: false,
@@ -735,7 +733,7 @@
   comment: [
     As the User logs in, in order to being able to listen the tracks, they must be uploaded. From the top nav bar, in the HomeView, there is the corresponding button.
 
-    After the click event, the MainLoader calls the `loadYears()`, `loadGenres()` and finally the `showModal()` functions. From there, the User is able to create new tracks by inserting the necessary metadata: title, artist, album, year, genre, image and file path (these are the same as seen in the Upload track sequence, see @uploadtrack-sequence -- that's why they are omitted).
+    After the click event, the MainLoader calls the `loadYears()`, `loadGenres()` and finally the `showModal()` functions. From there, the User is able to create new tracks by inserting the necessary metadata: title, artist, album, year, genre, image and file path (these are the same as seen in the Upload track sequence, see @uploadtrack-sequence -- that's why they are omitted in the diagram).
 
     If the operation is successful, a div with "Success" is shown; otherwise error. Finally the User can close and modal and return to the HomeView.
   ],
@@ -751,7 +749,7 @@
     _par("C", display-name: "ReorderTrack modal")
     _par("D", display-name: "homepage.ts")
     _par("E", display-name: "Playlist")
-    _par("F", display-name: "TrackReoder")
+    _par("F", display-name: "TrackReorder")
 
     _seq("B", "A", comment: [click()])
     _seq("A", "C", enable-dst: true, comment: [loadReorderModal()])
@@ -803,11 +801,11 @@
     _seq("C", "B", disable-src: true, comment: [closeReorderModal()])
   }),
   comment: [
-    // This modal is responible for adding a custom order to the added tracks in a playlist. From the HomeView, every playlist has a reorder button thats open the corresponding modal.
+    // This modal is responsible for adding a custom order to the added tracks in a playlist. From the HomeView, every playlist has a reorder button thats open the corresponding modal.
 
-    This modal is quite different from the upload tracks modal becuase, in that case, the User must see the tracks that are _not_ in that playlist, however if they are to be reordered, the User has to see them all. And being able to drag and drop them: that's why the `loadUserTracksOl()` function is called -- `ol` stands for _Ordered List_. The logic is very similary to the regular `loadUserTracks()`.
+    This modal is quite different from the add tracks modal because, in that case, the User must see the tracks that are _not_ in that playlist, however if they are to be reordered, the User has to see them all. And also being able to drag and drop them: that's why the `loadUserTracksOl()` function is called -- `ol` stands for _Ordered List_. The logic is very similar to the regular `loadUserTracks()`.
 
-    After being satisfied with the new order, the User clicks on the save oreder button that POSTS a JSON-formatted object to Java -- the only function in the project to do so.
+    After being satisfied with the new order, the User clicks on the save order button that POSTs a JSON-formatted object to Java -- the only function in the project to do so.
 
     If the operation is successful, a div with "Success" is shown; otherwise error. Finally the User can close and modal and return to the HomeView.
   ],
@@ -819,11 +817,18 @@
   diagram({
     _par("B", display-name: "HomeView")
     _par("C", display-name: "create-playlist modal")
+    _par("A", display-name: "GetUserTracks")
     _par("D", display-name: "homepage.ts")
     _par("E", display-name: "CreatePlaylist")
 
-    _seq("B", "C", comment: [click()])
-    // _seq("A", "C", enable-dst: true, comment: [loadCreatePlaylistModal()])
+    _seq("B", "C", enable-dst: true, comment: [click()])
+    _seq("C", "C", comment: [loadUserTracks()])
+    _seq("C", "A", enable-dst: true, comment: [
+        AJAX GET
+      ],
+      lifeline-style: (fill: rgb("#3178C6")),
+    )
+    _seq("A", "C", disable-src: true, comment: [tracks])
     _seq(
       "C",
       "D",
@@ -833,7 +838,7 @@
     )
     _seq(
       "D",
-      "F",
+      "E",
       enable-dst: true,
       comment: [
         AJAX POST \
@@ -841,7 +846,7 @@
       ],
     )
     _seq(
-      "F",
+      "E",
       "D",
       disable-src: true,
       comment: [
@@ -853,11 +858,9 @@
     _seq("C", "B", disable-src: true, comment: [modal-close.click()])
   }),
   comment: [
-    The User is able to create playlists by clicking on the corresponding button in the top navigation bar. Then, the User must insert the required data, which is only the title (as seen in @createplaylist-sequence); there is no way to add already uploaded tracks -- it can only be done via the the modal (@add-track-modal-sequence).
+    The User is able to create playlists by clicking on the corresponding button in the top navigation bar. Then, the User must insert the title -- optionally some tracks (as seen in @createplaylist-sequence) -- and, once satisfied, click the button to save the updates.
 
-    Once satisfied, the User can click on the button in bottom part of the modal to save the updates.
-
-    If the operation is successful, a div with "Playlist created successfully" is shown; otherwise error. Finally the User can close and modal and return to the HomeView.
+    If the operation is successful, a div with "Playlist created successfully" is shown; otherwise error. Finally the User can close the modal and return to the HomeView.
   ],
   label_: "create-playlist-modal-sequence",
   comment_next_page_: false,
@@ -907,7 +910,7 @@
   comment: [
     The User can access the add-tracks modal by clicking the Add Tracks button in the playlist view.
     The click event listener on the button gets the user tracks not already added to the playlist from the server, adds them to the track selector and then makes the modal visible.
-    When the Add Tracks button inside the modal is clicked, an AJAX POST request containing the selected tracks and the playlist id is sent; depending on the response status an error or success message is shown in the modal.
+    When the Add Tracks button inside the modal is clicked, an AJAX POST request containing the selected tracks and the `playlist_id` is sent; depending on the response status an error or success message is shown in the modal.
   ],
   label_: "add-track-modal-sequence",
   comment_next_page_: true,

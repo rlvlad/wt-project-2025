@@ -54,9 +54,9 @@ CREATE TABLE track
     check (genre in ('Classical', 'Rock', 'Edm', 'Pop', 'Hip-hop', 'R&B', 'Country', 'Jazz', 'Blues', 'Metal', 'Folk', 'Soul', 'Funk', 'Electronic', 'Indie', 'Reggae', 'Disco'))
 );
 ```
-this needs to be addressed since we implemented a special feature, which is the checksum for the song and the album image. As their name implies, they are the SHA256 checksums of the song and image: their purpose is to let the server store only one copy of the same file, which couldn't have been properly achieved by checking only the filename.
+this needs to be addressed since we implemented a special feature, which is the checksum for the song and the album image. As their name implies, they are the SHA256 checksum of the song and image: their purpose is to let the server store only one copy of the same file, which couldn't have been properly achieved by checking only the filename.
 
-Next, the other attributes are pretty standard. As per the `user` table, there are some unique constraint placed on `user_id, song_checksum` to account for what is written above; while `user_id, title, artist` does the same job though internally in the database#footnote[A User can't have duplicate track.]. Finally, a track is strictly bound to a user: that's the the foreign key is for.
+Next, the other attributes are pretty standard. As per the `user` table, there is the unique constraint on `user_id, song_checksum` to account for what is written above; while `user_id, title, artist` does the same job though internally in the database#footnote[A User can't have duplicate tracks.]. Finally, a track is strictly bound to a user: that's the the foreign key is for.
 
 - `playlist` table
 ```sql
@@ -73,7 +73,7 @@ CREATE TABLE playlist
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 ```
-once again this table is rather. The `creatione_date` attribute default to the current date, which is today; and again there is the unique constraint on `playlist_title, user_id` because a playlist is bound to a single User (who can't have duplicate playlists -- that is with the same title) via the foreign key.
+once again this table is rather standard. The `creatione_date` attribute defaults to the today's date; and again there is the unique constraint on `playlist_title, user_id` because a playlist is bound to a single User (who can't have duplicate playlists -- that is with the same title) via the foreign key.
 
 
 - `playlist_tracks` table
@@ -90,7 +90,7 @@ CREATE TABLE playlist_tracks
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 ```<playlist-tracks-code>
-this table represents the "Contained in" relation in the ER diagram (@er-diagram). Its primary key is multiple (the only one in the project) and has to link a track to a playlist -- unlike the other tables, which _explicitly needed_ a primary key _and_ a unique constraints, in this case a composite key it's correct because a track can appear in multiple playlists.
+this table represents the "Contained in" relation in the ER diagram (@er-diagram). Its primary key is multiple (the only one in the project) and has to link a track to a playlist -- unlike the other tables, which _explicitly needed_ a primary key _and_ a unique constraint, in this case a composite key it's correct because a track can appear in multiple playlists.
 
 - #ria() `playlist_tracks` table in RIA project
 ```sql
@@ -109,4 +109,4 @@ CREATE TABLE playlist_tracks
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 ```<playlist-tracks-code>
-similarly to the previous code, this one too is the translation of the "Contained in" relation in the RIA ER diagram (@er-diagram-ria), with the added `custom_order` attribute. The previous primary key has been converted to unique -- similarly to other parts in the projects -- and the rest is unvaried.
+similarly to the previous code, this one too is the translation of the "Contained in" relation in the _RIA_ ER diagram (@er-diagram-ria), with the added `custom_order` attribute. The previous primary key has been converted to unique -- similarly to other parts in the project -- and the rest is unvaried.
