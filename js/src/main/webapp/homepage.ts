@@ -695,7 +695,7 @@
                                     form.reset();
                                     break;
                                 default:
-                                    self.parentElement.previousElementSibling.setAttribute("class", "success");
+                                    self.parentElement.previousElementSibling.setAttribute("class", "error");
                                     self.parentElement.previousElementSibling.textContent = "Error";
                             }
                         }
