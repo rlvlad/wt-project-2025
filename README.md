@@ -20,7 +20,7 @@ Vittorio Robecchi
 
 # Usage
 
-To run the project you need to install all the dependencies – which is mostly taken care by Maven – and [configure MariaDB](#mariadb-configuration).
+To run the project you need to install all the dependencies – which are for the most part managed of by Maven – and [configure MariaDB](#mariadb-configuration).
 
 There are already included Tomcat configuration that:
 

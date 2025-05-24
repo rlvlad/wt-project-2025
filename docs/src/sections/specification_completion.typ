@@ -23,6 +23,8 @@ In addition to the requirements, we implemented a series of new features:
 
 - Checksum for images path and song files
 
+- Success and error messages for different operations (register, track uploading...)
+
 == HTML-specific features<html-specifics>
 
 The following features are HTML specific, which means they do not appear in the RIA subproject:
