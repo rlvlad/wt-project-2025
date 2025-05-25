@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/mock_data/tables.sql" dialect="MariaDB" />
-    <file url="file://$PROJECT_DIR$/pure_html/src/main/java/it/polimi/tiw25/pure_html/DAO/PlaylistDAO.java" dialect="MariaDB" />
-    <file url="file://$PROJECT_DIR$/pure_html/src/main/java/it/polimi/tiw25/pure_html/DAO/TrackDAO.java" dialect="MariaDB" />
-  </component>
-</project>
