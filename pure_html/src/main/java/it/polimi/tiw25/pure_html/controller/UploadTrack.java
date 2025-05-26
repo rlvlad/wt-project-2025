@@ -128,7 +128,7 @@ public class UploadTrack extends HttpServlet {
             resp.sendRedirect(getServletContext().getContextPath() + "/HomePage");
         } catch (SQLIntegrityConstraintViolationException e) {
             if (e.getMessage().contains("Duplicate")) {
-                resp.sendRedirect(getServletContext().getContextPath() + "/HomePage?duplicateTrack=true#open-modal");
+                resp.sendRedirect(getServletContext().getContextPath() + "/HomePage?duplicateTrack=true#upload-track");
             }
             // Delete newly created files if addTrack fails
             newFiles.forEach(file -> file.delete());
