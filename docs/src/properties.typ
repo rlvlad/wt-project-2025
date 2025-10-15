@@ -7,7 +7,7 @@
     (
       fullname: "Vlad Raileanu",
       mail: "raileanu.vlad29@gmail.com",
-      github: "https://github.com/rokuban",
+      github: "https://github.com/rlvlad",
     ),
     (
       fullname: "Vittorio Robecchi",

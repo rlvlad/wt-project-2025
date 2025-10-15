@@ -4,7 +4,7 @@
 
 <p align="center">
 Vlad Raileanu
-(<a href="https://github.com/rokuban">@rokuban</a>)
+(<a href="https://github.com/rlvlad">@rlvlad</a>)
 ·
 Vittorio Robecchi
 (<a href="https://github.com/VictuarVi">@victuarvi</a>)
